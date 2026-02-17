@@ -1,42 +1,46 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
 import { encrypt, decrypt } from '@/lib/crypto';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Wallet, Plus, Check, Trash2, Loader2 } from 'lucide-react';
+import { Wallet, Plus, Settings, Loader2, AlertTriangle } from 'lucide-react';
 import Layout from '@/components/Layout';
+import DebtCard, { type DebtItem } from '@/components/debts/DebtCard';
+import DebtFormDialog from '@/components/debts/DebtFormDialog';
+import ReminderSettingsDialog, { type ReminderSettingsData } from '@/components/debts/ReminderSettingsDialog';
+import SendReminderDialog from '@/components/debts/SendReminderDialog';
+import { format } from 'date-fns';
 
-interface DebtItem {
-  id: string;
-  debt_type: 'i_owe' | 'owed_to_me';
-  description: string;
-  amount: string;
-  creditor_debtor: string;
-  is_settled: boolean;
-}
+const DEFAULT_REMINDER_SETTINGS: ReminderSettingsData = {
+  frequency: 'monthly', custom_days: 30, enabled: true,
+};
 
 export default function Debts() {
   const { user, profile, passphrase, language } = useAuth();
   const t = useTranslation(language);
-  const [debts, setDebts] = useState<DebtItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [newDebt, setNewDebt] = useState({ type: 'i_owe' as 'i_owe' | 'owed_to_me', description: '', amount: '', person: '' });
-  const [saving, setSaving] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    loadDebts();
-  }, [user, passphrase]);
+  const [debts, setDebts] = useState<DebtItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const loadDebts = async () => {
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingDebt, setEditingDebt] = useState<DebtItem | null>(null);
+
+  const [reminderSettingsOpen, setReminderSettingsOpen] = useState(false);
+  const [reminderSettings, setReminderSettings] = useState<ReminderSettingsData>(DEFAULT_REMINDER_SETTINGS);
+  const [reminderSaving, setReminderSaving] = useState(false);
+
+  const [reminderDebt, setReminderDebt] = useState<DebtItem | null>(null);
+  const [reminderDialogOpen, setReminderDialogOpen] = useState(false);
+
+  const [showBanner, setShowBanner] = useState(false);
+
+  // Load debts
+  const loadDebts = useCallback(async () => {
     if (!user || !passphrase || !profile?.encryption_salt) return;
     setLoading(true);
 
@@ -50,12 +54,23 @@ export default function Debts() {
       const decrypted = await Promise.all(
         data.map(async (d: any) => {
           try {
-            const [description, amount, creditor_debtor] = await Promise.all([
-              decrypt(d.description_encrypted, d.iv, passphrase, profile.encryption_salt!),
-              decrypt(d.amount_encrypted, d.iv, passphrase, profile.encryption_salt!),
+            const [name, amount, currency, dueDate, notes] = await Promise.all([
               decrypt(d.creditor_debtor_encrypted, d.iv, passphrase, profile.encryption_salt!),
+              decrypt(d.amount_encrypted, d.iv, passphrase, profile.encryption_salt!),
+              d.currency_encrypted ? decrypt(d.currency_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve('EUR'),
+              d.due_date_encrypted ? decrypt(d.due_date_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
+              d.notes_encrypted ? decrypt(d.notes_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
             ]);
-            return { id: d.id, debt_type: d.debt_type, description, amount, creditor_debtor, is_settled: d.is_settled };
+            return {
+              id: d.id,
+              debt_type: d.debt_type as 'i_owe' | 'owed_to_me',
+              name,
+              amount,
+              currency,
+              due_date: dueDate,
+              status: (d.status || (d.is_settled ? 'paid' : 'pending')) as 'pending' | 'paid',
+              notes,
+            };
           } catch {
             return null;
           }
@@ -64,34 +79,77 @@ export default function Debts() {
       setDebts(decrypted.filter(Boolean) as DebtItem[]);
     }
     setLoading(false);
-  };
+  }, [user, passphrase, profile]);
 
-  const addDebt = async () => {
+  // Load reminder settings from vault
+  const loadReminderSettings = useCallback(async () => {
+    if (!user || !passphrase || !profile?.encryption_salt) return;
+    const { data } = await supabase
+      .from('vault_items')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('item_type', 'debt_reminder_settings')
+      .maybeSingle();
+
+    if (data) {
+      try {
+        const json = await decrypt(data.content_encrypted, data.iv, passphrase, profile.encryption_salt!);
+        setReminderSettings(JSON.parse(json));
+      } catch { /* use defaults */ }
+    }
+  }, [user, passphrase, profile]);
+
+  useEffect(() => {
+    loadDebts();
+    loadReminderSettings();
+  }, [loadDebts, loadReminderSettings]);
+
+  // Check if banner should show
+  useEffect(() => {
+    if (!reminderSettings.enabled || reminderSettings.frequency === 'off') {
+      setShowBanner(false);
+      return;
+    }
+    // Simple: show banner if enabled (real scheduling would use stored last_shown timestamp)
+    setShowBanner(true);
+  }, [reminderSettings]);
+
+  // Save debt
+  const handleSaveDebt = async (formData: any) => {
     if (!user || !passphrase || !profile?.encryption_salt) return;
     setSaving(true);
-
     try {
-      const { ciphertext: descEnc, iv } = await encrypt(newDebt.description, passphrase, profile.encryption_salt);
-      const { ciphertext: amtEnc } = await encrypt(newDebt.amount, passphrase, profile.encryption_salt);
-      const { ciphertext: personEnc } = await encrypt(newDebt.person, passphrase, profile.encryption_salt);
+      const { ciphertext: nameEnc, iv } = await encrypt(formData.name, passphrase, profile.encryption_salt);
+      const { ciphertext: amtEnc } = await encrypt(formData.amount, passphrase, profile.encryption_salt);
+      const { ciphertext: currEnc } = await encrypt(formData.currency, passphrase, profile.encryption_salt);
+      const dueDateStr = formData.hasDueDate && formData.dueDate ? format(formData.dueDate, 'yyyy-MM-dd') : '';
+      const { ciphertext: dueDateEnc } = await encrypt(dueDateStr, passphrase, profile.encryption_salt);
+      const { ciphertext: notesEnc } = await encrypt(formData.notes || '', passphrase, profile.encryption_salt);
 
-      await supabase.from('debts').insert({
+      const row = {
         user_id: user.id,
-        debt_type: newDebt.type,
-        description_encrypted: descEnc,
+        debt_type: formData.type,
+        creditor_debtor_encrypted: nameEnc,
         amount_encrypted: amtEnc,
-        creditor_debtor_encrypted: personEnc,
+        currency_encrypted: currEnc,
+        due_date_encrypted: dueDateStr ? dueDateEnc : null,
+        notes_encrypted: formData.notes ? notesEnc : null,
+        description_encrypted: nameEnc, // legacy compat
         iv,
-      } as any);
+        status: formData.status,
+        is_settled: formData.status === 'paid',
+      } as any;
 
-      await supabase.from('audit_logs').insert({
-        user_id: user.id,
-        action: 'debt_created',
-        entity_type: 'debts',
-      } as any);
+      if (editingDebt) {
+        await supabase.from('debts').update(row).eq('id', editingDebt.id);
+      } else {
+        await supabase.from('debts').insert(row);
+      }
 
-      setDialogOpen(false);
-      setNewDebt({ type: 'i_owe', description: '', amount: '', person: '' });
+      await supabase.from('audit_logs').insert({ user_id: user.id, action: editingDebt ? 'debt_updated' : 'debt_created', entity_type: 'debts' } as any);
+
+      setFormOpen(false);
+      setEditingDebt(null);
       await loadDebts();
       toast({ title: t('success') });
     } catch {
@@ -100,41 +158,65 @@ export default function Debts() {
     setSaving(false);
   };
 
-  const toggleSettled = async (id: string, settled: boolean) => {
-    await supabase.from('debts').update({ is_settled: !settled } as any).eq('id', id);
+  const handleDeleteDebt = async (id: string) => {
+    await supabase.from('debts').delete().eq('id', id);
+    setFormOpen(false);
+    setEditingDebt(null);
     await loadDebts();
   };
 
-  const deleteDebt = async (id: string) => {
-    await supabase.from('debts').delete().eq('id', id);
-    await loadDebts();
+  // Save reminder settings to vault
+  const handleSaveReminderSettings = async (data: ReminderSettingsData) => {
+    if (!user || !passphrase || !profile?.encryption_salt) return;
+    setReminderSaving(true);
+    try {
+      const json = JSON.stringify(data);
+      const { ciphertext, iv } = await encrypt(json, passphrase, profile.encryption_salt);
+      const { ciphertext: titleEnc } = await encrypt('debt_reminder_settings', passphrase, profile.encryption_salt);
+
+      const existing = await supabase.from('vault_items').select('id').eq('user_id', user.id).eq('item_type', 'debt_reminder_settings').maybeSingle();
+
+      const row = {
+        user_id: user.id,
+        item_type: 'debt_reminder_settings',
+        title_encrypted: titleEnc,
+        content_encrypted: ciphertext,
+        iv,
+      };
+
+      if (existing.data) {
+        await supabase.from('vault_items').update(row as any).eq('id', existing.data.id);
+      } else {
+        await supabase.from('vault_items').insert(row as any);
+      }
+
+      setReminderSettings(data);
+      setReminderSettingsOpen(false);
+      toast({ title: t('success') });
+    } catch {
+      toast({ title: t('error'), variant: 'destructive' });
+    }
+    setReminderSaving(false);
+  };
+
+  const openDetails = (debt: DebtItem) => {
+    setEditingDebt(debt);
+    setFormOpen(true);
+  };
+
+  const openReminder = (debt: DebtItem) => {
+    setReminderDebt(debt);
+    setReminderDialogOpen(true);
   };
 
   const renderDebtList = (type: 'i_owe' | 'owed_to_me') => {
     const filtered = debts.filter((d) => d.debt_type === type);
     if (loading) return <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>;
-    if (!filtered.length) return <p className="text-center text-sm text-muted-foreground py-8">{language === 'fr' ? 'Aucune dette' : 'No debts'}</p>;
-
+    if (!filtered.length) return <p className="text-center text-sm text-muted-foreground py-8">{t('noDebts')}</p>;
     return (
       <div className="space-y-3">
         {filtered.map((debt) => (
-          <Card key={debt.id} className={debt.is_settled ? 'opacity-60' : ''}>
-            <CardContent className="flex items-center gap-3 py-3">
-              <div className="flex-1">
-                <p className={`font-medium text-sm ${debt.is_settled ? 'line-through' : ''}`}>{debt.description}</p>
-                <p className="text-xs text-muted-foreground">{debt.creditor_debtor}</p>
-              </div>
-              <span className="font-medium text-sm">{debt.amount}</span>
-              <div className="flex gap-1">
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => toggleSettled(debt.id, debt.is_settled)}>
-                  <Check className={`h-4 w-4 ${debt.is_settled ? 'text-primary' : 'text-muted-foreground'}`} />
-                </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteDebt(debt.id)}>
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <DebtCard key={debt.id} debt={debt} language={language} onDetails={openDetails} onRemind={openReminder} />
         ))}
       </div>
     );
@@ -142,54 +224,28 @@ export default function Debts() {
 
   return (
     <Layout>
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-4 animate-fade-in pb-24">
+        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Wallet className="h-6 w-6 text-sabeel-gold" />
             <h1 className="font-serif text-2xl font-bold">{t('debtsTitle')}</h1>
           </div>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm"><Plus className="mr-1 h-4 w-4" />{t('addDebt')}</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle className="font-serif">{t('addDebt')}</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="flex gap-2">
-                  <Button
-                    variant={newDebt.type === 'i_owe' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setNewDebt({ ...newDebt, type: 'i_owe' })}
-                  >{t('iOwe')}</Button>
-                  <Button
-                    variant={newDebt.type === 'owed_to_me' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setNewDebt({ ...newDebt, type: 'owed_to_me' })}
-                  >{t('owedToMe')}</Button>
-                </div>
-                <div className="space-y-2">
-                  <Label>{t('description')}</Label>
-                  <Input value={newDebt.description} onChange={(e) => setNewDebt({ ...newDebt, description: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>{t('amount')}</Label>
-                  <Input value={newDebt.amount} onChange={(e) => setNewDebt({ ...newDebt, amount: e.target.value })} placeholder="1000€" />
-                </div>
-                <div className="space-y-2">
-                  <Label>{t('creditorDebtor')}</Label>
-                  <Input value={newDebt.person} onChange={(e) => setNewDebt({ ...newDebt, person: e.target.value })} />
-                </div>
-                <Button onClick={addDebt} className="w-full" disabled={saving}>
-                  {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  {t('confirm')}
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <Button variant="ghost" size="icon" onClick={() => setReminderSettingsOpen(true)}>
+            <Settings className="h-5 w-5" />
+          </Button>
         </div>
 
+        {/* Reminder banner */}
+        {showBanner && (
+          <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+            <AlertTriangle className="h-4 w-4 text-primary shrink-0" />
+            <span>{t('reminderBanner')}</span>
+            <Button variant="ghost" size="sm" className="ml-auto text-xs" onClick={() => setShowBanner(false)}>✕</Button>
+          </div>
+        )}
+
+        {/* Tabs */}
         <Tabs defaultValue="i_owe">
           <TabsList className="w-full">
             <TabsTrigger value="i_owe" className="flex-1">{t('iOwe')}</TabsTrigger>
@@ -202,6 +258,40 @@ export default function Debts() {
         <p className="text-xs text-muted-foreground text-center">
           🔒 {language === 'fr' ? 'Chiffré de bout en bout — AES-256-GCM' : 'End-to-end encrypted — AES-256-GCM'}
         </p>
+
+        {/* Floating add button */}
+        <Button
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-30"
+          size="icon"
+          onClick={() => { setEditingDebt(null); setFormOpen(true); }}
+        >
+          <Plus className="h-6 w-6" />
+        </Button>
+
+        {/* Dialogs */}
+        <DebtFormDialog
+          open={formOpen}
+          onOpenChange={setFormOpen}
+          language={language}
+          editingDebt={editingDebt}
+          onSave={handleSaveDebt}
+          onDelete={handleDeleteDebt}
+          saving={saving}
+        />
+        <ReminderSettingsDialog
+          open={reminderSettingsOpen}
+          onOpenChange={setReminderSettingsOpen}
+          language={language}
+          settings={reminderSettings}
+          onSave={handleSaveReminderSettings}
+          saving={reminderSaving}
+        />
+        <SendReminderDialog
+          open={reminderDialogOpen}
+          onOpenChange={setReminderDialogOpen}
+          language={language}
+          debt={reminderDebt}
+        />
       </div>
     </Layout>
   );
