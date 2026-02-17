@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation, type Language } from '@/lib/i18n';
 import { Shield, FileText, Wallet, Users, Settings, LogOut, Menu, X } from 'lucide-react';
@@ -10,6 +10,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const t = useTranslation(language);
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  if (!user) return <Navigate to="/" replace />;
 
   const navItems = [
     { path: '/dashboard', label: t('dashboard'), icon: Shield },
