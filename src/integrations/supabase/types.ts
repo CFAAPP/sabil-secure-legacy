@@ -165,6 +165,8 @@ export type Database = {
           amount_encrypted: string
           created_at: string
           creditor_debtor_encrypted: string
+          creditor_email_encrypted: string | null
+          creditor_phone_encrypted: string | null
           currency_encrypted: string | null
           debt_type: string
           description_encrypted: string
@@ -181,6 +183,8 @@ export type Database = {
           amount_encrypted: string
           created_at?: string
           creditor_debtor_encrypted: string
+          creditor_email_encrypted?: string | null
+          creditor_phone_encrypted?: string | null
           currency_encrypted?: string | null
           debt_type: string
           description_encrypted: string
@@ -197,6 +201,8 @@ export type Database = {
           amount_encrypted?: string
           created_at?: string
           creditor_debtor_encrypted?: string
+          creditor_email_encrypted?: string | null
+          creditor_phone_encrypted?: string | null
           currency_encrypted?: string | null
           debt_type?: string
           description_encrypted?: string

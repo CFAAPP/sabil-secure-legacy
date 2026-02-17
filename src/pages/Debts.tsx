@@ -58,12 +58,14 @@ export default function Debts() {
       const decrypted = await Promise.all(
         data.map(async (d: any) => {
           try {
-            const [name, amount, currency, dueDate, notes] = await Promise.all([
+            const [name, amount, currency, dueDate, notes, creditorEmail, creditorPhone] = await Promise.all([
               decrypt(d.creditor_debtor_encrypted, d.iv, passphrase, profile.encryption_salt!),
               decrypt(d.amount_encrypted, d.iv, passphrase, profile.encryption_salt!),
               d.currency_encrypted ? decrypt(d.currency_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve('EUR'),
               d.due_date_encrypted ? decrypt(d.due_date_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
               d.notes_encrypted ? decrypt(d.notes_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
+              d.creditor_email_encrypted ? decrypt(d.creditor_email_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
+              d.creditor_phone_encrypted ? decrypt(d.creditor_phone_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
             ]);
             return {
               id: d.id,
@@ -74,6 +76,8 @@ export default function Debts() {
               due_date: dueDate,
               status: (d.status || (d.is_settled ? 'paid' : 'pending')) as 'pending' | 'paid',
               notes,
+              creditor_email: creditorEmail || null,
+              creditor_phone: creditorPhone || null,
             };
           } catch {
             return null;
@@ -130,6 +134,12 @@ export default function Debts() {
       const dueDateStr = formData.hasDueDate && formData.dueDate ? format(formData.dueDate, 'yyyy-MM-dd') : '';
       const { ciphertext: dueDateEnc } = await encrypt(dueDateStr, passphrase, profile.encryption_salt, iv);
       const { ciphertext: notesEnc } = await encrypt(formData.notes || '', passphrase, profile.encryption_salt, iv);
+      const { ciphertext: credEmailEnc } = await encrypt(formData.creditorEmail || '', passphrase, profile.encryption_salt, iv);
+      const { ciphertext: credPhoneEnc } = await encrypt(formData.creditorPhone || '', passphrase, profile.encryption_salt, iv);
+
+      // If debtor marks "i_owe" as paid and creditor email exists, require approval
+      const needsApproval = formData.type === 'i_owe' && formData.status === 'paid' && formData.creditorEmail &&
+        editingDebt && editingDebt.status !== 'paid';
 
       const row = {
         user_id: user.id,
@@ -139,24 +149,67 @@ export default function Debts() {
         currency_encrypted: currEnc,
         due_date_encrypted: dueDateStr ? dueDateEnc : null,
         notes_encrypted: formData.notes ? notesEnc : null,
+        creditor_email_encrypted: formData.creditorEmail ? credEmailEnc : null,
+        creditor_phone_encrypted: formData.creditorPhone ? credPhoneEnc : null,
         description_encrypted: nameEnc, // legacy compat
         iv,
-        status: formData.status,
-        is_settled: formData.status === 'paid',
+        status: needsApproval ? 'pending' : formData.status,
+        is_settled: needsApproval ? false : formData.status === 'paid',
       } as any;
 
+      let debtId = editingDebt?.id;
       if (editingDebt) {
         await supabase.from('debts').update(row).eq('id', editingDebt.id);
       } else {
-        await supabase.from('debts').insert(row);
+        const { data: inserted } = await supabase.from('debts').insert(row).select('id').single();
+        debtId = inserted?.id;
       }
 
       await supabase.from('audit_logs').insert({ user_id: user.id, action: editingDebt ? 'debt_updated' : 'debt_created', entity_type: 'debts' } as any);
 
+      // If needs approval, create share link + modification request + send email
+      if (needsApproval && debtId) {
+        const { data: shareLink } = await supabase
+          .from('debt_share_links')
+          .insert({
+            debt_id: debtId,
+            user_id: user.id,
+            debtor_visible_name: formData.name,
+            debtor_visible_amount: formData.amount,
+            debtor_visible_currency: formData.currency,
+            debtor_visible_due_date: dueDateStr || null,
+            creditor_email: formData.creditorEmail,
+          } as any)
+          .select()
+          .single();
+
+        if (shareLink) {
+          const { data: modReq } = await supabase
+            .from('debt_modification_requests')
+            .insert({
+              share_link_id: shareLink.id,
+              debt_id: debtId,
+              proposed_status: 'paid',
+              debtor_message: language === 'fr' ? 'Le débiteur a marqué cette dette comme payée.' : 'The debtor marked this debt as paid.',
+            } as any)
+            .select()
+            .single();
+
+          if (modReq) {
+            await supabase.functions.invoke('send-approval-email', {
+              body: { modification_request_id: modReq.id, app_url: window.location.origin },
+            });
+          }
+        }
+
+        toast({ title: language === 'fr' ? 'Demande de validation envoyée au créancier' : 'Validation request sent to creditor' });
+      } else {
+        toast({ title: t('success') });
+      }
+
       setFormOpen(false);
       setEditingDebt(null);
       await loadDebts();
-      toast({ title: t('success') });
     } catch {
       toast({ title: t('error'), variant: 'destructive' });
     }

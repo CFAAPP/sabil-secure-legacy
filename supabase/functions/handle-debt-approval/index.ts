@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Approve: update the share link visible data (unencrypted copy)
+    // Approve: update the share link visible data + the actual debt
     const updates: Record<string, string> = {};
     if (request.proposed_amount) updates.debtor_visible_amount = request.proposed_amount;
     if (request.proposed_currency) updates.debtor_visible_currency = request.proposed_currency;
@@ -63,6 +63,14 @@ Deno.serve(async (req) => {
         .from("debt_share_links")
         .update(updates)
         .eq("id", request.share_link_id);
+    }
+
+    // Update the actual debt if status change is proposed
+    if (request.proposed_status === "paid") {
+      await supabase
+        .from("debts")
+        .update({ status: "paid", is_settled: true })
+        .eq("id", request.debt_id);
     }
 
     // Update the request status

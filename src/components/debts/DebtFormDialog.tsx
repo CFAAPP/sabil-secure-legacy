@@ -14,7 +14,7 @@ import type { Language } from '@/lib/i18n';
 import { useTranslation } from '@/lib/i18n';
 import type { DebtItem } from './DebtCard';
 
-interface DebtFormData {
+export interface DebtFormData {
   type: 'i_owe' | 'owed_to_me';
   name: string;
   amount: string;
@@ -23,6 +23,8 @@ interface DebtFormData {
   dueDate: Date | undefined;
   notes: string;
   status: 'pending' | 'paid';
+  creditorEmail: string;
+  creditorPhone: string;
 }
 
 interface DebtFormDialogProps {
@@ -38,7 +40,7 @@ interface DebtFormDialogProps {
 export default function DebtFormDialog({ open, onOpenChange, language, editingDebt, onSave, onDelete, saving }: DebtFormDialogProps) {
   const t = useTranslation(language);
   const [form, setForm] = useState<DebtFormData>({
-    type: 'i_owe', name: '', amount: '', currency: 'EUR', hasDueDate: false, dueDate: undefined, notes: '', status: 'pending',
+    type: 'i_owe', name: '', amount: '', currency: 'EUR', hasDueDate: false, dueDate: undefined, notes: '', status: 'pending', creditorEmail: '', creditorPhone: '',
   });
 
   useEffect(() => {
@@ -52,9 +54,11 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
         dueDate: editingDebt.due_date ? new Date(editingDebt.due_date) : undefined,
         notes: editingDebt.notes || '',
         status: editingDebt.status,
+        creditorEmail: editingDebt.creditor_email || '',
+        creditorPhone: editingDebt.creditor_phone || '',
       });
     } else {
-      setForm({ type: 'i_owe', name: '', amount: '', currency: 'EUR', hasDueDate: false, dueDate: undefined, notes: '', status: 'pending' });
+      setForm({ type: 'i_owe', name: '', amount: '', currency: 'EUR', hasDueDate: false, dueDate: undefined, notes: '', status: 'pending', creditorEmail: '', creditorPhone: '' });
     }
   }, [editingDebt, open]);
 
@@ -125,6 +129,23 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
             <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={2} />
           </div>
 
+          {/* Creditor contact (only for i_owe) */}
+          {form.type === 'i_owe' && (
+            <div className="space-y-3 rounded-lg border p-3">
+              <p className="text-xs font-medium text-muted-foreground">
+                {language === 'fr' ? '📧 Contact du créancier (pour validation)' : '📧 Creditor contact (for validation)'}
+              </p>
+              <div className="space-y-1.5">
+                <Label>{t('email')}</Label>
+                <Input type="email" value={form.creditorEmail} onChange={(e) => setForm({ ...form, creditorEmail: e.target.value })} placeholder="creancier@email.com" />
+              </div>
+              <div className="space-y-1.5">
+                <Label>{language === 'fr' ? 'Téléphone' : 'Phone'}</Label>
+                <Input type="tel" value={form.creditorPhone} onChange={(e) => setForm({ ...form, creditorPhone: e.target.value })} placeholder="+33 6 12 34 56 78" />
+              </div>
+            </div>
+          )}
+
           {/* Status */}
           <div className="space-y-2">
             <Label>Statut</Label>
@@ -132,6 +153,11 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
               <Button variant={form.status === 'pending' ? 'default' : 'outline'} size="sm" onClick={() => setForm({ ...form, status: 'pending' })}>{t('statusPending')}</Button>
               <Button variant={form.status === 'paid' ? 'default' : 'outline'} size="sm" onClick={() => setForm({ ...form, status: 'paid' })}>{t('statusPaid')}</Button>
             </div>
+            {form.type === 'i_owe' && form.status === 'paid' && form.creditorEmail && (
+              <p className="text-xs text-muted-foreground">
+                ⚠️ {language === 'fr' ? 'Le créancier devra valider par email avant que la dette soit marquée comme payée.' : 'The creditor must validate via email before the debt is marked as paid.'}
+              </p>
+            )}
           </div>
 
           {/* Actions */}
