@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bell, Eye } from 'lucide-react';
+import { Bell, Eye, Share2 } from 'lucide-react';
 import type { Language } from '@/lib/i18n';
 import { useTranslation } from '@/lib/i18n';
 
@@ -32,9 +32,10 @@ interface DebtCardProps {
   language: Language;
   onDetails: (debt: DebtItem) => void;
   onRemind: (debt: DebtItem) => void;
+  onShare: (debt: DebtItem) => void;
 }
 
-export default function DebtCard({ debt, language, onDetails, onRemind }: DebtCardProps) {
+export default function DebtCard({ debt, language, onDetails, onRemind, onShare }: DebtCardProps) {
   const t = useTranslation(language);
   const { label, variant } = getDisplayStatus(debt, t);
 
@@ -62,6 +63,11 @@ export default function DebtCard({ debt, language, onDetails, onRemind }: DebtCa
           <Button variant="outline" size="sm" className="flex-1 text-xs" onClick={() => onRemind(debt)}>
             <Bell className="mr-1 h-3 w-3" />{t('remind')}
           </Button>
+          {debt.debt_type === 'owed_to_me' && (
+            <Button variant="outline" size="sm" className="text-xs" onClick={() => onShare(debt)}>
+              <Share2 className="h-3 w-3" />
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
