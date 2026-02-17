@@ -52,11 +52,15 @@ export type Database = {
           amount_encrypted: string
           created_at: string
           creditor_debtor_encrypted: string
+          currency_encrypted: string | null
           debt_type: string
           description_encrypted: string
+          due_date_encrypted: string | null
           id: string
           is_settled: boolean
           iv: string
+          notes_encrypted: string | null
+          status: string
           updated_at: string
           user_id: string
         }
@@ -64,11 +68,15 @@ export type Database = {
           amount_encrypted: string
           created_at?: string
           creditor_debtor_encrypted: string
+          currency_encrypted?: string | null
           debt_type: string
           description_encrypted: string
+          due_date_encrypted?: string | null
           id?: string
           is_settled?: boolean
           iv: string
+          notes_encrypted?: string | null
+          status?: string
           updated_at?: string
           user_id: string
         }
@@ -76,11 +84,15 @@ export type Database = {
           amount_encrypted?: string
           created_at?: string
           creditor_debtor_encrypted?: string
+          currency_encrypted?: string | null
           debt_type?: string
           description_encrypted?: string
+          due_date_encrypted?: string | null
           id?: string
           is_settled?: boolean
           iv?: string
+          notes_encrypted?: string | null
+          status?: string
           updated_at?: string
           user_id?: string
         }
