@@ -54,13 +54,19 @@ export interface EncryptedData {
   iv: string;
 }
 
+export function generateIv(): string {
+  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+  return bufferToBase64(iv.buffer);
+}
+
 export async function encrypt(
   plaintext: string,
   passphrase: string,
-  salt: string
+  salt: string,
+  existingIv?: string
 ): Promise<EncryptedData> {
   const key = await deriveKey(passphrase, salt);
-  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+  const iv = existingIv ? new Uint8Array(base64ToBuffer(existingIv)) : crypto.getRandomValues(new Uint8Array(IV_LENGTH));
   const encoder = new TextEncoder();
 
   const encrypted = await crypto.subtle.encrypt(
@@ -71,7 +77,7 @@ export async function encrypt(
 
   return {
     ciphertext: bufferToBase64(encrypted),
-    iv: bufferToBase64(iv.buffer),
+    iv: existingIv || bufferToBase64(iv.buffer),
   };
 }
 
