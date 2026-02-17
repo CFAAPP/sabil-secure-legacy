@@ -14,6 +14,8 @@ export interface DebtItem {
   due_date: string | null;
   status: 'pending' | 'paid';
   notes: string | null;
+  creditor_email: string | null;
+  creditor_phone: string | null;
 }
 
 function getDisplayStatus(debt: DebtItem, t: ReturnType<typeof useTranslation>): { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' } {
