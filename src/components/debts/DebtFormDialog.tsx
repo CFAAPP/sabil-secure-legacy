@@ -13,6 +13,7 @@ import { CalendarIcon, Loader2, Trash2 } from 'lucide-react';
 import type { Language } from '@/lib/i18n';
 import { useTranslation } from '@/lib/i18n';
 import type { DebtItem } from './DebtCard';
+import ProofUpload from './ProofUpload';
 
 export interface DebtFormData {
   type: 'i_owe' | 'owed_to_me';
@@ -35,13 +36,28 @@ interface DebtFormDialogProps {
   onSave: (data: DebtFormData) => Promise<void>;
   onDelete?: (id: string) => Promise<void>;
   saving: boolean;
+  userId?: string;
 }
 
-export default function DebtFormDialog({ open, onOpenChange, language, editingDebt, onSave, onDelete, saving }: DebtFormDialogProps) {
+export default function DebtFormDialog({ open, onOpenChange, language, editingDebt, onSave, onDelete, saving, userId }: DebtFormDialogProps) {
   const t = useTranslation(language);
+  const [proofs, setProofs] = useState<any[]>([]);
   const [form, setForm] = useState<DebtFormData>({
     type: 'i_owe', name: '', amount: '', currency: 'EUR', hasDueDate: false, dueDate: undefined, notes: '', status: 'pending', creditorEmail: '', creditorPhone: '',
   });
+
+  // Load proofs when editing
+  useEffect(() => {
+    if (editingDebt?.id && userId) {
+      import('@/integrations/supabase/client').then(({ supabase }) => {
+        supabase.from('debt_proofs').select('*').eq('debt_id', editingDebt.id).then(({ data }) => {
+          setProofs(data || []);
+        });
+      });
+    } else {
+      setProofs([]);
+    }
+  }, [editingDebt, open, userId]);
 
   useEffect(() => {
     if (editingDebt) {
@@ -62,7 +78,7 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
     }
   }, [editingDebt, open]);
 
-  const isValid = form.name.trim() && form.amount.trim() && (form.type === 'owed_to_me' || (form.creditorEmail.trim() && form.creditorPhone.trim()));
+  const isValid = form.name.trim() && form.amount.trim() && form.creditorEmail.trim() && form.creditorPhone.trim();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -129,22 +145,32 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
             <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={2} />
           </div>
 
-          {/* Creditor contact (only for i_owe) */}
-          {form.type === 'i_owe' && (
-            <div className="space-y-3 rounded-lg border p-3">
-              <p className="text-xs font-medium text-muted-foreground">
-                {language === 'fr' ? '📧 Contact du créancier (obligatoire)' : '📧 Creditor contact (required)'}
-              </p>
-              <div className="space-y-1.5">
-                <Label>{t('email')} *</Label>
-                <Input type="email" value={form.creditorEmail} onChange={(e) => setForm({ ...form, creditorEmail: e.target.value })} placeholder="creancier@email.com" required />
-              </div>
-              <div className="space-y-1.5">
-                <Label>{language === 'fr' ? 'Téléphone' : 'Phone'} *</Label>
-                <Input type="tel" value={form.creditorPhone} onChange={(e) => setForm({ ...form, creditorPhone: e.target.value })} placeholder="+33 6 12 34 56 78" required />
-              </div>
+          {/* Contact info (required for both types) */}
+          <div className="space-y-3 rounded-lg border p-3">
+            <p className="text-xs font-medium text-muted-foreground">
+              {form.type === 'i_owe'
+                ? (language === 'fr' ? '📧 Contact du créancier (obligatoire)' : '📧 Creditor contact (required)')
+                : (language === 'fr' ? '📧 Contact de l\'emprunteur (obligatoire)' : '📧 Borrower contact (required)')
+              }
+            </p>
+            <div className="space-y-1.5">
+              <Label>{t('email')} *</Label>
+              <Input type="email" value={form.creditorEmail} onChange={(e) => setForm({ ...form, creditorEmail: e.target.value })} placeholder={form.type === 'i_owe' ? 'creancier@email.com' : 'emprunteur@email.com'} required />
             </div>
-          )}
+            <div className="space-y-1.5">
+              <Label>{language === 'fr' ? 'Téléphone' : 'Phone'} *</Label>
+              <Input type="tel" value={form.creditorPhone} onChange={(e) => setForm({ ...form, creditorPhone: e.target.value })} placeholder="+33 6 12 34 56 78" required />
+            </div>
+          </div>
+
+          {/* Proof of payment */}
+          <ProofUpload
+            debtId={editingDebt?.id || null}
+            userId={userId || ''}
+            language={language}
+            proofs={proofs}
+            onProofsChange={setProofs}
+          />
 
           {/* Status */}
           <div className="space-y-2">
