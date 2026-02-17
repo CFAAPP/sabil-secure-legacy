@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
-import { encrypt, decrypt } from '@/lib/crypto';
+import { encrypt, decrypt, generateIv } from '@/lib/crypto';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -119,12 +119,13 @@ export default function Debts() {
     if (!user || !passphrase || !profile?.encryption_salt) return;
     setSaving(true);
     try {
-      const { ciphertext: nameEnc, iv } = await encrypt(formData.name, passphrase, profile.encryption_salt);
-      const { ciphertext: amtEnc } = await encrypt(formData.amount, passphrase, profile.encryption_salt);
-      const { ciphertext: currEnc } = await encrypt(formData.currency, passphrase, profile.encryption_salt);
+      const iv = generateIv();
+      const { ciphertext: nameEnc } = await encrypt(formData.name, passphrase, profile.encryption_salt, iv);
+      const { ciphertext: amtEnc } = await encrypt(formData.amount, passphrase, profile.encryption_salt, iv);
+      const { ciphertext: currEnc } = await encrypt(formData.currency, passphrase, profile.encryption_salt, iv);
       const dueDateStr = formData.hasDueDate && formData.dueDate ? format(formData.dueDate, 'yyyy-MM-dd') : '';
-      const { ciphertext: dueDateEnc } = await encrypt(dueDateStr, passphrase, profile.encryption_salt);
-      const { ciphertext: notesEnc } = await encrypt(formData.notes || '', passphrase, profile.encryption_salt);
+      const { ciphertext: dueDateEnc } = await encrypt(dueDateStr, passphrase, profile.encryption_salt, iv);
+      const { ciphertext: notesEnc } = await encrypt(formData.notes || '', passphrase, profile.encryption_salt, iv);
 
       const row = {
         user_id: user.id,
