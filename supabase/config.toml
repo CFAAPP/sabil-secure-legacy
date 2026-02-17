@@ -1,0 +1,4 @@
+project_id = "ifnxyjgwigctrldgecpo"
+
+[functions.wakil-access]
+verify_jwt = false
