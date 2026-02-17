@@ -47,6 +47,119 @@ export type Database = {
         }
         Relationships: []
       }
+      debt_modification_requests: {
+        Row: {
+          approval_token: string
+          created_at: string
+          debt_id: string
+          debtor_message: string | null
+          id: string
+          proposed_amount: string | null
+          proposed_currency: string | null
+          proposed_due_date: string | null
+          proposed_notes: string | null
+          proposed_status: string | null
+          resolved_at: string | null
+          share_link_id: string
+          status: string
+        }
+        Insert: {
+          approval_token?: string
+          created_at?: string
+          debt_id: string
+          debtor_message?: string | null
+          id?: string
+          proposed_amount?: string | null
+          proposed_currency?: string | null
+          proposed_due_date?: string | null
+          proposed_notes?: string | null
+          proposed_status?: string | null
+          resolved_at?: string | null
+          share_link_id: string
+          status?: string
+        }
+        Update: {
+          approval_token?: string
+          created_at?: string
+          debt_id?: string
+          debtor_message?: string | null
+          id?: string
+          proposed_amount?: string | null
+          proposed_currency?: string | null
+          proposed_due_date?: string | null
+          proposed_notes?: string | null
+          proposed_status?: string | null
+          resolved_at?: string | null
+          share_link_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "debt_modification_requests_debt_id_fkey"
+            columns: ["debt_id"]
+            isOneToOne: false
+            referencedRelation: "debts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "debt_modification_requests_share_link_id_fkey"
+            columns: ["share_link_id"]
+            isOneToOne: false
+            referencedRelation: "debt_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      debt_share_links: {
+        Row: {
+          created_at: string
+          creditor_email: string
+          debt_id: string
+          debtor_visible_amount: string
+          debtor_visible_currency: string
+          debtor_visible_due_date: string | null
+          debtor_visible_name: string
+          id: string
+          is_active: boolean
+          share_token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          creditor_email: string
+          debt_id: string
+          debtor_visible_amount: string
+          debtor_visible_currency?: string
+          debtor_visible_due_date?: string | null
+          debtor_visible_name: string
+          id?: string
+          is_active?: boolean
+          share_token?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          creditor_email?: string
+          debt_id?: string
+          debtor_visible_amount?: string
+          debtor_visible_currency?: string
+          debtor_visible_due_date?: string | null
+          debtor_visible_name?: string
+          id?: string
+          is_active?: boolean
+          share_token?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "debt_share_links_debt_id_fkey"
+            columns: ["debt_id"]
+            isOneToOne: false
+            referencedRelation: "debts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       debts: {
         Row: {
           amount_encrypted: string
