@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Share2, Copy, Check } from 'lucide-react';
+import { MessageCircle, Mail, MessageSquare, Copy, Check } from 'lucide-react';
 import type { Language } from '@/lib/i18n';
 import { useTranslation } from '@/lib/i18n';
 import type { DebtItem } from './DebtCard';
@@ -37,22 +37,45 @@ export default function SendReminderDialog({ open, onOpenChange, language, debt 
     return customMsg;
   };
 
-  const handleShare = async () => {
+  const handleShare = async (method: 'whatsapp' | 'sms' | 'email' | 'copy') => {
     const text = getMessage();
-    if (navigator.share) {
-      try {
-        await navigator.share({ text });
-      } catch { /* user cancelled */ }
-    } else {
-      await handleCopy();
-    }
-  };
+    const encoded = encodeURIComponent(text);
 
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(getMessage());
-    setCopied(true);
-    toast({ title: t('messageCopied') });
-    setTimeout(() => setCopied(false), 2000);
+    switch (method) {
+      case 'whatsapp': {
+        const phone = recipient.replace(/\s/g, '');
+        window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
+        break;
+      }
+      case 'sms': {
+        window.open(`sms:${recipient}?body=${encoded}`, '_blank');
+        break;
+      }
+      case 'email': {
+        const subject = encodeURIComponent(language === 'fr' ? 'Rappel de dette' : 'Debt reminder');
+        window.open(`mailto:${recipient}?subject=${subject}&body=${encoded}`, '_blank');
+        break;
+      }
+      case 'copy': {
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          // Fallback for iframe/insecure context
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        setCopied(true);
+        toast({ title: t('messageCopied') });
+        setTimeout(() => setCopied(false), 2000);
+        break;
+      }
+    }
   };
 
   return (
@@ -90,11 +113,17 @@ export default function SendReminderDialog({ open, onOpenChange, language, debt 
             <Input value={recipient} onChange={(e) => setRecipient(e.target.value)} placeholder={t('reminderRecipientPlaceholder')} />
           </div>
 
-          <div className="flex gap-2">
-            <Button onClick={handleShare} className="flex-1">
-              <Share2 className="mr-2 h-4 w-4" />{t('shareVia')}
+          <div className="flex gap-2 flex-wrap">
+            <Button onClick={() => handleShare('whatsapp')} className="flex-1" variant="outline" size="sm">
+              <MessageCircle className="mr-1 h-4 w-4" />WhatsApp
             </Button>
-            <Button variant="outline" onClick={handleCopy}>
+            <Button onClick={() => handleShare('sms')} className="flex-1" variant="outline" size="sm">
+              <MessageSquare className="mr-1 h-4 w-4" />SMS
+            </Button>
+            <Button onClick={() => handleShare('email')} className="flex-1" variant="outline" size="sm">
+              <Mail className="mr-1 h-4 w-4" />Email
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => handleShare('copy')}>
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             </Button>
           </div>
