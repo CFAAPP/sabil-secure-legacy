@@ -2,3 +2,9 @@ project_id = "ifnxyjgwigctrldgecpo"
 
 [functions.wakil-access]
 verify_jwt = false
+
+[functions.send-approval-email]
+verify_jwt = false
+
+[functions.handle-debt-approval]
+verify_jwt = false

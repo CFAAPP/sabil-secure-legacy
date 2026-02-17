@@ -12,6 +12,7 @@ import DebtCard, { type DebtItem } from '@/components/debts/DebtCard';
 import DebtFormDialog from '@/components/debts/DebtFormDialog';
 import ReminderSettingsDialog, { type ReminderSettingsData } from '@/components/debts/ReminderSettingsDialog';
 import SendReminderDialog from '@/components/debts/SendReminderDialog';
+import ShareDebtDialog from '@/components/debts/ShareDebtDialog';
 import { format } from 'date-fns';
 
 const DEFAULT_REMINDER_SETTINGS: ReminderSettingsData = {
@@ -36,6 +37,9 @@ export default function Debts() {
 
   const [reminderDebt, setReminderDebt] = useState<DebtItem | null>(null);
   const [reminderDialogOpen, setReminderDialogOpen] = useState(false);
+
+  const [shareDebt, setShareDebt] = useState<DebtItem | null>(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   const [showBanner, setShowBanner] = useState(false);
 
@@ -210,6 +214,11 @@ export default function Debts() {
     setReminderDialogOpen(true);
   };
 
+  const openShare = (debt: DebtItem) => {
+    setShareDebt(debt);
+    setShareDialogOpen(true);
+  };
+
   const renderDebtList = (type: 'i_owe' | 'owed_to_me') => {
     const filtered = debts.filter((d) => d.debt_type === type);
     if (loading) return <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>;
@@ -217,7 +226,7 @@ export default function Debts() {
     return (
       <div className="space-y-3">
         {filtered.map((debt) => (
-          <DebtCard key={debt.id} debt={debt} language={language} onDetails={openDetails} onRemind={openReminder} />
+          <DebtCard key={debt.id} debt={debt} language={language} onDetails={openDetails} onRemind={openReminder} onShare={openShare} />
         ))}
       </div>
     );
@@ -292,6 +301,12 @@ export default function Debts() {
           onOpenChange={setReminderDialogOpen}
           language={language}
           debt={reminderDebt}
+        />
+        <ShareDebtDialog
+          open={shareDialogOpen}
+          onOpenChange={setShareDialogOpen}
+          language={language}
+          debt={shareDebt}
         />
       </div>
     </Layout>

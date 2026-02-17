@@ -11,6 +11,8 @@ import Debts from "./pages/Debts";
 import Wakils from "./pages/Wakils";
 import WakilAccess from "./pages/WakilAccess";
 import NotFound from "./pages/NotFound";
+import DebtEdit from "./pages/DebtEdit";
+import DebtApprove from "./pages/DebtApprove";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,8 @@ const App = () => (
             <Route path="/debts" element={<Debts />} />
             <Route path="/wakils" element={<Wakils />} />
             <Route path="/wakil-access" element={<WakilAccess />} />
+            <Route path="/debt-edit/:token" element={<DebtEdit />} />
+            <Route path="/debt-approve/:token" element={<DebtApprove />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
