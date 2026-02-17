@@ -62,7 +62,7 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
     }
   }, [editingDebt, open]);
 
-  const isValid = form.name.trim() && form.amount.trim();
+  const isValid = form.name.trim() && form.amount.trim() && (form.type === 'owed_to_me' || (form.creditorEmail.trim() && form.creditorPhone.trim()));
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -133,15 +133,15 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
           {form.type === 'i_owe' && (
             <div className="space-y-3 rounded-lg border p-3">
               <p className="text-xs font-medium text-muted-foreground">
-                {language === 'fr' ? '📧 Contact du créancier (pour validation)' : '📧 Creditor contact (for validation)'}
+                {language === 'fr' ? '📧 Contact du créancier (obligatoire)' : '📧 Creditor contact (required)'}
               </p>
               <div className="space-y-1.5">
-                <Label>{t('email')}</Label>
-                <Input type="email" value={form.creditorEmail} onChange={(e) => setForm({ ...form, creditorEmail: e.target.value })} placeholder="creancier@email.com" />
+                <Label>{t('email')} *</Label>
+                <Input type="email" value={form.creditorEmail} onChange={(e) => setForm({ ...form, creditorEmail: e.target.value })} placeholder="creancier@email.com" required />
               </div>
               <div className="space-y-1.5">
-                <Label>{language === 'fr' ? 'Téléphone' : 'Phone'}</Label>
-                <Input type="tel" value={form.creditorPhone} onChange={(e) => setForm({ ...form, creditorPhone: e.target.value })} placeholder="+33 6 12 34 56 78" />
+                <Label>{language === 'fr' ? 'Téléphone' : 'Phone'} *</Label>
+                <Input type="tel" value={form.creditorPhone} onChange={(e) => setForm({ ...form, creditorPhone: e.target.value })} placeholder="+33 6 12 34 56 78" required />
               </div>
             </div>
           )}
