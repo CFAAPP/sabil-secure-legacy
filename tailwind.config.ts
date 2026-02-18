@@ -12,9 +12,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        serif: ['Cormorant Garamond', 'Amiri', 'serif'],
+        sans: ['Space Grotesk', 'Inter', 'sans-serif'],
+        serif: ['Syne', 'sans-serif'],
         arabic: ['Amiri', 'serif'],
+        display: ['Syne', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
