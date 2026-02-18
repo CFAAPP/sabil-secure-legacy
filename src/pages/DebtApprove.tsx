@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 export default function DebtApprove() {
   const { token } = useParams<{ token: string }>();
@@ -21,15 +23,28 @@ export default function DebtApprove() {
         return;
       }
 
-      const { data, error: fnError } = await supabase.functions.invoke('handle-debt-approval', {
-        body: { approval_token: token, action },
-      });
+      try {
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/handle-debt-approval`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({ approval_token: token, action }),
+        });
 
-      if (fnError || data?.error) {
-        setError(data?.error || fnError?.message || 'Erreur lors du traitement.');
-      } else {
-        setResult(data.action);
+        const data = await res.json();
+
+        if (!res.ok || data?.error) {
+          setError(data?.error || 'Erreur lors du traitement.');
+        } else {
+          setResult(data.action);
+        }
+      } catch (err: unknown) {
+        setError('Erreur de connexion. Veuillez réessayer.');
       }
+
       setLoading(false);
     }
     process();
@@ -38,7 +53,7 @@ export default function DebtApprove() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="max-w-md w-full">
-        <CardContent className="pt-6 text-center space-y-4">
+        <CardContent className="pt-8 pb-8 text-center space-y-4">
           {loading && (
             <>
               <Loader2 className="h-12 w-12 animate-spin text-muted-foreground mx-auto" />
@@ -47,16 +62,20 @@ export default function DebtApprove() {
           )}
           {result === 'approved' && (
             <>
-              <CheckCircle className="h-12 w-12 text-green-500 mx-auto" />
-              <h2 className="text-xl font-semibold">Modification approuvée !</h2>
-              <p className="text-muted-foreground">Les modifications ont été appliquées.</p>
+              <CheckCircle className="h-14 w-14 text-primary mx-auto" />
+              <h2 className="text-2xl font-semibold">Paiement confirmé !</h2>
+              <p className="text-muted-foreground">
+                Vous avez validé le paiement de cette dette. La dette a été marquée comme payée.
+              </p>
             </>
           )}
           {result === 'rejected' && (
             <>
-              <XCircle className="h-12 w-12 text-destructive mx-auto" />
-              <h2 className="text-xl font-semibold">Modification refusée</h2>
-              <p className="text-muted-foreground">La demande a été refusée.</p>
+              <XCircle className="h-14 w-14 text-destructive mx-auto" />
+              <h2 className="text-2xl font-semibold">Demande refusée</h2>
+              <p className="text-muted-foreground">
+                Vous avez refusé la demande de validation. La dette reste en attente.
+              </p>
             </>
           )}
           {error && (
