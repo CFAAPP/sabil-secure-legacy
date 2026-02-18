@@ -41,8 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <div className="absolute inset-0 rounded-lg ring-1 ring-gold/30 group-hover:ring-gold/60 transition-all" />
               </div>
               <span
-                className="text-gold-gradient font-serif text-xl font-bold tracking-[0.15em] uppercase"
-                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                className="text-gold-gradient font-display text-xl font-bold tracking-[0.12em] uppercase"
               >
                 MIRATH
               </span>
