@@ -26,7 +26,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen islamic-pattern">
       {/* Top bar */}
-      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-border bg-card/90 backdrop-blur-xl shadow-sm">
         <div className="container flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <button
@@ -80,7 +80,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Sidebar */}
         <nav
-          className={`fixed top-14 left-0 z-40 h-[calc(100vh-3.5rem)] w-60 border-r border-border/50 bg-background/95 backdrop-blur-xl p-4 transition-transform duration-300 md:sticky md:translate-x-0 ${
+          className={`fixed top-14 left-0 z-40 h-[calc(100vh-3.5rem)] w-60 border-r border-border bg-card p-4 shadow-sm transition-transform duration-300 md:sticky md:translate-x-0 ${
             menuOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
