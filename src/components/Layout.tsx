@@ -137,6 +137,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="mx-auto max-w-3xl">{children}</div>
         </main>
       </div>
+
+      {/* Floating home button — visible on mobile when sidebar is hidden */}
+      {location.pathname !== '/dashboard' && (
+        <Link
+          to="/dashboard"
+          className="md:hidden fixed bottom-6 right-5 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-card border border-gold/30 shadow-lg shadow-black/30 hover:bg-gold/10 hover:border-gold/60 transition-all active:scale-95"
+          aria-label="Tableau de bord"
+        >
+          <Shield className="h-5 w-5 text-gold" />
+        </Link>
+      )}
     </div>
   );
 }
