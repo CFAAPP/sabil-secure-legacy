@@ -97,7 +97,7 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
   return (
     <div className="space-y-4">
       {/* KPI row */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {[
           {
             label: isFr ? 'Je dois' : 'I owe',
@@ -114,14 +114,6 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
             color: 'text-emerald-600',
             glow: 'hsl(142 71% 45% / 0.08)',
             border: 'border-emerald-400/20',
-          },
-          {
-            label: isFr ? 'Solde net' : 'Net balance',
-            value: netStr,
-            sub: overdue.length > 0 ? `${overdue.length} en retard` : isFr ? 'À jour' : 'Up to date',
-            color: netPositive ? 'text-gold-dim' : 'text-red-500',
-            glow: netPositive ? 'hsl(43 62% 52% / 0.08)' : 'hsl(0 72% 51% / 0.08)',
-            border: netPositive ? 'border-gold/20' : 'border-red-400/20',
           },
         ].map((kpi, i) => (
           <div
