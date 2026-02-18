@@ -81,7 +81,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Sidebar */}
         <nav
-          className={`fixed top-14 left-0 z-40 h-[calc(100vh-3.5rem)] w-60 border-r border-border bg-card p-4 shadow-sm transition-transform duration-300 md:sticky md:translate-x-0 ${
+          className={`fixed top-14 left-0 z-40 h-[calc(100vh-3.5rem)] w-60 border-r border-border bg-card p-4 shadow-sm transition-transform duration-300 md:sticky md:translate-x-0 overflow-y-auto ${
             menuOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
