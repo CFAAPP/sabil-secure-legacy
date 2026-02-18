@@ -217,6 +217,12 @@ export type Database = {
           status: string
           updated_at: string
           user_id: string
+          witness1_email_encrypted: string | null
+          witness1_name_encrypted: string | null
+          witness1_phone_encrypted: string | null
+          witness2_email_encrypted: string | null
+          witness2_name_encrypted: string | null
+          witness2_phone_encrypted: string | null
         }
         Insert: {
           amount_encrypted: string
@@ -236,6 +242,12 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id: string
+          witness1_email_encrypted?: string | null
+          witness1_name_encrypted?: string | null
+          witness1_phone_encrypted?: string | null
+          witness2_email_encrypted?: string | null
+          witness2_name_encrypted?: string | null
+          witness2_phone_encrypted?: string | null
         }
         Update: {
           amount_encrypted?: string
@@ -255,6 +267,12 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string
+          witness1_email_encrypted?: string | null
+          witness1_name_encrypted?: string | null
+          witness1_phone_encrypted?: string | null
+          witness2_email_encrypted?: string | null
+          witness2_name_encrypted?: string | null
+          witness2_phone_encrypted?: string | null
         }
         Relationships: []
       }

@@ -60,7 +60,8 @@ export default function Debts() {
       const decrypted = await Promise.all(
         data.map(async (d: any) => {
           try {
-            const [name, amount, currency, dueDate, notes, creditorEmail, creditorPhone] = await Promise.all([
+            const [name, amount, currency, dueDate, notes, creditorEmail, creditorPhone,
+              w1Name, w1Email, w1Phone, w2Name, w2Email, w2Phone] = await Promise.all([
               decrypt(d.creditor_debtor_encrypted, d.iv, passphrase, profile.encryption_salt!),
               decrypt(d.amount_encrypted, d.iv, passphrase, profile.encryption_salt!),
               d.currency_encrypted ? decrypt(d.currency_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve('EUR'),
@@ -68,6 +69,12 @@ export default function Debts() {
               d.notes_encrypted ? decrypt(d.notes_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
               d.creditor_email_encrypted ? decrypt(d.creditor_email_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
               d.creditor_phone_encrypted ? decrypt(d.creditor_phone_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
+              d.witness1_name_encrypted ? decrypt(d.witness1_name_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
+              d.witness1_email_encrypted ? decrypt(d.witness1_email_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
+              d.witness1_phone_encrypted ? decrypt(d.witness1_phone_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
+              d.witness2_name_encrypted ? decrypt(d.witness2_name_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
+              d.witness2_email_encrypted ? decrypt(d.witness2_email_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
+              d.witness2_phone_encrypted ? decrypt(d.witness2_phone_encrypted, d.iv, passphrase, profile.encryption_salt!) : Promise.resolve(null),
             ]);
             return {
               id: d.id,
@@ -81,6 +88,12 @@ export default function Debts() {
               creditor_email: creditorEmail || null,
               creditor_phone: creditorPhone || null,
               paid_at: d.paid_at || null,
+              witness1_name: w1Name || null,
+              witness1_email: w1Email || null,
+              witness1_phone: w1Phone || null,
+              witness2_name: w2Name || null,
+              witness2_email: w2Email || null,
+              witness2_phone: w2Phone || null,
             };
           } catch {
             return null;
@@ -140,7 +153,15 @@ export default function Debts() {
       const { ciphertext: credEmailEnc } = await encrypt(formData.creditorEmail || '', passphrase, profile.encryption_salt, iv);
       const { ciphertext: credPhoneEnc } = await encrypt(formData.creditorPhone || '', passphrase, profile.encryption_salt, iv);
 
-      // Block revert from paid→pending without validation
+      // Witnesses (optional)
+      const { ciphertext: w1NameEnc } = await encrypt(formData.witness1Name || '', passphrase, profile.encryption_salt, iv);
+      const { ciphertext: w1EmailEnc } = await encrypt(formData.witness1Email || '', passphrase, profile.encryption_salt, iv);
+      const { ciphertext: w1PhoneEnc } = await encrypt(formData.witness1Phone || '', passphrase, profile.encryption_salt, iv);
+      const { ciphertext: w2NameEnc } = await encrypt(formData.witness2Name || '', passphrase, profile.encryption_salt, iv);
+      const { ciphertext: w2EmailEnc } = await encrypt(formData.witness2Email || '', passphrase, profile.encryption_salt, iv);
+      const { ciphertext: w2PhoneEnc } = await encrypt(formData.witness2Phone || '', passphrase, profile.encryption_salt, iv);
+
+
       const isRevertingFromPaid = editingDebt?.status === 'paid' && formData.status === 'pending';
       if (isRevertingFromPaid) {
         toast({
@@ -172,6 +193,12 @@ export default function Debts() {
         notes_encrypted: formData.notes ? notesEnc : null,
         creditor_email_encrypted: formData.creditorEmail ? credEmailEnc : null,
         creditor_phone_encrypted: formData.creditorPhone ? credPhoneEnc : null,
+        witness1_name_encrypted: formData.witness1Name ? w1NameEnc : null,
+        witness1_email_encrypted: formData.witness1Email ? w1EmailEnc : null,
+        witness1_phone_encrypted: formData.witness1Phone ? w1PhoneEnc : null,
+        witness2_name_encrypted: formData.witness2Name ? w2NameEnc : null,
+        witness2_email_encrypted: formData.witness2Email ? w2EmailEnc : null,
+        witness2_phone_encrypted: formData.witness2Phone ? w2PhoneEnc : null,
         description_encrypted: nameEnc, // legacy compat
         iv,
         status: needsApproval ? 'pending' : formData.status,
