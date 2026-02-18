@@ -24,7 +24,7 @@ export default function Debts() {
   const { user, profile, passphrase, language } = useAuth();
   const t = useTranslation(language);
   const { toast } = useToast();
-  const [showStats, setShowStats] = useState(true);
+  const [showStats, setShowStats] = useState(false);
 
   const [debts, setDebts] = useState<DebtItem[]>([]);
   const [loading, setLoading] = useState(true);
