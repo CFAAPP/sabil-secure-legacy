@@ -187,6 +187,23 @@ export default function Debts() {
 
       await supabase.from('audit_logs').insert({ user_id: user.id, action: editingDebt ? 'debt_updated' : 'debt_created', entity_type: 'debts' } as any);
 
+      // If owed_to_me marked as paid and debtor email exists → send payment confirmation to debtor
+      const isMarkedPaidOwedToMe = formData.type === 'owed_to_me' && formData.status === 'paid' &&
+        editingDebt?.status !== 'paid' && formData.creditorEmail;
+      if (isMarkedPaidOwedToMe) {
+        await supabase.functions.invoke('send-payment-confirmation', {
+          body: {
+            debtor_email: formData.creditorEmail,
+            creditor_name: profile?.display_name || user.email || 'Le créancier',
+            amount: formData.amount,
+            currency: formData.currency,
+            paid_at: new Date().toISOString(),
+            notes: formData.notes || null,
+            language,
+          },
+        });
+      }
+
       // If new owed_to_me debt with debtor email → send notification to debtor
       const isNewOwedToMe = !editingDebt && formData.type === 'owed_to_me' && formData.creditorEmail;
       if (isNewOwedToMe) {
