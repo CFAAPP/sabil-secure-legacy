@@ -13,6 +13,7 @@ import WakilAccess from "./pages/WakilAccess";
 import NotFound from "./pages/NotFound";
 import DebtEdit from "./pages/DebtEdit";
 import DebtApprove from "./pages/DebtApprove";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
                 <Route path="/testament" element={<Testament />} />
                 <Route path="/debts" element={<Debts />} />
                 <Route path="/wakils" element={<Wakils />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </AuthProvider>
