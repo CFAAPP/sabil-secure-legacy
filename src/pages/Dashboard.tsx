@@ -1,7 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
 import { Card, CardContent } from '@/components/ui/card';
-import { Shield, FileText, Wallet, Users, Lock, ChevronRight } from 'lucide-react';
+import { Shield, FileText, Wallet, Users, Lock, ChevronRight, UserCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 
@@ -33,6 +33,14 @@ export default function Dashboard() {
       path: '/wakils',
       iconColor: 'text-emerald-400',
       glowColor: 'hsl(155 60% 45% / 0.15)',
+    },
+    {
+      title: language === 'fr' ? 'Profil & Héritiers' : 'Profile & Heirs',
+      description: language === 'fr' ? 'Préparez votre testament islamique' : 'Prepare your Islamic will',
+      icon: UserCircle,
+      path: '/profile',
+      iconColor: 'text-violet-400',
+      glowColor: 'hsl(270 60% 55% / 0.15)',
     },
   ];
 
