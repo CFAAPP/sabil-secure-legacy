@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import Layout from '@/components/Layout';
 import { Link } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
+const uuidv4 = () => crypto.randomUUID();
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
