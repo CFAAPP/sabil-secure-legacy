@@ -78,6 +78,7 @@ export default function Debts() {
               notes,
               creditor_email: creditorEmail || null,
               creditor_phone: creditorPhone || null,
+              paid_at: d.paid_at || null,
             };
           } catch {
             return null;
@@ -137,9 +138,27 @@ export default function Debts() {
       const { ciphertext: credEmailEnc } = await encrypt(formData.creditorEmail || '', passphrase, profile.encryption_salt, iv);
       const { ciphertext: credPhoneEnc } = await encrypt(formData.creditorPhone || '', passphrase, profile.encryption_salt, iv);
 
+      // Block revert from paid→pending without validation
+      const isRevertingFromPaid = editingDebt?.status === 'paid' && formData.status === 'pending';
+      if (isRevertingFromPaid) {
+        toast({
+          title: language === 'fr' ? 'Action non autorisée' : 'Action not allowed',
+          description: language === 'fr'
+            ? 'Une dette marquée comme payée ne peut pas être annulée sans validation des deux parties.'
+            : 'A paid debt cannot be reverted without validation from both parties.',
+          variant: 'destructive',
+        });
+        setSaving(false);
+        return;
+      }
+
       // If debtor marks "i_owe" as paid and creditor email exists, require approval
       const needsApproval = formData.type === 'i_owe' && formData.status === 'paid' && formData.creditorEmail &&
         editingDebt && editingDebt.status !== 'paid';
+
+      // Determine paid_at: set it when directly marking as paid (owed_to_me or already approved)
+      const isBeingMarkedPaid = formData.status === 'paid' && editingDebt?.status !== 'paid' && !needsApproval;
+      const paidAt = isBeingMarkedPaid ? new Date().toISOString() : (editingDebt?.paid_at || null);
 
       const row = {
         user_id: user.id,
@@ -155,6 +174,7 @@ export default function Debts() {
         iv,
         status: needsApproval ? 'pending' : formData.status,
         is_settled: needsApproval ? false : formData.status === 'paid',
+        paid_at: needsApproval ? null : paidAt,
       } as any;
 
       let debtId = editingDebt?.id;
