@@ -22,19 +22,25 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/testament" element={<Testament />} />
-            <Route path="/debts" element={<Debts />} />
-            <Route path="/wakils" element={<Wakils />} />
-            <Route path="/wakil-access" element={<WakilAccess />} />
-            <Route path="/debt-edit/:token" element={<DebtEdit />} />
-            <Route path="/debt-approve/:token" element={<DebtApprove />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
+        <Routes>
+          {/* Public routes - no auth required */}
+          <Route path="/debt-approve/:token" element={<DebtApprove />} />
+          <Route path="/debt-edit/:token" element={<DebtEdit />} />
+          <Route path="/wakil-access" element={<WakilAccess />} />
+          {/* Authenticated routes */}
+          <Route path="/*" element={
+            <AuthProvider>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/testament" element={<Testament />} />
+                <Route path="/debts" element={<Debts />} />
+                <Route path="/wakils" element={<Wakils />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthProvider>
+          } />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
