@@ -4,6 +4,7 @@ import { useTranslation, type Language } from '@/lib/i18n';
 import { Shield, FileText, Wallet, Users, Settings, LogOut, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import mirathLogo from '@/assets/mirath-logo.png';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, signOut, language, setLanguage } = useAuth();
@@ -32,10 +33,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
             <Link to="/dashboard" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <span className="font-serif text-lg text-primary-foreground">س</span>
-              </div>
-              <span className="font-serif text-xl font-bold text-foreground">Sabeel</span>
+              <img src={mirathLogo} alt="Mirath" className="h-8 w-8 rounded-lg object-cover" />
+              <span className="font-serif text-xl font-bold text-foreground">Mirath</span>
             </Link>
           </div>
 
@@ -89,7 +88,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link
               to="/wakil-access"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sabeel-gold hover:bg-muted transition-colors"
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-accent hover:bg-muted transition-colors"
             >
               <Shield className="h-4 w-4" />
               {t('wakilMode')}

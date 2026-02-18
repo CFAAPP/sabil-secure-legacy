@@ -3,8 +3,8 @@ export type Language = 'fr' | 'en';
 const translations = {
   fr: {
     // App
-    appName: 'Sabeel',
-    appTagline: 'Votre testament islamique sécurisé',
+    appName: 'Mirath',
+    appTagline: 'Votre héritage islamique sécurisé',
     
     // Auth
     login: 'Se connecter',
@@ -134,8 +134,8 @@ const translations = {
     success: 'Succès',
   },
   en: {
-    appName: 'Sabeel',
-    appTagline: 'Your secure Islamic will',
+    appName: 'Mirath',
+    appTagline: 'Your secure Islamic legacy',
     
     login: 'Log in',
     signup: 'Sign up',

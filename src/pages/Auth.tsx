@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import mirathLogo from '@/assets/mirath-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -51,11 +52,9 @@ export default function Auth() {
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center gap-3">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg">
-            <span className="font-serif text-3xl text-primary-foreground">س</span>
-          </div>
-          <h1 className="font-serif text-3xl font-bold text-foreground">Sabeel</h1>
-          <p className="text-sm text-muted-foreground">Votre testament islamique sécurisé</p>
+          <img src={mirathLogo} alt="Mirath" className="h-20 w-20 rounded-2xl object-cover shadow-lg" />
+          <h1 className="font-serif text-3xl font-bold text-foreground">Mirath</h1>
+          <p className="text-sm text-muted-foreground">Votre héritage islamique sécurisé</p>
         </div>
 
         <Card className="border-border/50 shadow-xl">
@@ -125,7 +124,7 @@ export default function Auth() {
             <div className="mt-4 border-t border-border pt-4 text-center">
               <Link
                 to="/wakil-access"
-                className="text-sm text-sabeel-gold hover:underline inline-flex items-center gap-1"
+                className="text-sm text-accent hover:underline inline-flex items-center gap-1"
               >
                 <Shield className="h-3 w-3" />
                 Mode Wakil — Accéder aux données d'un proche
