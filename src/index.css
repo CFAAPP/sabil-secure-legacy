@@ -14,70 +14,70 @@
 
 @layer base {
   :root {
-    /* Deep navy → midnight blue palette */
-    --background: 222 28% 7%;
-    --foreground: 210 20% 92%;
+    /* Sage green + warm beige + gold */
+    --background: 38 28% 95%;
+    --foreground: 155 20% 14%;
 
-    --card: 222 25% 10%;
-    --card-foreground: 210 20% 92%;
+    --card: 38 22% 92%;
+    --card-foreground: 155 20% 14%;
 
-    --popover: 222 28% 9%;
-    --popover-foreground: 210 20% 92%;
+    --popover: 38 28% 95%;
+    --popover-foreground: 155 20% 14%;
 
-    /* Gold primary */
-    --primary: 43 72% 58%;
-    --primary-foreground: 222 28% 7%;
+    /* Sage green primary */
+    --primary: 155 28% 30%;
+    --primary-foreground: 38 28% 96%;
 
-    --secondary: 222 20% 16%;
-    --secondary-foreground: 210 20% 80%;
+    --secondary: 38 30% 85%;
+    --secondary-foreground: 155 20% 14%;
 
-    --muted: 222 20% 14%;
-    --muted-foreground: 210 15% 50%;
+    --muted: 38 22% 88%;
+    --muted-foreground: 155 12% 42%;
 
-    --accent: 43 72% 58%;
-    --accent-foreground: 222 28% 7%;
+    --accent: 43 62% 52%;
+    --accent-foreground: 38 28% 96%;
 
     --destructive: 0 72% 51%;
-    --destructive-foreground: 210 20% 92%;
+    --destructive-foreground: 38 28% 96%;
 
-    --border: 222 20% 18%;
-    --input: 222 20% 18%;
-    --ring: 43 72% 58%;
+    --border: 38 18% 82%;
+    --input: 38 18% 82%;
+    --ring: 155 28% 30%;
 
     --radius: 0.875rem;
 
     /* Mirath brand tokens */
-    --gold: 43 72% 58%;
-    --gold-light: 43 80% 72%;
-    --gold-dim: 43 55% 40%;
-    --navy: 222 45% 12%;
-    --navy-deep: 222 50% 7%;
-    --navy-light: 222 30% 18%;
-    --blue-glow: 210 80% 55%;
+    --gold: 43 62% 52%;
+    --gold-light: 43 72% 68%;
+    --gold-dim: 43 45% 38%;
+    --navy: 155 28% 30%;
+    --navy-deep: 155 30% 12%;
+    --navy-light: 155 18% 45%;
+    --blue-glow: 155 28% 30%;
 
     /* Gradient helpers */
-    --gradient-header: linear-gradient(135deg, hsl(222 50% 8%) 0%, hsl(222 40% 14%) 60%, hsl(218 45% 18%) 100%);
-    --gradient-card: linear-gradient(160deg, hsl(222 28% 12%) 0%, hsl(222 22% 9%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(43 72% 58%) 0%, hsl(38 80% 68%) 100%);
-    --gradient-glow: radial-gradient(ellipse 80% 50% at 50% 0%, hsl(43 72% 58% / 0.12) 0%, transparent 70%);
+    --gradient-header: linear-gradient(135deg, hsl(155 30% 18%) 0%, hsl(155 25% 24%) 60%, hsl(150 22% 28%) 100%);
+    --gradient-card: linear-gradient(160deg, hsl(38 25% 93%) 0%, hsl(38 18% 89%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(43 62% 52%) 0%, hsl(38 70% 62%) 100%);
+    --gradient-glow: radial-gradient(ellipse 80% 50% at 50% 0%, hsl(43 62% 52% / 0.1) 0%, transparent 70%);
 
-    --shadow-gold: 0 0 24px hsl(43 72% 58% / 0.2), 0 4px 16px hsl(222 50% 4% / 0.6);
-    --shadow-card: 0 4px 24px hsl(222 50% 4% / 0.5), 0 1px 4px hsl(222 50% 4% / 0.3);
+    --shadow-gold: 0 0 20px hsl(43 62% 52% / 0.2), 0 4px 16px hsl(155 30% 8% / 0.15);
+    --shadow-card: 0 4px 20px hsl(155 20% 10% / 0.08), 0 1px 4px hsl(155 20% 10% / 0.05);
 
-    --sabeel-gold: 43 72% 58%;
-    --sabeel-sage: 155 25% 32%;
-    --sabeel-cream: 40 30% 97%;
-    --sabeel-warm: 38 35% 88%;
-    --mirath-gold: 43 72% 58%;
+    --sabeel-gold: 43 62% 52%;
+    --sabeel-sage: 155 28% 30%;
+    --sabeel-cream: 38 28% 96%;
+    --sabeel-warm: 38 30% 85%;
+    --mirath-gold: 43 62% 52%;
 
-    --sidebar-background: 222 30% 8%;
-    --sidebar-foreground: 210 20% 80%;
-    --sidebar-primary: 43 72% 58%;
-    --sidebar-primary-foreground: 222 28% 7%;
-    --sidebar-accent: 222 25% 14%;
-    --sidebar-accent-foreground: 210 20% 80%;
-    --sidebar-border: 222 20% 16%;
-    --sidebar-ring: 43 72% 58%;
+    --sidebar-background: 38 22% 91%;
+    --sidebar-foreground: 155 20% 14%;
+    --sidebar-primary: 155 28% 30%;
+    --sidebar-primary-foreground: 38 28% 96%;
+    --sidebar-accent: 38 22% 85%;
+    --sidebar-accent-foreground: 155 20% 14%;
+    --sidebar-border: 38 18% 80%;
+    --sidebar-ring: 155 28% 30%;
   }
 }
 
@@ -105,8 +105,8 @@
 @layer utilities {
   .islamic-pattern {
     background-image:
-      url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c9a84c' stroke-opacity='0.04' stroke-width='1'%3E%3Cpolygon points='40,4 76,22 76,58 40,76 4,58 4,22'/%3E%3Cpolygon points='40,14 66,28 66,52 40,66 14,52 14,28'/%3E%3C/g%3E%3C/svg%3E"),
-      linear-gradient(160deg, hsl(222 50% 7%) 0%, hsl(222 35% 9%) 50%, hsl(218 40% 8%) 100%);
+      url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c9a84c' stroke-opacity='0.06' stroke-width='1'%3E%3Cpolygon points='40,4 76,22 76,58 40,76 4,58 4,22'/%3E%3Cpolygon points='40,14 66,28 66,52 40,66 14,52 14,28'/%3E%3C/g%3E%3C/svg%3E"),
+      linear-gradient(160deg, hsl(38 28% 95%) 0%, hsl(38 22% 93%) 50%, hsl(40 20% 92%) 100%);
   }
 
   /* Gold shimmer text */

@@ -111,8 +111,7 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
       <div className="grid grid-cols-2 gap-3">
         {/* Pie chart */}
         <div
-          className="rounded-2xl border border-border/40 p-4"
-          style={{ background: 'hsl(222 25% 10%)' }}
+          className="rounded-2xl border border-border bg-card p-4 shadow-sm"
         >
           <p className="text-xs font-medium text-muted-foreground mb-3 text-center uppercase tracking-widest">
             {isFr ? 'Répartition' : 'Distribution'}
@@ -135,11 +134,11 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  background: 'hsl(222 30% 12%)',
-                  border: '1px solid hsl(222 20% 20%)',
+                  background: 'hsl(38 22% 92%)',
+                  border: '1px solid hsl(38 18% 80%)',
                   borderRadius: '8px',
                   fontSize: '12px',
-                  color: 'hsl(210 20% 90%)',
+                  color: 'hsl(155 20% 14%)',
                 }}
                 formatter={(val: number) => [`${fmt(val)}`, '']}
               />
@@ -156,26 +155,23 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
         </div>
 
         {/* Bar chart by currency */}
-        <div
-          className="rounded-2xl border border-border/40 p-4"
-          style={{ background: 'hsl(222 25% 10%)' }}
-        >
+        <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
           <p className="text-xs font-medium text-muted-foreground mb-3 text-center uppercase tracking-widest">
             {isFr ? 'Par devise' : 'By currency'}
           </p>
           {barData.length > 0 ? (
             <ResponsiveContainer width="100%" height={120}>
               <BarChart data={barData} barSize={10} barCategoryGap="30%">
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(222 20% 18%)" vertical={false} />
-                <XAxis dataKey="currency" tick={{ fontSize: 10, fill: 'hsl(210 15% 50%)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: 'hsl(210 15% 50%)' }} axisLine={false} tickLine={false} width={30} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(38 18% 82%)" vertical={false} />
+                <XAxis dataKey="currency" tick={{ fontSize: 10, fill: 'hsl(155 12% 42%)' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: 'hsl(155 12% 42%)' }} axisLine={false} tickLine={false} width={30} />
                 <Tooltip
                   contentStyle={{
-                    background: 'hsl(222 30% 12%)',
-                    border: '1px solid hsl(222 20% 20%)',
+                    background: 'hsl(38 22% 92%)',
+                    border: '1px solid hsl(38 18% 80%)',
                     borderRadius: '8px',
                     fontSize: '11px',
-                    color: 'hsl(210 20% 90%)',
+                    color: 'hsl(155 20% 14%)',
                   }}
                 />
                 <Bar dataKey={isFr ? 'Je dois' : 'I owe'} fill={RED} opacity={0.8} radius={[4, 4, 0, 0]} />

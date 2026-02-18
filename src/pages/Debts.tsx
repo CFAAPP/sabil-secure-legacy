@@ -346,8 +346,8 @@ export default function Debts() {
       <div className="space-y-4 animate-fade-in pb-28">
 
         {/* Header */}
-        <div className="relative overflow-hidden rounded-2xl border border-gold/15 px-5 py-4"
-          style={{ background: 'linear-gradient(135deg, hsl(222 40% 12%) 0%, hsl(222 30% 9%) 100%)' }}>
+        <div className="relative overflow-hidden rounded-2xl border border-primary/20 px-5 py-4"
+          style={{ background: 'linear-gradient(135deg, hsl(155 28% 26%) 0%, hsl(155 22% 22%) 100%)' }}>
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -418,12 +418,12 @@ export default function Debts() {
 
         {/* Floating add button */}
         <Button
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full z-30 shadow-gold animate-glow-pulse border border-gold/30"
-          style={{ background: 'linear-gradient(135deg, hsl(43 72% 52%) 0%, hsl(38 80% 62%) 100%)' }}
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full z-30 shadow-gold animate-glow-pulse border border-gold/30 text-white"
+          style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
           size="icon"
           onClick={() => { setEditingDebt(null); setFormOpen(true); }}
         >
-          <Plus className="h-6 w-6 text-navy-deep" />
+          <Plus className="h-6 w-6" />
         </Button>
 
         {/* Dialogs */}

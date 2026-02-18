@@ -71,10 +71,9 @@ export default function DebtCard({ debt, language, onDetails, onRemind, onShare 
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 hover:border-gold/30 ${
-        isPaid ? 'border-border/30 opacity-60' : 'border-border/50'
+      className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 hover:border-primary/40 hover:shadow-md bg-card shadow-sm ${
+        isPaid ? 'border-border/50 opacity-60' : 'border-border'
       }`}
-      style={{ background: 'hsl(222 25% 10%)' }}
     >
       {/* Top glow line */}
       {!isPaid && (
