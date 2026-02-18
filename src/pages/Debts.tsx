@@ -403,10 +403,10 @@ export default function Debts() {
 
         {/* Reminder banner */}
         {showBanner && (
-          <div className="flex items-center gap-2 rounded-xl border border-gold/20 bg-gold/5 p-3 text-sm mt-4">
+          <div className="flex items-center gap-2 rounded-xl border border-gold/20 bg-gold/10 p-3 text-sm mt-4">
             <AlertTriangle className="h-4 w-4 text-gold shrink-0" />
-            <span className="text-foreground/80">{t('reminderBanner')}</span>
-            <Button variant="ghost" size="sm" className="ml-auto text-xs text-muted-foreground hover:text-foreground h-6 px-2" onClick={() => setShowBanner(false)}>✕</Button>
+            <span className="text-white/80">{t('reminderBanner')}</span>
+            <Button variant="ghost" size="sm" className="ml-auto text-xs text-white/50 hover:text-white h-6 px-2" onClick={() => setShowBanner(false)}>✕</Button>
           </div>
         )}
 
