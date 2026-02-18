@@ -121,7 +121,6 @@ export default function Debts() {
       setShowBanner(false);
       return;
     }
-    // Simple: show banner if enabled (real scheduling would use stored last_shown timestamp)
     setShowBanner(true);
   }, [reminderSettings]);
 
@@ -345,11 +344,11 @@ export default function Debts() {
     <Layout>
       <div className="space-y-4 animate-fade-in pb-28">
 
-        {/* Header with tabs */}
-        <div className="relative overflow-hidden rounded-2xl border border-primary/20 px-5 pt-4 pb-3"
+        {/* Header: titre + boutons */}
+        <div className="relative overflow-hidden rounded-2xl border border-primary/20 px-5 pt-4 pb-4"
           style={{ background: 'linear-gradient(135deg, hsl(155 28% 26%) 0%, hsl(155 22% 22%) 100%)' }}>
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gold/10 border border-gold/20">
                 <Wallet className="h-4 w-4 text-gold" />
@@ -360,7 +359,7 @@ export default function Debts() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-gold hover:bg-gold/5"
+                className={`h-8 w-8 transition-colors ${showStats ? 'text-gold bg-gold/10' : 'text-muted-foreground hover:text-gold hover:bg-gold/5'}`}
                 onClick={() => setShowStats(s => !s)}
                 title={language === 'fr' ? 'Graphiques' : 'Charts'}
               >
@@ -376,44 +375,41 @@ export default function Debts() {
               </Button>
             </div>
           </div>
-
-          {/* Tabs selector inside header */}
-          <Tabs defaultValue="i_owe" className="w-full">
-            <TabsList className="w-full bg-black/20 border border-white/10 rounded-xl p-1 h-auto">
-              <TabsTrigger
-                value="i_owe"
-                className="flex-1 rounded-lg data-[state=active]:bg-red-500/20 data-[state=active]:text-red-300 data-[state=active]:border data-[state=active]:border-red-500/30 text-white/60 text-sm transition-all"
-              >
-                {t('iOwe')}
-              </TabsTrigger>
-              <TabsTrigger
-                value="owed_to_me"
-                className="flex-1 rounded-lg data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-300 data-[state=active]:border data-[state=active]:border-emerald-500/30 text-white/60 text-sm transition-all"
-              >
-                {t('owedToMe')}
-              </TabsTrigger>
-            </TabsList>
+        </div>
 
         {/* Stats / Charts */}
         {showStats && !loading && debts.length > 0 && (
-          <div className="mt-4">
-            <DebtStats debts={debts} language={language} />
-          </div>
+          <DebtStats debts={debts} language={language} />
         )}
 
         {/* Reminder banner */}
         {showBanner && (
-          <div className="flex items-center gap-2 rounded-xl border border-gold/20 bg-gold/5 p-3 text-sm mt-4">
+          <div className="flex items-center gap-2 rounded-xl border border-gold/20 bg-gold/5 px-4 py-3 text-sm">
             <AlertTriangle className="h-4 w-4 text-gold shrink-0" />
             <span className="text-foreground/80">{t('reminderBanner')}</span>
             <Button variant="ghost" size="sm" className="ml-auto text-xs text-muted-foreground hover:text-foreground h-6 px-2" onClick={() => setShowBanner(false)}>✕</Button>
           </div>
         )}
 
-            <TabsContent value="i_owe" className="mt-3">{renderDebtList('i_owe')}</TabsContent>
-            <TabsContent value="owed_to_me" className="mt-3">{renderDebtList('owed_to_me')}</TabsContent>
-          </Tabs>
-        </div>
+        {/* Tabs: sélecteur + listes */}
+        <Tabs defaultValue="i_owe" className="w-full">
+          <TabsList className="w-full bg-muted/30 border border-border rounded-xl p-1 h-auto">
+            <TabsTrigger
+              value="i_owe"
+              className="flex-1 rounded-lg data-[state=active]:bg-red-500/15 data-[state=active]:text-red-400 data-[state=active]:border data-[state=active]:border-red-500/25 data-[state=active]:shadow-none text-muted-foreground text-sm font-medium transition-all"
+            >
+              {t('iOwe')}
+            </TabsTrigger>
+            <TabsTrigger
+              value="owed_to_me"
+              className="flex-1 rounded-lg data-[state=active]:bg-emerald-500/15 data-[state=active]:text-emerald-400 data-[state=active]:border data-[state=active]:border-emerald-500/25 data-[state=active]:shadow-none text-muted-foreground text-sm font-medium transition-all"
+            >
+              {t('owedToMe')}
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="i_owe" className="mt-3">{renderDebtList('i_owe')}</TabsContent>
+          <TabsContent value="owed_to_me" className="mt-3">{renderDebtList('owed_to_me')}</TabsContent>
+        </Tabs>
 
         <p className="text-xs text-muted-foreground/40 text-center">
           🔒 {language === 'fr' ? 'Chiffré de bout en bout — AES-256-GCM' : 'End-to-end encrypted — AES-256-GCM'}
