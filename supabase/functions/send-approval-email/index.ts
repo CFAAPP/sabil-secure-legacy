@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Sabeel <onboarding@resend.dev>",
+        from: "Mirath <noreply@mirath.app>",
         to: [shareLink.creditor_email],
         subject: `Demande de modification - Dette ${shareLink.debtor_visible_name}`,
         html: emailHtml,
