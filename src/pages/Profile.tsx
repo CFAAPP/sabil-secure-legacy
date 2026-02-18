@@ -100,7 +100,7 @@ const tr = {
     spouse: 'Conjoint(e)',
     children: 'Enfants',
     parents: 'Parents',
-    siblings: 'Frères & Sœurs',
+    siblings: 'Frères & Soeurs',
     customPeople: 'Personnes Personnalisées',
     fullName: 'Nom complet',
     gender: 'Sexe',
@@ -127,9 +127,9 @@ const tr = {
     fatherName: 'Nom du père',
     motherName: 'Nom de la mère',
     brothersCount: 'Nombre de frères',
-    sistersCount: 'Nombre de sœurs',
+    sistersCount: 'Nombre de soeurs',
     brother: 'Frère',
-    sister: 'Sœur',
+    sister: 'Soeur',
     addCustom: '+ Ajouter une personne',
     customLabel: 'Libellé (ex: Deuxième épouse)',
     customName: 'Nom',
@@ -148,7 +148,7 @@ const tr = {
     summaryChildren: 'Enfants',
     summaryParents: 'Parents',
     summaryBrothers: 'Frères',
-    summarySisters: 'Sœurs',
+    summarySisters: 'Soeurs',
     fillLater: 'Remplir plus tard',
     remove: 'Supprimer',
     optional: '(optionnel)',
@@ -816,16 +816,17 @@ export default function Profile() {
                     <CountSelector value={siblings.brothers_count} onChange={setBrothersCount} readOnly={isReadOnly} />
                   </div>
                   {siblings.brothers.map((b, i) => (
-                    <div key={b.id} className="rounded-xl border border-border/60 bg-muted/20 p-3 flex items-center gap-3">
-                      <span className="text-xs text-muted-foreground w-14 shrink-0">{T.brother} {i + 1}</span>
+                    <div key={b.id} className="rounded-xl border border-border/60 bg-muted/20 p-3 space-y-2">
+                      <span className="text-xs font-medium text-muted-foreground">{T.brother} {i + 1}</span>
                       <Input
                         placeholder={`${T.customName} ${T.optional}`}
                         value={b.name}
                         onChange={(e) => patchBrother(i, { name: e.target.value })}
                         disabled={isReadOnly}
-                        className="bg-background/50 text-sm flex-1"
+                        className="bg-background/50 text-sm"
                       />
-                      <div className="w-24 shrink-0">
+                      <div className="space-y-1">
+                        <label className="text-xs text-muted-foreground">{T.alive}</label>
                         <ToggleYesNo value={b.alive} onChange={(v) => patchBrother(i, { alive: v })} labelYes={T.yes} labelNo={T.no} readOnly={isReadOnly} />
                       </div>
                     </div>
@@ -839,16 +840,17 @@ export default function Profile() {
                     <CountSelector value={siblings.sisters_count} onChange={setSistersCount} readOnly={isReadOnly} />
                   </div>
                   {siblings.sisters.map((s, i) => (
-                    <div key={s.id} className="rounded-xl border border-border/60 bg-muted/20 p-3 flex items-center gap-3">
-                      <span className="text-xs text-muted-foreground w-14 shrink-0">{T.sister} {i + 1}</span>
+                    <div key={s.id} className="rounded-xl border border-border/60 bg-muted/20 p-3 space-y-2">
+                      <span className="text-xs font-medium text-muted-foreground">{T.sister} {i + 1}</span>
                       <Input
                         placeholder={`${T.customName} ${T.optional}`}
                         value={s.name}
                         onChange={(e) => patchSister(i, { name: e.target.value })}
                         disabled={isReadOnly}
-                        className="bg-background/50 text-sm flex-1"
+                        className="bg-background/50 text-sm"
                       />
-                      <div className="w-24 shrink-0">
+                      <div className="space-y-1">
+                        <label className="text-xs text-muted-foreground">{T.alive}</label>
                         <ToggleYesNo value={s.alive} onChange={(v) => patchSister(i, { alive: v })} labelYes={T.yes} labelNo={T.no} readOnly={isReadOnly} />
                       </div>
                     </div>
