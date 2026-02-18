@@ -4,7 +4,7 @@ import { useTranslation } from '@/lib/i18n';
 import { encrypt, decrypt, generateIv } from '@/lib/crypto';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { useToast } from '@/hooks/use-toast';
 import { Wallet, Plus, Settings, Loader2, AlertTriangle, BarChart2 } from 'lucide-react';
 import Layout from '@/components/Layout';
@@ -330,13 +330,26 @@ export default function Debts() {
 
   const renderDebtList = (type: 'i_owe' | 'owed_to_me') => {
     const filtered = debts.filter((d) => d.debt_type === type);
+    const isIOwe = type === 'i_owe';
+    const label = isIOwe ? t('iOwe') : t('owedToMe');
+    const accentClass = isIOwe ? 'text-red-400 border-red-400/30' : 'text-emerald-400 border-emerald-400/30';
+    const dotClass = isIOwe ? 'bg-red-400' : 'bg-emerald-400';
+
     if (loading) return <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>;
-    if (!filtered.length) return <p className="text-center text-sm text-muted-foreground py-8">{t('noDebts')}</p>;
+
     return (
       <div className="space-y-3">
-        {filtered.map((debt) => (
-          <DebtCard key={debt.id} debt={debt} language={language} onDetails={openDetails} onRemind={openReminder} onShare={openShare} />
-        ))}
+        <div className={`flex items-center gap-2 pb-1 border-b ${accentClass}`}>
+          <div className={`w-2 h-2 rounded-full ${dotClass}`} />
+          <span className={`text-xs font-semibold uppercase tracking-widest ${accentClass.split(' ')[0]}`}>{label}</span>
+          <span className="ml-auto text-xs text-muted-foreground">{filtered.length}</span>
+        </div>
+        {!filtered.length
+          ? <p className="text-center text-sm text-muted-foreground py-4">{t('noDebts')}</p>
+          : filtered.map((debt) => (
+              <DebtCard key={debt.id} debt={debt} language={language} onDetails={openDetails} onRemind={openReminder} onShare={openShare} />
+            ))
+        }
       </div>
     );
   };
@@ -392,25 +405,11 @@ export default function Debts() {
           </div>
         )}
 
-        {/* Tabs */}
-        <Tabs defaultValue="i_owe">
-          <TabsList className="w-full bg-muted/30 border border-border/50 rounded-xl p-1 h-auto">
-            <TabsTrigger
-              value="i_owe"
-              className="flex-1 rounded-lg data-[state=active]:bg-red-500/10 data-[state=active]:text-red-400 data-[state=active]:border data-[state=active]:border-red-500/20 text-sm transition-all"
-            >
-              {t('iOwe')}
-            </TabsTrigger>
-            <TabsTrigger
-              value="owed_to_me"
-              className="flex-1 rounded-lg data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-400 data-[state=active]:border data-[state=active]:border-emerald-500/20 text-sm transition-all"
-            >
-              {t('owedToMe')}
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="i_owe" className="mt-3">{renderDebtList('i_owe')}</TabsContent>
-          <TabsContent value="owed_to_me" className="mt-3">{renderDebtList('owed_to_me')}</TabsContent>
-        </Tabs>
+        {/* Debt lists */}
+        <div className="space-y-4">
+          {renderDebtList('i_owe')}
+          {renderDebtList('owed_to_me')}
+        </div>
 
         <p className="text-xs text-muted-foreground/40 text-center">
           🔒 {language === 'fr' ? 'Chiffré de bout en bout — AES-256-GCM' : 'End-to-end encrypted — AES-256-GCM'}
