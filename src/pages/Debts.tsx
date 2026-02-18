@@ -419,15 +419,6 @@ export default function Debts() {
           🔒 {language === 'fr' ? 'Chiffré de bout en bout — AES-256-GCM' : 'End-to-end encrypted — AES-256-GCM'}
         </p>
 
-        {/* Floating add button */}
-        <Button
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full z-30 shadow-gold animate-glow-pulse border border-gold/30 text-white"
-          style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
-          size="icon"
-          onClick={() => { setEditingDebt(null); setFormOpen(true); }}
-        >
-          <Plus className="h-6 w-6" />
-        </Button>
 
         {/* Dialogs */}
         <DebtFormDialog
@@ -465,10 +456,11 @@ export default function Debts() {
       {/* Floating add button */}
       <button
         onClick={() => { setEditingDebt(null); setFormOpen(true); }}
-        className="md:hidden fixed bottom-6 right-5 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-card border border-gold/30 shadow-lg shadow-black/30 hover:bg-gold/10 hover:border-gold/60 transition-all active:scale-95"
+        className="md:hidden fixed bottom-6 right-5 z-50 flex items-center justify-center w-12 h-12 rounded-full shadow-lg shadow-black/30 transition-all active:scale-95"
+        style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
         aria-label={t('addDebt')}
       >
-        <Plus className="h-5 w-5 text-gold" />
+        <Plus className="h-5 w-5 text-white" />
       </button>
     </Layout>
   );
