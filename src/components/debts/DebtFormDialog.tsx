@@ -9,7 +9,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { CalendarIcon, Loader2, Trash2 } from 'lucide-react';
+import { CalendarIcon, Loader2, Trash2, Users } from 'lucide-react';
 import type { Language } from '@/lib/i18n';
 import { useTranslation } from '@/lib/i18n';
 import type { DebtItem } from './DebtCard';
@@ -26,6 +26,12 @@ export interface DebtFormData {
   status: 'pending' | 'paid';
   creditorEmail: string;
   creditorPhone: string;
+  witness1Name: string;
+  witness1Email: string;
+  witness1Phone: string;
+  witness2Name: string;
+  witness2Email: string;
+  witness2Phone: string;
 }
 
 interface DebtFormDialogProps {
@@ -41,10 +47,17 @@ interface DebtFormDialogProps {
 
 export default function DebtFormDialog({ open, onOpenChange, language, editingDebt, onSave, onDelete, saving, userId }: DebtFormDialogProps) {
   const t = useTranslation(language);
+  const isFr = language === 'fr';
   const [proofs, setProofs] = useState<any[]>([]);
-  const [form, setForm] = useState<DebtFormData>({
-    type: 'i_owe', name: '', amount: '', currency: 'EUR', hasDueDate: false, dueDate: undefined, notes: '', status: 'pending', creditorEmail: '', creditorPhone: '',
-  });
+
+  const emptyForm: DebtFormData = {
+    type: 'i_owe', name: '', amount: '', currency: 'EUR', hasDueDate: false, dueDate: undefined,
+    notes: '', status: 'pending', creditorEmail: '', creditorPhone: '',
+    witness1Name: '', witness1Email: '', witness1Phone: '',
+    witness2Name: '', witness2Email: '', witness2Phone: '',
+  };
+
+  const [form, setForm] = useState<DebtFormData>(emptyForm);
 
   // Load proofs when editing
   useEffect(() => {
@@ -72,9 +85,15 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
         status: editingDebt.status,
         creditorEmail: editingDebt.creditor_email || '',
         creditorPhone: editingDebt.creditor_phone || '',
+        witness1Name: (editingDebt as any).witness1_name || '',
+        witness1Email: (editingDebt as any).witness1_email || '',
+        witness1Phone: (editingDebt as any).witness1_phone || '',
+        witness2Name: (editingDebt as any).witness2_name || '',
+        witness2Email: (editingDebt as any).witness2_email || '',
+        witness2Phone: (editingDebt as any).witness2_phone || '',
       });
     } else {
-      setForm({ type: 'i_owe', name: '', amount: '', currency: 'EUR', hasDueDate: false, dueDate: undefined, notes: '', status: 'pending', creditorEmail: '', creditorPhone: '' });
+      setForm(emptyForm);
     }
   }, [editingDebt, open]);
 
@@ -149,8 +168,8 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
           <div className="space-y-3 rounded-lg border p-3">
             <p className="text-xs font-medium text-muted-foreground">
               {form.type === 'i_owe'
-                ? (language === 'fr' ? '📧 Contact du créancier (obligatoire)' : '📧 Creditor contact (required)')
-                : (language === 'fr' ? '📧 Contact de l\'emprunteur (obligatoire)' : '📧 Borrower contact (required)')
+                ? (isFr ? '📧 Contact du créancier (obligatoire)' : '📧 Creditor contact (required)')
+                : (isFr ? '📧 Contact de l\'emprunteur (obligatoire)' : '📧 Borrower contact (required)')
               }
             </p>
             <div className="space-y-1.5">
@@ -158,8 +177,90 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
               <Input type="email" value={form.creditorEmail} onChange={(e) => setForm({ ...form, creditorEmail: e.target.value })} placeholder={form.type === 'i_owe' ? 'creancier@email.com' : 'emprunteur@email.com'} required />
             </div>
             <div className="space-y-1.5">
-              <Label>{language === 'fr' ? 'Téléphone' : 'Phone'} *</Label>
+              <Label>{isFr ? 'Téléphone' : 'Phone'} *</Label>
               <Input type="tel" value={form.creditorPhone} onChange={(e) => setForm({ ...form, creditorPhone: e.target.value })} placeholder="+33 6 12 34 56 78" required />
+            </div>
+          </div>
+
+          {/* Witnesses */}
+          <div className="space-y-3 rounded-lg border p-3">
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-muted-foreground" />
+              <p className="text-xs font-medium text-muted-foreground">
+                {isFr ? 'Témoins de la transaction (optionnel)' : 'Transaction witnesses (optional)'}
+              </p>
+            </div>
+
+            {/* Witness 1 */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-foreground/70">
+                {isFr ? 'Témoin 1' : 'Witness 1'}
+              </p>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isFr ? 'Nom complet' : 'Full name'}</Label>
+                <Input
+                  value={form.witness1Name}
+                  onChange={(e) => setForm({ ...form, witness1Name: e.target.value })}
+                  placeholder={isFr ? 'Prénom Nom' : 'First Last'}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{t('email')}</Label>
+                  <Input
+                    type="email"
+                    value={form.witness1Email}
+                    onChange={(e) => setForm({ ...form, witness1Email: e.target.value })}
+                    placeholder="temoin1@email.com"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isFr ? 'Téléphone' : 'Phone'}</Label>
+                  <Input
+                    type="tel"
+                    value={form.witness1Phone}
+                    onChange={(e) => setForm({ ...form, witness1Phone: e.target.value })}
+                    placeholder="+33 6 00 00 00 00"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-border/40" />
+
+            {/* Witness 2 */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-foreground/70">
+                {isFr ? 'Témoin 2' : 'Witness 2'}
+              </p>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isFr ? 'Nom complet' : 'Full name'}</Label>
+                <Input
+                  value={form.witness2Name}
+                  onChange={(e) => setForm({ ...form, witness2Name: e.target.value })}
+                  placeholder={isFr ? 'Prénom Nom' : 'First Last'}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{t('email')}</Label>
+                  <Input
+                    type="email"
+                    value={form.witness2Email}
+                    onChange={(e) => setForm({ ...form, witness2Email: e.target.value })}
+                    placeholder="temoin2@email.com"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isFr ? 'Téléphone' : 'Phone'}</Label>
+                  <Input
+                    type="tel"
+                    value={form.witness2Phone}
+                    onChange={(e) => setForm({ ...form, witness2Phone: e.target.value })}
+                    placeholder="+33 6 00 00 00 00"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -181,7 +282,7 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
                 size="sm"
                 onClick={() => setForm({ ...form, status: 'pending' })}
                 disabled={editingDebt?.status === 'paid'}
-                title={editingDebt?.status === 'paid' ? (language === 'fr' ? 'Impossible de revenir en arrière sans validation des deux parties' : 'Cannot revert without both parties validation') : undefined}
+                title={editingDebt?.status === 'paid' ? (isFr ? 'Impossible de revenir en arrière sans validation des deux parties' : 'Cannot revert without both parties validation') : undefined}
               >
                 {t('statusPending')}
               </Button>
@@ -189,12 +290,12 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
             </div>
             {editingDebt?.status === 'paid' && (
               <p className="text-xs text-muted-foreground">
-                🔒 {language === 'fr' ? 'Cette dette est marquée comme payée. Toute modification requiert la validation des deux parties.' : 'This debt is marked as paid. Any change requires validation from both parties.'}
+                🔒 {isFr ? 'Cette dette est marquée comme payée. Toute modification requiert la validation des deux parties.' : 'This debt is marked as paid. Any change requires validation from both parties.'}
               </p>
             )}
             {form.type === 'i_owe' && form.status === 'paid' && form.creditorEmail && editingDebt?.status !== 'paid' && (
               <p className="text-xs text-muted-foreground">
-                ⚠️ {language === 'fr' ? 'Le créancier devra valider par email avant que la dette soit marquée comme payée.' : 'The creditor must validate via email before the debt is marked as paid.'}
+                ⚠️ {isFr ? 'Le créancier devra valider par email avant que la dette soit marquée comme payée.' : 'The creditor must validate via email before the debt is marked as paid.'}
               </p>
             )}
           </div>
