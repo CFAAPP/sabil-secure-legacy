@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
     if (request.proposed_status === "paid") {
       await supabase
         .from("debts")
-        .update({ status: "paid", is_settled: true })
+        .update({ status: "paid", is_settled: true, paid_at: new Date().toISOString() })
         .eq("id", request.debt_id);
     }
 

@@ -176,10 +176,23 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
           <div className="space-y-2">
             <Label>Statut</Label>
             <div className="flex gap-2">
-              <Button variant={form.status === 'pending' ? 'default' : 'outline'} size="sm" onClick={() => setForm({ ...form, status: 'pending' })}>{t('statusPending')}</Button>
+              <Button
+                variant={form.status === 'pending' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setForm({ ...form, status: 'pending' })}
+                disabled={editingDebt?.status === 'paid'}
+                title={editingDebt?.status === 'paid' ? (language === 'fr' ? 'Impossible de revenir en arrière sans validation des deux parties' : 'Cannot revert without both parties validation') : undefined}
+              >
+                {t('statusPending')}
+              </Button>
               <Button variant={form.status === 'paid' ? 'default' : 'outline'} size="sm" onClick={() => setForm({ ...form, status: 'paid' })}>{t('statusPaid')}</Button>
             </div>
-            {form.type === 'i_owe' && form.status === 'paid' && form.creditorEmail && (
+            {editingDebt?.status === 'paid' && (
+              <p className="text-xs text-muted-foreground">
+                🔒 {language === 'fr' ? 'Cette dette est marquée comme payée. Toute modification requiert la validation des deux parties.' : 'This debt is marked as paid. Any change requires validation from both parties.'}
+              </p>
+            )}
+            {form.type === 'i_owe' && form.status === 'paid' && form.creditorEmail && editingDebt?.status !== 'paid' && (
               <p className="text-xs text-muted-foreground">
                 ⚠️ {language === 'fr' ? 'Le créancier devra valider par email avant que la dette soit marquée comme payée.' : 'The creditor must validate via email before the debt is marked as paid.'}
               </p>

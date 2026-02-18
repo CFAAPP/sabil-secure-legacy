@@ -16,6 +16,7 @@ export interface DebtItem {
   notes: string | null;
   creditor_email: string | null;
   creditor_phone: string | null;
+  paid_at: string | null;
 }
 
 function getDisplayStatus(debt: DebtItem, t: ReturnType<typeof useTranslation>): { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' } {
@@ -41,16 +42,22 @@ export default function DebtCard({ debt, language, onDetails, onRemind, onShare 
   const t = useTranslation(language);
   const { label, variant } = getDisplayStatus(debt, t);
 
+  const paidDateLabel = debt.paid_at
+    ? (language === 'fr' ? `Payée le ${new Date(debt.paid_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}` : `Paid on ${new Date(debt.paid_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}`)
+    : null;
+
   return (
-    <Card className={debt.status === 'paid' ? 'opacity-60' : ''}>
+    <Card className={debt.status === 'paid' ? 'opacity-70' : ''}>
       <CardContent className="p-4 space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <p className={`font-medium text-sm truncate ${debt.status === 'paid' ? 'line-through' : ''}`}>
+            <p className={`font-medium text-sm truncate ${debt.status === 'paid' ? 'line-through text-muted-foreground' : ''}`}>
               {debt.name}
             </p>
             <p className="text-xs text-muted-foreground">
-              {debt.due_date || t('noDueDateLabel')}
+              {debt.status === 'paid' && paidDateLabel
+                ? paidDateLabel
+                : (debt.due_date || t('noDueDateLabel'))}
             </p>
           </div>
           <div className="text-right shrink-0">
