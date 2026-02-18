@@ -12,7 +12,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { modification_request_id, app_url } = await req.json();
+    const { modification_request_id, app_url: app_url_from_client } = await req.json();
+
+    // Always use the published app URL to avoid redirecting to Lovable preview/editor
+    const APP_URL = Deno.env.get("APP_URL") || app_url_from_client || "https://sabil-secure-legacy.lovable.app";
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -34,8 +37,8 @@ Deno.serve(async (req) => {
     }
 
     const shareLink = request.debt_share_links;
-    const approveUrl = `${app_url}/debt-approve/${request.approval_token}?action=approve`;
-    const rejectUrl = `${app_url}/debt-approve/${request.approval_token}?action=reject`;
+    const approveUrl = `${APP_URL}/debt-approve/${request.approval_token}?action=approve`;
+    const rejectUrl = `${APP_URL}/debt-approve/${request.approval_token}?action=reject`;
 
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) {
