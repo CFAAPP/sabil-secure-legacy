@@ -12,10 +12,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { modification_request_id, app_url: app_url_from_client } = await req.json();
+    const { modification_request_id } = await req.json();
 
-    // Always use the published app URL to avoid redirecting to Lovable preview/editor
-    const APP_URL = Deno.env.get("APP_URL") || app_url_from_client || "https://sabil-secure-legacy.lovable.app";
+    // Always use the published app URL - never the Lovable preview URL
+    const APP_URL = Deno.env.get("APP_URL") || "https://sabil-secure-legacy.lovable.app";
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
