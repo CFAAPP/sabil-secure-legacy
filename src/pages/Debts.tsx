@@ -6,9 +6,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Wallet, Plus, Settings, Loader2, AlertTriangle } from 'lucide-react';
+import { Wallet, Plus, Settings, Loader2, AlertTriangle, BarChart2 } from 'lucide-react';
 import Layout from '@/components/Layout';
 import DebtCard, { type DebtItem } from '@/components/debts/DebtCard';
+import DebtStats from '@/components/debts/DebtStats';
 import DebtFormDialog from '@/components/debts/DebtFormDialog';
 import ReminderSettingsDialog, { type ReminderSettingsData } from '@/components/debts/ReminderSettingsDialog';
 import SendReminderDialog from '@/components/debts/SendReminderDialog';
@@ -23,6 +24,7 @@ export default function Debts() {
   const { user, profile, passphrase, language } = useAuth();
   const t = useTranslation(language);
   const { toast } = useToast();
+  const [showStats, setShowStats] = useState(true);
 
   const [debts, setDebts] = useState<DebtItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -341,48 +343,87 @@ export default function Debts() {
 
   return (
     <Layout>
-      <div className="space-y-4 animate-fade-in pb-24">
+      <div className="space-y-4 animate-fade-in pb-28">
+
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Wallet className="h-6 w-6 text-sabeel-gold" />
-            <h1 className="font-serif text-2xl font-bold">{t('debtsTitle')}</h1>
+        <div className="relative overflow-hidden rounded-2xl border border-gold/15 px-5 py-4"
+          style={{ background: 'linear-gradient(135deg, hsl(222 40% 12%) 0%, hsl(222 30% 9%) 100%)' }}>
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gold/10 border border-gold/20">
+                <Wallet className="h-4 w-4 text-gold" />
+              </div>
+              <h1 className="font-serif text-2xl font-bold text-gold-gradient">{t('debtsTitle')}</h1>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-gold hover:bg-gold/5"
+                onClick={() => setShowStats(s => !s)}
+                title={language === 'fr' ? 'Graphiques' : 'Charts'}
+              >
+                <BarChart2 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-muted-foreground hover:text-gold hover:bg-gold/5"
+                onClick={() => setReminderSettingsOpen(true)}
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => setReminderSettingsOpen(true)}>
-            <Settings className="h-5 w-5" />
-          </Button>
         </div>
+
+        {/* Stats / Charts */}
+        {showStats && !loading && debts.length > 0 && (
+          <DebtStats debts={debts} language={language} />
+        )}
 
         {/* Reminder banner */}
         {showBanner && (
-          <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
-            <AlertTriangle className="h-4 w-4 text-primary shrink-0" />
-            <span>{t('reminderBanner')}</span>
-            <Button variant="ghost" size="sm" className="ml-auto text-xs" onClick={() => setShowBanner(false)}>✕</Button>
+          <div className="flex items-center gap-2 rounded-xl border border-gold/20 bg-gold/5 p-3 text-sm">
+            <AlertTriangle className="h-4 w-4 text-gold shrink-0" />
+            <span className="text-foreground/80">{t('reminderBanner')}</span>
+            <Button variant="ghost" size="sm" className="ml-auto text-xs text-muted-foreground hover:text-foreground h-6 px-2" onClick={() => setShowBanner(false)}>✕</Button>
           </div>
         )}
 
         {/* Tabs */}
         <Tabs defaultValue="i_owe">
-          <TabsList className="w-full">
-            <TabsTrigger value="i_owe" className="flex-1">{t('iOwe')}</TabsTrigger>
-            <TabsTrigger value="owed_to_me" className="flex-1">{t('owedToMe')}</TabsTrigger>
+          <TabsList className="w-full bg-muted/30 border border-border/50 rounded-xl p-1 h-auto">
+            <TabsTrigger
+              value="i_owe"
+              className="flex-1 rounded-lg data-[state=active]:bg-red-500/10 data-[state=active]:text-red-400 data-[state=active]:border data-[state=active]:border-red-500/20 text-sm transition-all"
+            >
+              {t('iOwe')}
+            </TabsTrigger>
+            <TabsTrigger
+              value="owed_to_me"
+              className="flex-1 rounded-lg data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-400 data-[state=active]:border data-[state=active]:border-emerald-500/20 text-sm transition-all"
+            >
+              {t('owedToMe')}
+            </TabsTrigger>
           </TabsList>
-          <TabsContent value="i_owe">{renderDebtList('i_owe')}</TabsContent>
-          <TabsContent value="owed_to_me">{renderDebtList('owed_to_me')}</TabsContent>
+          <TabsContent value="i_owe" className="mt-3">{renderDebtList('i_owe')}</TabsContent>
+          <TabsContent value="owed_to_me" className="mt-3">{renderDebtList('owed_to_me')}</TabsContent>
         </Tabs>
 
-        <p className="text-xs text-muted-foreground text-center">
+        <p className="text-xs text-muted-foreground/40 text-center">
           🔒 {language === 'fr' ? 'Chiffré de bout en bout — AES-256-GCM' : 'End-to-end encrypted — AES-256-GCM'}
         </p>
 
         {/* Floating add button */}
         <Button
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-30"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full z-30 shadow-gold animate-glow-pulse border border-gold/30"
+          style={{ background: 'linear-gradient(135deg, hsl(43 72% 52%) 0%, hsl(38 80% 62%) 100%)' }}
           size="icon"
           onClick={() => { setEditingDebt(null); setFormOpen(true); }}
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="h-6 w-6 text-navy-deep" />
         </Button>
 
         {/* Dialogs */}
