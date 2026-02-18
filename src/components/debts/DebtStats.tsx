@@ -15,21 +15,34 @@ const RED = 'hsl(0, 72%, 51%)';
 const EMERALD = 'hsl(142, 71%, 45%)';
 const BLUE = 'hsl(210, 70%, 55%)';
 
-function sumAmount(items: DebtItem[]) {
-  return items.reduce((acc, d) => acc + (parseFloat(d.amount) || 0), 0);
+// Sum amounts grouped by currency
+function sumByCurrency(items: DebtItem[]): Record<string, number> {
+  return items.reduce((acc, d) => {
+    const cur = d.currency || '—';
+    acc[cur] = (acc[cur] || 0) + (parseFloat(d.amount) || 0);
+    return acc;
+  }, {} as Record<string, number>);
+}
+
+// Format a currency map as "1 200 EUR · 500 USD"
+function formatCurrencyMap(map: Record<string, number>, locale: string) {
+  const entries = Object.entries(map).filter(([, v]) => v > 0);
+  if (entries.length === 0) return '—';
+  return entries.map(([cur, val]) =>
+    `${val.toLocaleString(locale, { maximumFractionDigits: 0 })} ${cur}`
+  ).join(' · ');
 }
 
 export default function DebtStats({ debts, language }: DebtStatsProps) {
   const isFr = language === 'fr';
+  const locale = isFr ? 'fr-FR' : 'en-US';
 
-  const { iOwe, owedToMe, iOwePending, iOwePaid, owedPending, owedPaid, overdue } = useMemo(() => {
+  const { iOwePending, iOwePaid, owedPending, owedPaid, overdue } = useMemo(() => {
     const iOwe = debts.filter(d => d.debt_type === 'i_owe');
     const owedToMe = debts.filter(d => d.debt_type === 'owed_to_me');
     const today = new Date(); today.setHours(0, 0, 0, 0);
 
     return {
-      iOwe,
-      owedToMe,
       iOwePending: iOwe.filter(d => d.status === 'pending'),
       iOwePaid: iOwe.filter(d => d.status === 'paid'),
       owedPending: owedToMe.filter(d => d.status === 'pending'),
@@ -38,14 +51,27 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
     };
   }, [debts]);
 
-  const totalIOwe = sumAmount(iOwePending);
-  const totalOwedToMe = sumAmount(owedPending);
-  const netBalance = totalOwedToMe - totalIOwe;
+  const iOweByCur = sumByCurrency(iOwePending);
+  const owedByCur = sumByCurrency(owedPending);
 
-  // Pie: statuses
+  // Net balance: only meaningful if single currency
+  const allCurrencies = Array.from(new Set([...Object.keys(iOweByCur), ...Object.keys(owedByCur)]));
+  const netByCur: Record<string, number> = {};
+  allCurrencies.forEach(cur => {
+    netByCur[cur] = (owedByCur[cur] || 0) - (iOweByCur[cur] || 0);
+  });
+  const netStr = Object.entries(netByCur)
+    .filter(([, v]) => v !== 0)
+    .map(([cur, v]) => `${v >= 0 ? '+' : ''}${v.toLocaleString(locale, { maximumFractionDigits: 0 })} ${cur}`)
+    .join(' · ') || '0';
+  const netPositive = Object.values(netByCur).every(v => v >= 0);
+
+  // Pie: total pending amounts (sum all currencies together for proportion)
+  const totalIOwe = iOwePending.reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
+  const totalOwed = owedPending.reduce((s, d) => s + (parseFloat(d.amount) || 0), 0);
   const pieData = [
     { name: isFr ? 'Je dois' : 'I Owe', value: Math.max(totalIOwe, 0.01), color: RED },
-    { name: isFr ? 'On me doit' : 'Owed to me', value: Math.max(totalOwedToMe, 0.01), color: EMERALD },
+    { name: isFr ? 'On me doit' : 'Owed to me', value: Math.max(totalOwed, 0.01), color: EMERALD },
   ];
 
   // Bar: by currency
@@ -61,9 +87,12 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
     [isFr ? 'On me doit' : 'Owed to me']: Math.round(vals.owed),
   }));
 
-  const fmt = (n: number) => n.toLocaleString(isFr ? 'fr-FR' : 'en-US', { maximumFractionDigits: 0 });
+  const fmt = (n: number) => n.toLocaleString(locale, { maximumFractionDigits: 0 });
 
   if (debts.length === 0) return null;
+
+  const iOweStr = formatCurrencyMap(iOweByCur, locale);
+  const owedStr = formatCurrencyMap(owedByCur, locale);
 
   return (
     <div className="space-y-4">
@@ -72,27 +101,27 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
         {[
           {
             label: isFr ? 'Je dois' : 'I owe',
-            value: fmt(totalIOwe),
+            value: iOweStr,
             sub: `${iOwePending.length} dette${iOwePending.length > 1 ? 's' : ''}`,
-            color: 'text-red-400',
-            glow: 'hsl(0 72% 51% / 0.12)',
-            border: 'border-red-500/20',
+            color: 'text-red-500',
+            glow: 'hsl(0 72% 51% / 0.08)',
+            border: 'border-red-400/20',
           },
           {
             label: isFr ? 'On me doit' : 'Owed to me',
-            value: fmt(totalOwedToMe),
+            value: owedStr,
             sub: `${owedPending.length} créance${owedPending.length > 1 ? 's' : ''}`,
-            color: 'text-emerald-400',
-            glow: 'hsl(142 71% 45% / 0.12)',
-            border: 'border-emerald-500/20',
+            color: 'text-emerald-600',
+            glow: 'hsl(142 71% 45% / 0.08)',
+            border: 'border-emerald-400/20',
           },
           {
             label: isFr ? 'Solde net' : 'Net balance',
-            value: (netBalance >= 0 ? '+' : '') + fmt(netBalance),
+            value: netStr,
             sub: overdue.length > 0 ? `${overdue.length} en retard` : isFr ? 'À jour' : 'Up to date',
-            color: netBalance >= 0 ? 'text-gold' : 'text-red-400',
-            glow: netBalance >= 0 ? 'hsl(43 72% 58% / 0.12)' : 'hsl(0 72% 51% / 0.12)',
-            border: netBalance >= 0 ? 'border-gold/20' : 'border-red-500/20',
+            color: netPositive ? 'text-gold-dim' : 'text-red-500',
+            glow: netPositive ? 'hsl(43 62% 52% / 0.08)' : 'hsl(0 72% 51% / 0.08)',
+            border: netPositive ? 'border-gold/20' : 'border-red-400/20',
           },
         ].map((kpi, i) => (
           <div
@@ -101,7 +130,7 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
             style={{ background: kpi.glow }}
           >
             <p className="text-xs text-muted-foreground mb-1 leading-tight">{kpi.label}</p>
-            <p className={`text-base font-bold ${kpi.color} leading-tight`}>{kpi.value}</p>
+            <p className={`text-sm font-bold ${kpi.color} leading-tight break-words`}>{kpi.value}</p>
             <p className="text-xs text-muted-foreground/60 mt-0.5">{kpi.sub}</p>
           </div>
         ))}
@@ -192,12 +221,12 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
           <div className="flex-1 flex items-center gap-2 rounded-xl border border-border/30 bg-muted/10 px-3 py-2">
             <div className="w-2 h-2 rounded-full bg-emerald-500/60" />
             <span>{isFr ? `${iOwePaid.length} dette${iOwePaid.length > 1 ? 's' : ''} soldée${iOwePaid.length > 1 ? 's' : ''}` : `${iOwePaid.length} paid`}</span>
-            <span className="ml-auto text-muted-foreground/50">{fmt(sumAmount(iOwePaid))}</span>
+            <span className="ml-auto text-muted-foreground/50">{formatCurrencyMap(sumByCurrency(iOwePaid), locale)}</span>
           </div>
           <div className="flex-1 flex items-center gap-2 rounded-xl border border-border/30 bg-muted/10 px-3 py-2">
             <div className="w-2 h-2 rounded-full bg-gold/60" />
             <span>{isFr ? `${owedPaid.length} créance${owedPaid.length > 1 ? 's' : ''} soldée${owedPaid.length > 1 ? 's' : ''}` : `${owedPaid.length} collected`}</span>
-            <span className="ml-auto text-muted-foreground/50">{fmt(sumAmount(owedPaid))}</span>
+            <span className="ml-auto text-muted-foreground/50">{formatCurrencyMap(sumByCurrency(owedPaid), locale)}</span>
           </div>
         </div>
       )}
