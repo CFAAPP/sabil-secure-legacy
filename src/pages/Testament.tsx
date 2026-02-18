@@ -1,9 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
 import { encrypt, decrypt } from '@/lib/crypto';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -109,6 +119,7 @@ export default function Testament() {
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [playingAudio, setPlayingAudio] = useState(false);
+  const [showDeleteAudioDialog, setShowDeleteAudioDialog] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -264,11 +275,14 @@ export default function Testament() {
     if (timerRef.current) clearInterval(timerRef.current);
   };
 
-  const deleteAudio = () => {
+  const deleteAudio = () => setShowDeleteAudioDialog(true);
+
+  const confirmDeleteAudio = () => {
     setAudioBlob(null);
     setAudioUrl(null);
     setRecordingTime(0);
     setData(d => ({ ...d, audio_message: null }));
+    setShowDeleteAudioDialog(false);
   };
 
   const togglePlay = () => {
@@ -692,6 +706,35 @@ export default function Testament() {
       >
         {saving ? <Loader2 className="h-5 w-5 text-white animate-spin" /> : <Save className="h-5 w-5 text-white" />}
       </button>
+
+      {/* Delete audio confirmation dialog */}
+      <AlertDialog open={showDeleteAudioDialog} onOpenChange={setShowDeleteAudioDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {isFr ? 'Supprimer le message audio ?' : 'Delete audio message?'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {isFr
+                ? 'Cette action est irréversible. Le message audio sera définitivement supprimé.'
+                : 'This action cannot be undone. The audio message will be permanently deleted.'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              {isFr ? 'Annuler' : 'Cancel'}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteAudio}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isFr ? 'Supprimer' : 'Delete'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </Layout>
+
   );
 }
