@@ -187,6 +187,23 @@ export default function Debts() {
 
       await supabase.from('audit_logs').insert({ user_id: user.id, action: editingDebt ? 'debt_updated' : 'debt_created', entity_type: 'debts' } as any);
 
+      // If new owed_to_me debt with debtor email → send notification to debtor
+      const isNewOwedToMe = !editingDebt && formData.type === 'owed_to_me' && formData.creditorEmail;
+      if (isNewOwedToMe) {
+        const dueDateStr = formData.hasDueDate && formData.dueDate ? format(formData.dueDate, 'dd/MM/yyyy') : null;
+        await supabase.functions.invoke('send-debt-notification', {
+          body: {
+            debtor_email: formData.creditorEmail,
+            creditor_name: profile?.display_name || user.email || 'Votre créancier',
+            amount: formData.amount,
+            currency: formData.currency,
+            due_date: dueDateStr,
+            notes: formData.notes || null,
+            language,
+          },
+        });
+      }
+
       // If needs approval, create share link + modification request + send email
       if (needsApproval && debtId) {
         const { data: shareLink } = await supabase
