@@ -210,6 +210,18 @@ export default function Zakat() {
                 const yearKey = new Date().getFullYear().toString();
                 handleMarkPaid(yearKey);
               }}
+              onManualRateChange={(gold, silver) => {
+                setData(prev => ({
+                  ...prev,
+                  rates: {
+                    ...prev.rates,
+                    gold_price_per_gram: gold,
+                    silver_price_per_gram: silver,
+                    source: 'manual',
+                    updated_at: new Date().toISOString(),
+                  },
+                }));
+              }}
             />
           </TabsContent>
 
