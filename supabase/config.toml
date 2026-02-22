@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.handle-debt-approval]
 verify_jwt = false
+
+[functions.get-metal-rates]
+verify_jwt = false
