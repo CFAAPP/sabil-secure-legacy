@@ -8,6 +8,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Provicali';
+  src: url('/fonts/Provicali.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -95,7 +103,7 @@
   }
 
   h1, h2, h3 {
-    font-family: 'Milker', 'Syne', sans-serif;
+    font-family: 'Provicali', 'Syne', sans-serif;
     letter-spacing: -0.01em;
     font-weight: normal;
   }
