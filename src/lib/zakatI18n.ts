@@ -96,6 +96,11 @@ const zakatTranslations = {
     zakatDueSoon: 'Votre date de Zakât approche !',
     zakatDueToday: 'C\'est le jour de votre Zakât !',
     daysRemaining: 'jours restants',
+    daysRemainingTimeline: 'Jours restants avant la Zakât',
+    noDateSet: 'Aucune date annuelle définie',
+    setDateInSettings: 'Définir dans les réglages',
+    today: 'Aujourd\'hui',
+    zakatDay: 'Jour de Zakât',
     
     saving: 'Sauvegarde...',
     saved: 'Sauvegardé !',
@@ -196,6 +201,11 @@ const zakatTranslations = {
     zakatDueSoon: 'Your Zakât date is approaching!',
     zakatDueToday: 'Today is your Zakât day!',
     daysRemaining: 'days remaining',
+    daysRemainingTimeline: 'Days remaining before Zakât',
+    noDateSet: 'No annual date set',
+    setDateInSettings: 'Set in settings',
+    today: 'Today',
+    zakatDay: 'Zakât Day',
     
     saving: 'Saving...',
     saved: 'Saved!',
