@@ -77,6 +77,9 @@
     --sabeel-cream: 38 28% 96%;
     --sabeel-warm: 38 30% 85%;
     --mirath-gold: 43 62% 52%;
+    --silver: 220 10% 62%;
+    --silver-light: 220 12% 75%;
+    --silver-dim: 220 8% 48%;
 
     --sidebar-background: 38 22% 91%;
     --sidebar-foreground: 155 20% 14%;
@@ -121,6 +124,14 @@
   /* Gold shimmer text */
   .text-gold-gradient {
     background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Silver shimmer text */
+  .text-silver-gradient {
+    background: linear-gradient(135deg, hsl(220 10% 62%) 0%, hsl(220 14% 78%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
