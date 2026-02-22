@@ -413,8 +413,8 @@ export default function Testament() {
               className="min-h-[120px] text-sm bg-muted/20 border-border/50 resize-none"
             />
             <InfoBox>
-              <p className="font-medium mb-1">{tx('Sunnah à respecter :', 'Sunnah to follow:', 'من السنة:')}</p>
-              <ul className="space-y-0.5 list-disc list-inside">
+              <p className="font-medium text-sm mb-1.5">{tx('Sunnah à respecter :', 'Sunnah to follow:', 'من السنة:')}</p>
+              <ul className="space-y-1 list-disc list-inside text-sm">
                 {language === 'ar' ? (
                   <>
                     <li>دفن بسيط وسريع</li>
