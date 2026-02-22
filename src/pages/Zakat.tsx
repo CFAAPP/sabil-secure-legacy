@@ -222,6 +222,9 @@ export default function Zakat() {
                   },
                 }));
               }}
+              onClearManualRates={() => {
+                loadRates();
+              }}
             />
           </TabsContent>
 

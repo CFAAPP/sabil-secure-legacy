@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
-import { RefreshCw, Calculator, Clock, CheckCircle2, TrendingUp, Wallet, Coins, Loader2, Info, ExternalLink, Edit3 } from 'lucide-react';
+import { RefreshCw, Calculator, Clock, CheckCircle2, TrendingUp, Wallet, Coins, Loader2, Info, ExternalLink, Edit3, Trash2 } from 'lucide-react';
 
 interface Props {
   calc: ZakatCalcResult;
@@ -23,6 +23,7 @@ interface Props {
   onGoToHistory: () => void;
   onMarkPaid: () => void;
   onManualRateChange: (gold: number, silver: number) => void;
+  onClearManualRates: () => void;
 }
 
 const CHART_COLORS = [
@@ -33,7 +34,7 @@ const CHART_COLORS = [
   'hsl(340 50% 50%)', // pink
 ];
 
-export default function ZakatDashboard({ calc, data, language, ratesFetching, onRefreshRates, onGoToSimulator, onGoToHistory, onMarkPaid, onManualRateChange }: Props) {
+export default function ZakatDashboard({ calc, data, language, ratesFetching, onRefreshRates, onGoToSimulator, onGoToHistory, onMarkPaid, onManualRateChange, onClearManualRates }: Props) {
   const z = (key: Parameters<typeof zt>[0]) => zt(key, language);
   const cur = data.settings.currency;
   const sym = getCurrencySymbol(cur);
@@ -73,7 +74,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
       <Card className="border-border">
         <CardContent className="pt-3 pb-3 px-4 space-y-3">
           {/* Rate display row */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
               <Badge variant="outline" className="text-[10px] gap-1 border-gold/30 text-gold">
                 <Coins className="h-3 w-3" />
@@ -82,8 +83,18 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
               <span>{z('goldPrice')}: {data.rates.gold_price_per_gram.toFixed(2)} {sym}{z('perGram')}</span>
               <span className="hidden sm:inline">|</span>
               <span className="hidden sm:inline">{z('silverPrice')}: {data.rates.silver_price_per_gram.toFixed(2)} {sym}{z('perGram')}</span>
+              {data.rates.updated_at && (
+                <span className="text-[10px] text-muted-foreground/60">
+                  ({rateDate})
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-1">
+              {data.rates.source === 'manual' && (
+                <Button variant="ghost" size="sm" onClick={onClearManualRates} className="h-7 text-xs text-destructive/70 hover:text-destructive" title={language === 'fr' ? 'Supprimer les taux manuels' : 'Clear manual rates'}>
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              )}
               <Button variant="ghost" size="sm" onClick={() => { setManualGold(data.rates.gold_price_per_gram.toString()); setManualSilver(data.rates.silver_price_per_gram.toString()); setEditingRates(!editingRates); }} className="h-7 text-xs text-muted-foreground hover:text-gold">
                 <Edit3 className="h-3.5 w-3.5" />
               </Button>
@@ -161,7 +172,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
         <CardContent className="pt-5 pb-4 text-center">
           <p className="text-xs text-muted-foreground mb-1">{z('zakatDue')}</p>
-          <p className="text-3xl font-serif font-bold text-gold-gradient">
+          <p className="text-4xl font-bold text-gold-gradient" style={{ fontFamily: "'Amiri', serif" }}>
             {formatMoney(calc.zakatDue, cur)}
           </p>
           {calc.isAboveNisab && (
