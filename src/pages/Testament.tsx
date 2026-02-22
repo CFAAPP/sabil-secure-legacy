@@ -125,8 +125,13 @@ export default function Testament() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const isFr = language === 'fr';
   const MAX_RECORDING_SECONDS = 300; // 5 minutes
+
+  // Tri-language helper
+  const tx = (fr: string, en: string, ar: string) =>
+    language === 'ar' ? ar : language === 'en' ? en : fr;
+
+  const dateFmt = language === 'ar' ? 'ar-SA' : language === 'en' ? 'en-US' : 'fr-FR';
 
   // ─── Load ────────────────────────────────────────────────────────────────
 
@@ -168,7 +173,7 @@ export default function Testament() {
           }
         }
       } catch {
-        toast({ title: t('error'), description: isFr ? 'Phrase secrète incorrecte.' : 'Incorrect passphrase.', variant: 'destructive' });
+        toast({ title: t('error'), description: tx('Phrase secrète incorrecte.', 'Incorrect passphrase.', 'عبارة المرور غير صحيحة.'), variant: 'destructive' });
       }
     }
     setLoading(false);
@@ -182,7 +187,7 @@ export default function Testament() {
     // Validate wasiyya total
     const totalPct = data.wasiyya.filter(b => b.type === 'percentage').reduce((s, b) => s + (b.value || 0), 0);
     if (totalPct > 33.33) {
-      toast({ title: t('error'), description: isFr ? 'La wasiyya ne peut pas dépasser un tiers des biens (33,33%).' : 'Wasiyya cannot exceed one third (33.33%).', variant: 'destructive' });
+      toast({ title: t('error'), description: tx('La wasiyya ne peut pas dépasser un tiers des biens (33,33%).', 'Wasiyya cannot exceed one third (33.33%).', 'لا يمكن أن تتجاوز الوصية ثلث الأموال (٣٣٫٣٣٪).'), variant: 'destructive' });
       return;
     }
 
@@ -235,7 +240,7 @@ export default function Testament() {
       setUpdatedAt(new Date().toISOString());
       toast({ title: t('success'), description: t('saved') });
     } catch {
-      toast({ title: t('error'), description: isFr ? 'Erreur lors de la sauvegarde.' : 'Save failed.', variant: 'destructive' });
+      toast({ title: t('error'), description: tx('Erreur lors de la sauvegarde.', 'Save failed.', 'فشل الحفظ.'), variant: 'destructive' });
     }
     setSaving(false);
   };
@@ -265,7 +270,7 @@ export default function Testament() {
         });
       }, 1000);
     } catch {
-      toast({ title: t('error'), description: isFr ? 'Accès au microphone refusé.' : 'Microphone access denied.', variant: 'destructive' });
+      toast({ title: t('error'), description: tx('Accès au microphone refusé.', 'Microphone access denied.', 'تم رفض الوصول إلى الميكروفون.'), variant: 'destructive' });
     }
   };
 
@@ -354,7 +359,7 @@ export default function Testament() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <FileText className="h-5 w-5 text-gold" />
-            <h1 className="font-serif text-xl font-bold">{isFr ? 'Mon Testament' : 'My Will'}</h1>
+            <h1 className="font-serif text-xl font-bold">{tx('Mon Testament', 'My Will', 'وصيتي')}</h1>
           </div>
           <Button
             onClick={handleSave}
@@ -369,25 +374,27 @@ export default function Testament() {
 
         {/* ① Déclaration */}
         <Section
-          title={isFr ? '① Déclaration' : '① Declaration'}
+          title={tx('① الإعلان', '① Declaration', '① الإعلان').replace('① الإعلان', tx('① Déclaration', '① Declaration', '① الإعلان'))}
           icon={<Lock className="h-3.5 w-3.5 text-gold" />}
           defaultOpen={true}
         >
           <div className="p-5 space-y-3">
             <p className="text-center text-lg font-arabic text-gold/80">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
             <p className="text-sm text-muted-foreground leading-relaxed border-l-2 border-gold/30 pl-3 italic">
-              {isFr
-                ? 'Ceci est ma wasiyya rédigée en pleine conscience, en bonne santé et dans le respect de la foi islamique. Je témoigne qu\'il n\'y a de divinité qu\'Allah et que Muhammad est Son Messager.'
-                : 'This is my wasiyya written in full consciousness, in good health and in accordance with Islamic faith. I testify that there is no deity but Allah and that Muhammad is His Messenger.'}
+              {tx(
+                'Ceci est ma wasiyya rédigée en pleine conscience, en bonne santé et dans le respect de la foi islamique. Je témoigne qu\'il n\'y a de divinité qu\'Allah et que Muhammad est Son Messager.',
+                'This is my wasiyya written in full consciousness, in good health and in accordance with Islamic faith. I testify that there is no deity but Allah and that Muhammad is His Messenger.',
+                'هذه وصيتي كُتبت بكامل وعيي وصحتي ووفقاً للشريعة الإسلامية. أشهد أن لا إله إلا الله وأن محمداً رسول الله.'
+              )}
             </p>
             <div className="flex gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Calendar className="h-3 w-3" />
-                {isFr ? 'Créé le' : 'Created'}: {createdAt ? new Date(createdAt).toLocaleDateString(isFr ? 'fr-FR' : 'en-US') : '—'}
+                {tx('Créé le', 'Created', 'أُنشئ في')}: {createdAt ? new Date(createdAt).toLocaleDateString(dateFmt) : '—'}
               </span>
               <span className="flex items-center gap-1">
                 <Calendar className="h-3 w-3" />
-                {isFr ? 'Modifié le' : 'Updated'}: {updatedAt ? new Date(updatedAt).toLocaleDateString(isFr ? 'fr-FR' : 'en-US') : '—'}
+                {tx('Modifié le', 'Updated', 'عُدّل في')}: {updatedAt ? new Date(updatedAt).toLocaleDateString(dateFmt) : '—'}
               </span>
             </div>
           </div>
@@ -395,32 +402,39 @@ export default function Testament() {
 
         {/* ② Souhaits funéraires */}
         <Section
-          title={isFr ? '② Souhaits funéraires' : '② Funeral Wishes'}
+          title={tx('② Souhaits funéraires', '② Funeral Wishes', '② رغبات الجنازة')}
           icon={<FileText className="h-3.5 w-3.5 text-gold" />}
         >
           <div className="p-5 space-y-4">
             <Textarea
               value={data.funeral_wishes}
               onChange={(e) => setData(d => ({ ...d, funeral_wishes: e.target.value }))}
-              placeholder={isFr ? 'Mes souhaits funéraires...' : 'My funeral wishes...'}
+              placeholder={tx('Mes souhaits funéraires...', 'My funeral wishes...', 'رغباتي للجنازة...')}
               className="min-h-[120px] text-sm bg-muted/20 border-border/50 resize-none"
             />
             <InfoBox>
-              <p className="font-medium mb-1">{isFr ? 'Sunnah à respecter :' : 'Sunnah to follow:'}</p>
+              <p className="font-medium mb-1">{tx('Sunnah à respecter :', 'Sunnah to follow:', 'من السنة:')}</p>
               <ul className="space-y-0.5 list-disc list-inside">
-                {isFr ? (
+                {language === 'ar' ? (
                   <>
-                    <li>Enterrement simple et rapide</li>
-                    <li>Pas de lecture de la Fatiha ou du Coran sur la tombe</li>
-                    <li>Pas de lamentations excessives</li>
-                    <li>Faire des invocations : <span className="font-arabic">اللهم اغفر له وارحمه</span></li>
+                    <li>دفن بسيط وسريع</li>
+                    <li>عدم قراءة الفاتحة أو القرآن على القبر</li>
+                    <li>عدم النياحة المفرطة</li>
+                    <li>الدعاء: <span className="font-arabic">اللهم اغفر له وارحمه</span></li>
                   </>
-                ) : (
+                ) : language === 'en' ? (
                   <>
                     <li>Simple and quick burial</li>
                     <li>No recitation of Al-Fatiha or Quran over the grave</li>
                     <li>No excessive lamentations</li>
                     <li>Supplicate: <span className="font-arabic">اللهم اغفر له وارحمه</span></li>
+                  </>
+                ) : (
+                  <>
+                    <li>Enterrement simple et rapide</li>
+                    <li>Pas de lecture de la Fatiha ou du Coran sur la tombe</li>
+                    <li>Pas de lamentations excessives</li>
+                    <li>Faire des invocations : <span className="font-arabic">اللهم اغفر له وارحمه</span></li>
                   </>
                 )}
               </ul>
@@ -430,30 +444,32 @@ export default function Testament() {
 
         {/* ③ Dettes & Obligations */}
         <Section
-          title={isFr ? '③ Dettes & Obligations' : '③ Debts & Obligations'}
+          title={tx('③ Dettes & Obligations', '③ Debts & Obligations', '③ الديون والالتزامات')}
           icon={<AlertCircle className="h-3.5 w-3.5 text-gold" />}
         >
           <div className="p-5 space-y-4">
             <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2.5 text-xs text-amber-400">
               <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-              <span>{isFr
-                ? 'Les dettes doivent être réglées avant toute distribution de l\'héritage.'
-                : 'Debts must be settled before any inheritance distribution.'}</span>
+              <span>{tx(
+                'Les dettes doivent être réglées avant toute distribution de l\'héritage.',
+                'Debts must be settled before any inheritance distribution.',
+                'يجب تسديد الديون قبل أي توزيع للميراث.'
+              )}</span>
             </div>
             <Link to="/debts">
               <Button variant="outline" size="sm" className="gap-2 border-gold/30 text-gold hover:bg-gold/5">
                 <ExternalLink className="h-3.5 w-3.5" />
-                {isFr ? 'Voir mes dettes' : 'View my debts'}
+                {tx('Voir mes dettes', 'View my debts', 'عرض ديوني')}
               </Button>
             </Link>
             <div className="space-y-2">
               <label className="text-xs font-medium text-muted-foreground">
-                {isFr ? 'Autres dettes ou obligations éventuelles' : 'Other debts or obligations'}
+                {tx('Autres dettes ou obligations éventuelles', 'Other debts or obligations', 'ديون أو التزامات أخرى')}
               </label>
               <Textarea
                 value={data.additional_debts}
                 onChange={(e) => setData(d => ({ ...d, additional_debts: e.target.value }))}
-                placeholder={isFr ? 'Dettes non enregistrées, obligations morales...' : 'Unregistered debts, moral obligations...'}
+                placeholder={tx('Dettes non enregistrées, obligations morales...', 'Unregistered debts, moral obligations...', 'ديون غير مسجلة، التزامات أخلاقية...')}
                 className="min-h-[80px] text-sm bg-muted/20 border-border/50 resize-none"
               />
             </div>
@@ -462,19 +478,19 @@ export default function Testament() {
 
         {/* ④ Wasiyya */}
         <Section
-          title={isFr ? '④ Wasiyya (max. 1/3)' : '④ Wasiyya (max. 1/3)'}
+          title={tx('④ Wasiyya (max. 1/3)', '④ Wasiyya (max. 1/3)', '④ الوصية (الحد الأقصى ١/٣)')}
           icon={<Users className="h-3.5 w-3.5 text-gold" />}
         >
           <div className="p-5 space-y-4">
             {/* Counter */}
             <div className={`flex items-center justify-between rounded-lg px-3 py-2 text-xs border ${wasiyyaExceeds ? 'bg-destructive/10 border-destructive/30 text-destructive' : 'bg-muted/30 border-border/40 text-muted-foreground'}`}>
-              <span>{isFr ? 'Total utilisé :' : 'Total used:'} <strong>{totalWasiyya.toFixed(2)}%</strong></span>
-              <span>{isFr ? 'Maximum : 33,33%' : 'Maximum: 33.33%'}</span>
+              <span>{tx('Total utilisé :', 'Total used:', 'المجموع المستخدم:')} <strong>{totalWasiyya.toFixed(2)}%</strong></span>
+              <span>{tx('Maximum : 33,33%', 'Maximum: 33.33%', 'الحد الأقصى: ٣٣٫٣٣٪')}</span>
             </div>
             {wasiyyaExceeds && (
               <div className="flex gap-2 rounded-lg bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
                 <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                {isFr ? 'La wasiyya ne peut pas dépasser un tiers des biens.' : 'Wasiyya cannot exceed one third of assets.'}
+                {tx('La wasiyya ne peut pas dépasser un tiers des biens.', 'Wasiyya cannot exceed one third of assets.', 'لا يمكن أن تتجاوز الوصية ثلث الأموال.')}
               </div>
             )}
 
@@ -486,7 +502,7 @@ export default function Testament() {
                     <Input
                       value={b.beneficiary}
                       onChange={(e) => updateBeneficiary(b.id, 'beneficiary', e.target.value)}
-                      placeholder={isFr ? 'Nom du bénéficiaire' : 'Beneficiary name'}
+                      placeholder={tx('Nom du bénéficiaire', 'Beneficiary name', 'اسم المستفيد')}
                       className="flex-1 h-8 text-sm bg-background/60 border-border/50"
                     />
                     <button onClick={() => removeBeneficiary(b.id)} className="text-muted-foreground hover:text-destructive transition-colors">
@@ -500,7 +516,7 @@ export default function Testament() {
                       className="h-8 rounded-md border border-border/50 bg-background/60 px-2 text-xs text-foreground"
                     >
                       <option value="percentage">%</option>
-                      <option value="amount">{isFr ? 'Montant' : 'Amount'}</option>
+                      <option value="amount">{tx('Montant', 'Amount', 'المبلغ')}</option>
                     </select>
                     <Input
                       type="number"
@@ -514,7 +530,7 @@ export default function Testament() {
                     <Input
                       value={b.notes}
                       onChange={(e) => updateBeneficiary(b.id, 'notes', e.target.value)}
-                      placeholder={isFr ? 'Notes...' : 'Notes...'}
+                      placeholder={tx('Notes...', 'Notes...', 'ملاحظات...')}
                       className="flex-1 h-8 text-sm bg-background/60 border-border/50"
                     />
                   </div>
@@ -524,20 +540,22 @@ export default function Testament() {
 
             <Button variant="outline" size="sm" onClick={addBeneficiary} className="gap-2 border-dashed border-gold/40 text-gold hover:bg-gold/5">
               <Plus className="h-3.5 w-3.5" />
-              {isFr ? 'Ajouter un bénéficiaire' : 'Add beneficiary'}
+              {tx('Ajouter un bénéficiaire', 'Add beneficiary', 'إضافة مستفيد')}
             </Button>
 
             <InfoBox>
-              {isFr
-                ? 'La wasiyya ne doit pas léser les héritiers légaux. Elle est limitée à 1/3 des biens et ne peut bénéficier à un héritier légal sans l\'accord des autres.'
-                : 'Wasiyya must not harm legal heirs. It is limited to 1/3 of assets and cannot benefit a legal heir without others\' consent.'}
+              {tx(
+                'La wasiyya ne doit pas léser les héritiers légaux. Elle est limitée à 1/3 des biens et ne peut bénéficier à un héritier légal sans l\'accord des autres.',
+                'Wasiyya must not harm legal heirs. It is limited to 1/3 of assets and cannot benefit a legal heir without others\' consent.',
+                'يجب ألا تضر الوصية بالورثة الشرعيين. وهي محددة بثلث الأموال ولا يجوز أن تكون لوارث شرعي إلا بموافقة باقي الورثة.'
+              )}
             </InfoBox>
           </div>
         </Section>
 
         {/* ⑤ Message audio */}
         <Section
-          title={isFr ? '⑤ Message audio' : '⑤ Audio Message'}
+          title={tx('⑤ Message audio', '⑤ Audio Message', '⑤ رسالة صوتية')}
           icon={<Mic className="h-3.5 w-3.5 text-gold" />}
           defaultOpen={false}
         >
@@ -550,18 +568,18 @@ export default function Testament() {
                 {recording && (
                   <div className="text-center">
                     <p className="text-lg font-mono text-destructive">{formatTime(recordingTime)}</p>
-                    <p className="text-xs text-muted-foreground">{isFr ? 'Max 5 min' : 'Max 5 min'}</p>
+                    <p className="text-xs text-muted-foreground">{tx('Max 5 min', 'Max 5 min', 'الحد الأقصى ٥ دقائق')}</p>
                   </div>
                 )}
                 {recording ? (
                   <Button variant="outline" size="sm" onClick={stopRecording} className="gap-2 border-destructive/50 text-destructive hover:bg-destructive/10">
                     <Square className="h-3.5 w-3.5" />
-                    {isFr ? 'Arrêter' : 'Stop'}
+                    {tx('Arrêter', 'Stop', 'إيقاف')}
                   </Button>
                 ) : (
                   <Button variant="outline" size="sm" onClick={startRecording} className="gap-2 border-gold/40 text-gold hover:bg-gold/5">
                     <Mic className="h-3.5 w-3.5" />
-                    {isFr ? 'Enregistrer un message audio' : 'Record audio message'}
+                    {tx('Enregistrer un message audio', 'Record audio message', 'تسجيل رسالة صوتية')}
                   </Button>
                 )}
               </div>
@@ -572,7 +590,7 @@ export default function Testament() {
                     {playingAudio ? <Pause className="h-4 w-4 text-gold" /> : <Play className="h-4 w-4 text-gold" />}
                   </button>
                   <div className="flex-1">
-                    <p className="text-xs font-medium">{isFr ? 'Message audio' : 'Audio message'}</p>
+                    <p className="text-xs font-medium">{tx('Message audio', 'Audio message', 'رسالة صوتية')}</p>
                     <p className="text-xs text-muted-foreground">{formatTime(data.audio_message?.duration || recordingTime)}</p>
                   </div>
                   <button onClick={deleteAudio} className="text-muted-foreground hover:text-destructive transition-colors">
@@ -587,21 +605,23 @@ export default function Testament() {
                 />
                 <Button variant="outline" size="sm" onClick={() => { deleteAudio(); }} className="gap-2 border-dashed border-border/50">
                   <Mic className="h-3.5 w-3.5" />
-                  {isFr ? 'Réenregistrer' : 'Re-record'}
+                  {tx('Réenregistrer', 'Re-record', 'إعادة التسجيل')}
                 </Button>
               </div>
             )}
             <InfoBox>
-              {isFr
-                ? 'L\'audio est chiffré côté client avant upload. Le serveur ne stocke que du ciphertext.'
-                : 'Audio is encrypted client-side before upload. The server only stores ciphertext.'}
+              {tx(
+                'L\'audio est chiffré côté client avant upload. Le serveur ne stocke que du ciphertext.',
+                'Audio is encrypted client-side before upload. The server only stores ciphertext.',
+                'يتم تشفير الصوت من جهة العميل قبل الرفع. الخادم يخزّن فقط النص المشفّر.'
+              )}
             </InfoBox>
           </div>
         </Section>
 
         {/* ⑥ Messages personnalisés */}
         <Section
-          title={isFr ? '⑥ Messages personnalisés' : '⑥ Personal Messages'}
+          title={tx('⑥ Messages personnalisés', '⑥ Personal Messages', '⑥ رسائل شخصية')}
           icon={<MessageSquare className="h-3.5 w-3.5 text-gold" />}
           defaultOpen={false}
         >
@@ -613,7 +633,7 @@ export default function Testament() {
                     <Input
                       value={msg.recipient}
                       onChange={(e) => updateMessage(msg.id, 'recipient', e.target.value)}
-                      placeholder={isFr ? 'Destinataire (nom libre)' : 'Recipient (free name)'}
+                      placeholder={tx('Destinataire (nom libre)', 'Recipient (free name)', 'المستلم (اسم حر)')}
                       className="flex-1 h-8 text-sm bg-background/60 border-border/50"
                     />
                     <button onClick={() => removeMessage(msg.id)} className="text-muted-foreground hover:text-destructive transition-colors">
@@ -623,13 +643,13 @@ export default function Testament() {
                   <Input
                     value={msg.title}
                     onChange={(e) => updateMessage(msg.id, 'title', e.target.value)}
-                    placeholder={isFr ? 'Titre du message' : 'Message title'}
+                    placeholder={tx('Titre du message', 'Message title', 'عنوان الرسالة')}
                     className="h-8 text-sm bg-background/60 border-border/50"
                   />
                   <Textarea
                     value={msg.content}
                     onChange={(e) => updateMessage(msg.id, 'content', e.target.value)}
-                    placeholder={isFr ? 'Votre message...' : 'Your message...'}
+                    placeholder={tx('Votre message...', 'Your message...', 'رسالتك...')}
                     className="min-h-[80px] text-sm bg-background/60 border-border/50 resize-none"
                   />
                   <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
@@ -639,7 +659,7 @@ export default function Testament() {
                       onChange={(e) => updateMessage(msg.id, 'visible_post_death', e.target.checked)}
                       className="accent-gold"
                     />
-                    {isFr ? 'Visible après décès uniquement' : 'Visible after death only'}
+                    {tx('Visible après décès uniquement', 'Visible after death only', 'مرئي بعد الوفاة فقط')}
                   </label>
                 </div>
               ))}
@@ -647,29 +667,29 @@ export default function Testament() {
 
             <Button variant="outline" size="sm" onClick={addMessage} className="gap-2 border-dashed border-gold/40 text-gold hover:bg-gold/5">
               <Plus className="h-3.5 w-3.5" />
-              {isFr ? 'Ajouter un message' : 'Add a message'}
+              {tx('Ajouter un message', 'Add a message', 'إضافة رسالة')}
             </Button>
           </div>
         </Section>
 
         {/* ⑦ Récapitulatif héritage */}
         <Section
-          title={isFr ? '⑦ Récapitulatif héritage (lecture seule)' : '⑦ Inheritance Summary (read only)'}
+          title={tx('⑦ Récapitulatif héritage (lecture seule)', '⑦ Inheritance Summary (read only)', '⑦ ملخص الميراث (للقراءة فقط)')}
           icon={<Users className="h-3.5 w-3.5 text-gold" />}
           defaultOpen={false}
         >
           <div className="p-5 space-y-4">
             <div className="flex items-center gap-2 rounded-lg bg-muted/30 border border-border/40 px-3 py-2 text-xs text-muted-foreground">
               <Lock className="h-3 w-3" />
-              {isFr ? 'Ce bloc est calculé automatiquement — non modifiable ici.' : 'This block is auto-calculated — not editable here.'}
+              {tx('Ce bloc est calculé automatiquement — non modifiable ici.', 'This block is auto-calculated — not editable here.', 'يُحسب هذا القسم تلقائياً — غير قابل للتعديل هنا.')}
             </div>
 
             {/* Static Islamic inheritance shares example */}
             <div className="space-y-2">
               {[
-                { label: isFr ? 'Épouse' : 'Spouse', share: '1/8', note: isFr ? '(si enfants)' : '(with children)' },
-                { label: isFr ? 'Mère' : 'Mother', share: '1/6', note: isFr ? '(si enfants)' : '(with children)' },
-                { label: isFr ? 'Fils' : 'Son', share: isFr ? 'Reliquat' : 'Remainder', note: isFr ? '(asaba)' : '(asaba)' },
+                { label: tx('Épouse', 'Spouse', 'الزوجة'), share: '1/8', note: tx('(si enfants)', '(with children)', '(إذا كان هناك أولاد)') },
+                { label: tx('Mère', 'Mother', 'الأم'), share: '1/6', note: tx('(si enfants)', '(with children)', '(إذا كان هناك أولاد)') },
+                { label: tx('Fils', 'Son', 'الابن'), share: tx('Reliquat', 'Remainder', 'الباقي'), note: tx('(asaba)', '(asaba)', '(عصبة)') },
               ].map((heir) => (
                 <div key={heir.label} className="flex items-center justify-between rounded-lg border border-border/30 bg-muted/10 px-3 py-2">
                   <div>
@@ -684,7 +704,7 @@ export default function Testament() {
             <Link to="/profile">
               <Button variant="outline" size="sm" className="gap-2 border-gold/30 text-gold hover:bg-gold/5 w-full">
                 <ExternalLink className="h-3.5 w-3.5" />
-                {isFr ? 'Voir l\'onglet Héritage pour calcul détaillé' : 'View Inheritance tab for detailed calculation'}
+                {tx('Voir l\'onglet Héritage pour calcul détaillé', 'View Inheritance tab for detailed calculation', 'عرض تبويب الميراث للحساب التفصيلي')}
               </Button>
             </Link>
           </div>
@@ -692,7 +712,7 @@ export default function Testament() {
 
         {/* Encryption notice */}
         <p className="text-xs text-muted-foreground text-center py-2">
-          🔒 {isFr ? 'Toutes les données sont chiffrées de bout en bout — AES-256-GCM' : 'All data is end-to-end encrypted — AES-256-GCM'}
+          🔒 {tx('Toutes les données sont chiffrées de bout en bout — AES-256-GCM', 'All data is end-to-end encrypted — AES-256-GCM', 'جميع البيانات مشفّرة من طرف إلى طرف — AES-256-GCM')}
         </p>
       </div>
 
@@ -712,23 +732,25 @@ export default function Testament() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {isFr ? 'Supprimer le message audio ?' : 'Delete audio message?'}
+              {tx('Supprimer le message audio ?', 'Delete audio message?', 'حذف الرسالة الصوتية؟')}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {isFr
-                ? 'Cette action est irréversible. Le message audio sera définitivement supprimé.'
-                : 'This action cannot be undone. The audio message will be permanently deleted.'}
+              {tx(
+                'Cette action est irréversible. Le message audio sera définitivement supprimé.',
+                'This action cannot be undone. The audio message will be permanently deleted.',
+                'هذا الإجراء لا يمكن التراجع عنه. سيتم حذف الرسالة الصوتية نهائياً.'
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>
-              {isFr ? 'Annuler' : 'Cancel'}
+              {t('cancel')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDeleteAudio}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isFr ? 'Supprimer' : 'Delete'}
+              {t('delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
