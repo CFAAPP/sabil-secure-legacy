@@ -75,14 +75,11 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
         <CardContent className="pt-3 pb-3 px-4 space-y-3">
           {/* Rate display row */}
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Badge variant="outline" className="text-[10px] gap-1 border-gold/30 text-gold">
                 <Coins className="h-3 w-3" />
                 {data.rates.source === 'api' ? z('apiMode') : z('manualMode')}
               </Badge>
-              <span>{z('goldPrice')}: {data.rates.gold_price_per_gram.toFixed(2)} {sym}{z('perGram')}</span>
-              <span className="hidden sm:inline">|</span>
-              <span className="hidden sm:inline">{z('silverPrice')}: {data.rates.silver_price_per_gram.toFixed(2)} {sym}{z('perGram')}</span>
               {data.rates.updated_at && (
                 <span className="text-[10px] text-muted-foreground/60">
                   ({rateDate})
@@ -101,6 +98,19 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
               <Button variant="ghost" size="sm" onClick={onRefreshRates} disabled={ratesFetching} className="h-7 text-xs text-muted-foreground hover:text-gold">
                 {ratesFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
               </Button>
+            </div>
+          </div>
+          {/* Gold & Silver values displayed below */}
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <div className="flex items-center gap-2 text-xs">
+              <div className="w-2 h-2 rounded-full bg-gold" />
+              <span className="text-muted-foreground">{z('goldPrice')}:</span>
+              <span className="font-medium">{data.rates.gold_price_per_gram.toFixed(2)} {sym}{z('perGram')}</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <div className="w-2 h-2 rounded-full bg-muted-foreground/40" />
+              <span className="text-muted-foreground">{z('silverPrice')}:</span>
+              <span className="font-medium">{data.rates.silver_price_per_gram.toFixed(2)} {sym}{z('perGram')}</span>
             </div>
           </div>
 
