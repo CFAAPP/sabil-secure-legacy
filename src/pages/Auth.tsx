@@ -9,7 +9,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation, LANGUAGE_LABELS, LANGUAGE_CYCLE } from '@/lib/i18n';
+import { useTranslation, LANGUAGE_LABELS, type Language } from '@/lib/i18n';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Globe } from 'lucide-react';
 
 export default function Auth() {
   const { language, setLanguage } = useAuth();
@@ -54,14 +56,29 @@ export default function Auth() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background islamic-pattern px-4">
       {/* Language toggle top-right */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => setLanguage(LANGUAGE_CYCLE[language])}
-        className="fixed top-4 right-4 z-50 text-xs text-muted-foreground hover:text-gold hover:bg-gold/5 tracking-widest font-medium"
-      >
-        {LANGUAGE_LABELS[language]}
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="fixed top-4 right-4 z-50 text-xs text-muted-foreground hover:text-gold hover:bg-gold/5 tracking-widest font-medium gap-1"
+          >
+            <Globe className="h-3.5 w-3.5" />
+            {LANGUAGE_LABELS[language]}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-[120px]">
+          {(['fr', 'en', 'ar'] as Language[]).map((lang) => (
+            <DropdownMenuItem
+              key={lang}
+              onClick={() => setLanguage(lang)}
+              className={language === lang ? 'bg-gold/10 text-gold font-medium' : ''}
+            >
+              {LANGUAGE_LABELS[lang]}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo */}
