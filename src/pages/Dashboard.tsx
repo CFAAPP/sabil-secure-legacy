@@ -1,7 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
 import { Card, CardContent } from '@/components/ui/card';
-import { Shield, FileText, Wallet, Users, Lock, ChevronRight, UserCircle } from 'lucide-react';
+import { Shield, FileText, Wallet, Users, Lock, ChevronRight, UserCircle, Calculator } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 
@@ -33,6 +33,14 @@ export default function Dashboard() {
       path: '/wakils',
       iconColor: 'text-emerald-400',
       glowColor: 'hsl(155 60% 45% / 0.15)',
+    },
+    {
+      title: 'Zakât al-Mâl',
+      description: language === 'fr' ? 'Calculez et gérez votre Zakât annuelle' : 'Calculate and manage your annual Zakât',
+      icon: Calculator,
+      path: '/zakat',
+      iconColor: 'text-amber-400',
+      glowColor: 'hsl(38 80% 55% / 0.15)',
     },
     {
       title: language === 'fr' ? 'Profil & Héritiers' : 'Profile & Heirs',
