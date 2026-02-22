@@ -57,6 +57,11 @@ export default {
           light: "hsl(var(--gold-light))",
           dim: "hsl(var(--gold-dim))",
         },
+        silver: {
+          DEFAULT: "hsl(var(--silver))",
+          light: "hsl(var(--silver-light))",
+          dim: "hsl(var(--silver-dim))",
+        },
         navy: {
           DEFAULT: "hsl(var(--navy))",
           deep: "hsl(var(--navy-deep))",

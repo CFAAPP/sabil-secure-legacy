@@ -38,6 +38,9 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
   const z = (key: Parameters<typeof zt>[0]) => zt(key, language);
   const cur = data.settings.currency;
   const sym = getCurrencySymbol(cur);
+  const isGold = data.settings.nisab_method === 'gold';
+  const themeColor = isGold ? 'gold' : 'silver';
+  const themeLabel = isGold ? z('goldPrice') : z('silverPrice');
   const [editingRates, setEditingRates] = useState(false);
   const [manualGold, setManualGold] = useState(data.rates.gold_price_per_gram.toString());
   const [manualSilver, setManualSilver] = useState(data.rates.silver_price_per_gram.toString());
@@ -173,20 +176,30 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
       <div className="grid grid-cols-2 gap-3">
         <KPICard icon={<TrendingUp className="h-4 w-4" />} label={z('totalAssets')} value={formatMoney(calc.totalAssets, cur)} color="text-primary" />
         <KPICard icon={<Wallet className="h-4 w-4" />} label={z('deductibleDebts')} value={formatMoney(calc.totalDebts, cur)} color="text-destructive" />
-        <KPICard icon={<Coins className="h-4 w-4" />} label={z('netZakatable')} value={formatMoney(calc.netZakatable, cur)} color="text-gold" highlight />
-        <KPICard icon={<Info className="h-4 w-4" />} label={`${z('nisab')} (${data.settings.nisab_method === 'gold' ? z('goldPrice') : z('silverPrice')})`} value={formatMoney(calc.nisab, cur)} color="text-muted-foreground" />
+        <KPICard icon={<Coins className="h-4 w-4" />} label={z('netZakatable')} value={formatMoney(calc.netZakatable, cur)} color={`text-${themeColor}`} highlight highlightColor={themeColor} />
+        <KPICard icon={<Info className="h-4 w-4" />} label={`${z('nisab')} (${themeLabel})`} value={formatMoney(calc.nisab, cur)} color={`text-${themeColor}`} />
+      </div>
+
+      {/* Nisab method reminder */}
+      <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs ${isGold ? 'bg-gold/5 border-gold/20 text-gold' : 'bg-silver/5 border-silver/20 text-silver'}`}>
+        <Info className="h-3.5 w-3.5 shrink-0" />
+        <span>
+          {language === 'fr'
+            ? `Méthode Nisab : ${isGold ? 'Or' : 'Argent'} — seuil à ${formatMoney(calc.nisab, cur)}`
+            : `Nisab method: ${isGold ? 'Gold' : 'Silver'} — threshold at ${formatMoney(calc.nisab, cur)}`}
+        </span>
       </div>
 
       {/* Zakat Due - Hero card */}
-      <Card className="border-gold/30 bg-gradient-to-br from-card to-secondary/30 overflow-hidden relative">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+      <Card className={`border-${themeColor}/30 bg-gradient-to-br from-card to-secondary/30 overflow-hidden relative`}>
+        <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-${themeColor}/40 to-transparent`} />
         <CardContent className="pt-5 pb-4 text-center">
           <p className="text-xs text-muted-foreground mb-1">{z('zakatDue')}</p>
-          <p className="text-4xl font-bold text-gold-gradient" style={{ fontFamily: "'Amiri', serif" }}>
+          <p className={`text-4xl font-bold ${isGold ? 'text-gold-gradient' : 'text-silver-gradient'}`} style={{ fontFamily: "'Amiri', serif" }}>
             {formatMoney(calc.zakatDue, cur)}
           </p>
           {calc.isAboveNisab && (
-            <Badge className="mt-2 bg-gold/15 text-gold border-gold/30 text-[10px]">{z('zakatIsDue')}</Badge>
+            <Badge className={`mt-2 text-[10px] ${isGold ? 'bg-gold/15 text-gold border-gold/30' : 'bg-silver/15 text-silver border-silver/30'}`}>{z('zakatIsDue')}</Badge>
           )}
         </CardContent>
       </Card>
@@ -197,12 +210,12 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted-foreground">{Math.round(calc.nisabPercent)}% {z('nisabReached')}</span>
             {calc.isAboveNisab ? (
-              <Badge className="bg-gold/15 text-gold border-gold/30 text-[10px]">✓ {z('zakatIsDue')}</Badge>
+              <Badge className={`text-[10px] ${isGold ? 'bg-gold/15 text-gold border-gold/30' : 'bg-silver/15 text-silver border-silver/30'}`}>✓ {z('zakatIsDue')}</Badge>
             ) : (
               <Badge variant="outline" className="text-[10px] text-muted-foreground">{z('belowNisab')}</Badge>
             )}
           </div>
-          <Progress value={progressValue} className="h-3 bg-secondary [&>div]:bg-gradient-to-r [&>div]:from-gold-dim [&>div]:to-gold" />
+          <Progress value={progressValue} className={`h-3 bg-secondary [&>div]:bg-gradient-to-r ${isGold ? '[&>div]:from-gold-dim [&>div]:to-gold' : '[&>div]:from-silver-dim [&>div]:to-silver'}`} />
         </CardContent>
       </Card>
 
@@ -275,7 +288,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
         </Button>
       </div>
       {calc.isAboveNisab && (
-        <Button onClick={onMarkPaid} className="w-full h-11 bg-gold hover:bg-gold-dim text-primary-foreground gap-2">
+        <Button onClick={onMarkPaid} className={`w-full h-11 text-primary-foreground gap-2 ${isGold ? 'bg-gold hover:bg-gold-dim' : 'bg-silver hover:bg-silver-dim'}`}>
           <CheckCircle2 className="h-4 w-4" /> {z('markAsPaid')}
         </Button>
       )}
@@ -283,15 +296,15 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
   );
 }
 
-function KPICard({ icon, label, value, color, highlight }: { icon: React.ReactNode; label: string; value: string; color: string; highlight?: boolean }) {
+function KPICard({ icon, label, value, color, highlight, highlightColor = 'gold' }: { icon: React.ReactNode; label: string; value: string; color: string; highlight?: boolean; highlightColor?: string }) {
   return (
-    <Card className={`border-border ${highlight ? 'border-gold/30 bg-gradient-to-br from-card to-gold/5' : ''}`}>
+    <Card className={`border-border ${highlight ? `border-${highlightColor}/30 bg-gradient-to-br from-card to-${highlightColor}/5` : ''}`}>
       <CardContent className="pt-3 pb-3 px-4">
         <div className="flex items-center gap-1.5 mb-1">
           <span className={color}>{icon}</span>
           <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</span>
         </div>
-        <p className={`text-lg font-semibold ${highlight ? 'text-gold-gradient' : ''}`}>{value}</p>
+        <p className={`text-lg font-semibold ${highlight ? (highlightColor === 'gold' ? 'text-gold-gradient' : 'text-silver-gradient') : ''}`}>{value}</p>
       </CardContent>
     </Card>
   );
