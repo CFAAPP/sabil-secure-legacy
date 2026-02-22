@@ -1,13 +1,19 @@
+import { useState } from 'react';
+import { format } from 'date-fns';
 import type { Language } from '@/lib/i18n';
 import type { ZakatSettings } from '@/hooks/useZakatData';
 import { CURRENCIES } from '@/lib/zakatCalc';
 import { zt } from '@/lib/zakatI18n';
+import { formatHijriForStorage, parseStoredDate, formatHijriDisplay, gregorianToHijri, type HijriDate } from '@/lib/hijri';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Save, Loader2, Coins, Calendar, Bell } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import HijriCalendar from '@/components/zakat/HijriCalendar';
+import { Save, Loader2, Coins, Calendar as CalendarIcon, Bell, Sun, Moon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface Props {
   settings: ZakatSettings;
@@ -19,10 +25,46 @@ interface Props {
 
 export default function ZakatSettingsPanel({ settings, language, onSettingsChange, onSave, saving }: Props) {
   const z = (key: Parameters<typeof zt>[0]) => zt(key, language);
+  const [dateOpen, setDateOpen] = useState(false);
 
   const update = (partial: Partial<ZakatSettings>) => {
     onSettingsChange({ ...settings, ...partial });
   };
+
+  const parsed = parseStoredDate(settings.annual_date);
+  const isHijri = settings.calendar_type === 'hijri';
+
+  const displayDate = (() => {
+    if (!settings.annual_date) return null;
+    if (isHijri && parsed.hijri) {
+      return formatHijriDisplay(parsed.hijri, language);
+    }
+    if (parsed.gregorianStr) {
+      try {
+        return format(new Date(parsed.gregorianStr), 'PPP');
+      } catch { return parsed.gregorianStr; }
+    }
+    return null;
+  })();
+
+  const handleCalendarTypeChange = (type: 'gregorian' | 'hijri') => {
+    // Clear date when switching type to avoid format mismatch
+    update({ calendar_type: type, annual_date: null });
+  };
+
+  const handleGregorianSelect = (date: Date | undefined) => {
+    if (date) {
+      update({ annual_date: format(date, 'yyyy-MM-dd') });
+      setDateOpen(false);
+    }
+  };
+
+  const handleHijriSelect = (h: HijriDate) => {
+    update({ annual_date: formatHijriForStorage(h) });
+    setDateOpen(false);
+  };
+
+  const selectedGregorianDate = !isHijri && parsed.gregorianStr ? new Date(parsed.gregorianStr) : undefined;
 
   return (
     <div className="space-y-4">
@@ -62,16 +104,77 @@ export default function ZakatSettingsPanel({ settings, language, onSettingsChang
       <Card className="border-border">
         <CardHeader className="pb-2 pt-4 px-4">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-primary" /> {z('annualDate')}
+            <CalendarIcon className="h-4 w-4 text-primary" /> {z('annualDate')}
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-4 pb-4">
-          <Input
-            type="date"
-            value={settings.annual_date || ''}
-            onChange={e => update({ annual_date: e.target.value || null })}
-            className="h-9 text-sm"
-          />
+        <CardContent className="px-4 pb-4 space-y-4">
+          {/* Calendar type toggle */}
+          <div>
+            <label className="text-xs text-muted-foreground mb-2 block">{z('calendarType')}</label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleCalendarTypeChange('gregorian')}
+                className={cn(
+                  'flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium transition-all',
+                  !isHijri
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-card text-muted-foreground hover:bg-accent/50'
+                )}
+              >
+                <Sun className="h-3.5 w-3.5" />
+                {z('solarYear')}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleCalendarTypeChange('hijri')}
+                className={cn(
+                  'flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium transition-all',
+                  isHijri
+                    ? 'border-gold bg-gold/10 text-gold'
+                    : 'border-border bg-card text-muted-foreground hover:bg-accent/50'
+                )}
+              >
+                <Moon className="h-3.5 w-3.5" />
+                {z('lunarYear')}
+              </button>
+            </div>
+          </div>
+
+          {/* Date picker */}
+          <div>
+            <Popover open={dateOpen} onOpenChange={setDateOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    'w-full justify-start text-left font-normal h-9 text-sm',
+                    !displayDate && 'text-muted-foreground'
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {displayDate || z('pickDate')}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                {isHijri ? (
+                  <HijriCalendar
+                    selected={parsed.hijri}
+                    onSelect={handleHijriSelect}
+                    language={language}
+                  />
+                ) : (
+                  <Calendar
+                    mode="single"
+                    selected={selectedGregorianDate}
+                    onSelect={handleGregorianSelect}
+                    initialFocus
+                    className={cn('p-3 pointer-events-auto')}
+                  />
+                )}
+              </PopoverContent>
+            </Popover>
+          </div>
         </CardContent>
       </Card>
 
