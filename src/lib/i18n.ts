@@ -1,4 +1,4 @@
-export type Language = 'fr' | 'en';
+export type Language = 'fr' | 'en' | 'ar';
 
 const translations = {
   fr: {
@@ -40,12 +40,14 @@ const translations = {
     wakils: 'Mes Wakils',
     settings: 'Paramètres',
     vault: 'Coffre-fort',
+    profileHeirs: 'Profil & Héritiers',
     
     // Dashboard
     welcomeBack: 'Bienvenue',
     securityStatus: 'Statut de sécurité',
     encrypted: 'Chiffré',
     lastAccess: 'Dernier accès',
+    yourId: 'Votre ID (à partager avec vos Wakils)',
     
     // Testament
     testamentTitle: 'Mon Testament',
@@ -132,6 +134,35 @@ const translations = {
     loading: 'Chargement...',
     error: 'Erreur',
     success: 'Succès',
+
+    // Dashboard cards
+    writeWill: 'Rédigez et sécurisez votre testament',
+    manageDebts: 'Gérez vos dettes et créances',
+    designateTrusted: 'Désignez vos personnes de confiance',
+    zakatCalc: 'Calculez et gérez votre Zakât annuelle',
+    prepareWill: 'Préparez votre testament islamique',
+
+    // Auth page
+    accessVault: 'Accédez à votre coffre-fort sécurisé',
+    protectWishes: 'Protégez vos dernières volontés',
+    wakilAccessLink: 'Mode Wakil — Accéder aux données d\'un proche',
+    noAccountCreate: 'Pas encore de compte ? Créer un compte',
+    hasAccountLogin: 'Déjà un compte ? Se connecter',
+
+    // Passphrase
+    unlock: 'Déverrouiller',
+    phraseMismatch: 'Les phrases ne correspondent pas.',
+    phraseMinLength: 'La phrase doit faire au moins 8 caractères.',
+
+    // Testament
+    declaration: 'Déclaration',
+    funeralWishes: 'Souhaits funéraires',
+    debtsObligations: 'Dettes & Obligations',
+    wasiyya: 'Wasiyya (Legs)',
+    audioMessage: 'Message audio',
+    personalMessages: 'Messages personnels',
+    createdOn: 'Créé le',
+    updatedOn: 'Modifié le',
   },
   en: {
     appName: 'Mirath',
@@ -167,11 +198,13 @@ const translations = {
     wakils: 'My Wakils',
     settings: 'Settings',
     vault: 'Vault',
+    profileHeirs: 'Profile & Heirs',
     
     welcomeBack: 'Welcome back',
     securityStatus: 'Security status',
     encrypted: 'Encrypted',
     lastAccess: 'Last access',
+    yourId: 'Your ID (share with your Wakils)',
     
     testamentTitle: 'My Will',
     testamentPlaceholder: 'Write your will here...',
@@ -252,15 +285,203 @@ const translations = {
     loading: 'Loading...',
     error: 'Error',
     success: 'Success',
+
+    writeWill: 'Write and secure your will',
+    manageDebts: 'Manage your debts and credits',
+    designateTrusted: 'Designate your trusted ones',
+    zakatCalc: 'Calculate and manage your annual Zakât',
+    prepareWill: 'Prepare your Islamic will',
+
+    accessVault: 'Access your secure vault',
+    protectWishes: 'Protect your last wishes',
+    wakilAccessLink: 'Wakil Mode — Access a loved one\'s data',
+    noAccountCreate: 'Don\'t have an account? Sign up',
+    hasAccountLogin: 'Already have an account? Log in',
+
+    unlock: 'Unlock',
+    phraseMismatch: 'Phrases do not match.',
+    phraseMinLength: 'Phrase must be at least 8 characters.',
+
+    declaration: 'Declaration',
+    funeralWishes: 'Funeral Wishes',
+    debtsObligations: 'Debts & Obligations',
+    wasiyya: 'Wasiyya (Bequest)',
+    audioMessage: 'Audio Message',
+    personalMessages: 'Personal Messages',
+    createdOn: 'Created',
+    updatedOn: 'Updated',
+  },
+  ar: {
+    appName: 'ميراث',
+    appTagline: 'إرثك الإسلامي المؤمّن',
+    
+    login: 'تسجيل الدخول',
+    signup: 'إنشاء حساب',
+    email: 'البريد الإلكتروني',
+    password: 'كلمة المرور',
+    confirmPassword: 'تأكيد كلمة المرور',
+    forgotPassword: 'نسيت كلمة المرور؟',
+    noAccount: 'ليس لديك حساب؟',
+    hasAccount: 'لديك حساب بالفعل؟',
+    signupSuccess: 'تحقق من بريدك الإلكتروني لتأكيد التسجيل.',
+    loginError: 'بريد إلكتروني أو كلمة مرور غير صحيحة.',
+    logout: 'تسجيل الخروج',
+    
+    enterPin: 'أدخل رمز PIN الخاص بك',
+    createPin: 'أنشئ رمز PIN الخاص بك (6 أرقام)',
+    confirmPin: 'أكد رمز PIN الخاص بك',
+    pinMismatch: 'رمزا PIN غير متطابقين.',
+    pinLocked: 'محاولات كثيرة. أعد المحاولة بعد',
+    minutes: 'دقائق',
+    
+    enterPassphrase: 'أدخل عبارة المرور',
+    createPassphrase: 'أنشئ عبارة التشفير الخاصة بك',
+    passphraseHint: 'لن يتم تخزين هذه العبارة أبداً. وهي ضرورية لفك تشفير بياناتك.',
+    passphraseWarning: '⚠️ إذا فقدت هذه العبارة، ستكون بياناتك غير قابلة للاسترداد.',
+    
+    dashboard: 'لوحة التحكم',
+    testament: 'وصيتي',
+    debts: 'ديوني',
+    wakils: 'وكلائي',
+    settings: 'الإعدادات',
+    vault: 'الخزنة',
+    profileHeirs: 'الملف الشخصي والورثة',
+    
+    welcomeBack: 'مرحباً بعودتك',
+    securityStatus: 'حالة الأمان',
+    encrypted: 'مشفّر',
+    lastAccess: 'آخر دخول',
+    yourId: 'معرّفك (شاركه مع وكلائك)',
+    
+    testamentTitle: 'وصيتي',
+    testamentPlaceholder: 'اكتب وصيتك هنا...',
+    save: 'حفظ',
+    saved: 'تم الحفظ',
+    saving: 'جارٍ الحفظ...',
+    
+    debtsTitle: 'ديوني',
+    iOwe: 'أنا مدين',
+    owedToMe: 'مدين لي',
+    addDebt: 'إضافة دين',
+    editDebt: 'تعديل الدين',
+    amount: 'المبلغ',
+    description: 'الوصف',
+    creditorDebtor: 'الدائن / المدين',
+    settled: 'مسددة',
+    markSettled: 'تحديد كمسددة',
+    delete: 'حذف',
+    name: 'الاسم',
+    currency: 'العملة',
+    dueDate: 'تاريخ الاستحقاق',
+    noDueDate: 'بدون تاريخ استحقاق',
+    hasDueDate: 'تاريخ الاستحقاق',
+    notes: 'ملاحظات',
+    statusPending: 'قيد الانتظار',
+    statusPaid: 'مدفوعة',
+    statusOverdue: 'متأخرة',
+    noDebts: 'لا توجد ديون',
+    details: 'التفاصيل',
+    remind: 'تذكير',
+    noDueDateLabel: 'بدون تاريخ استحقاق',
+    
+    reminderSettings: 'إعدادات التذكير',
+    reminderFrequency: 'تكرار التذكير',
+    reminderOff: 'معطّل',
+    reminderWeekly: 'أسبوعي',
+    reminderMonthly: 'شهري',
+    reminderQuarterly: 'ربع سنوي',
+    reminderCustom: 'مخصص',
+    reminderCustomDays: 'كل X أيام',
+    reminderType: 'نوع التذكير',
+    reminderSimple: 'بسيط',
+    reminderDisabled: 'معطّل',
+    reminderSimpleMsg: 'تذكّر تحديث ديونك.',
+    reminderBanner: '🔔 تذكّر مراجعة ديونك!',
+    sendReminder: 'إرسال تذكير',
+    reminderMessage: 'الرسالة',
+    reminderMsg1: 'لا تنسَ دينك عند {name}: {amount} {currency}.',
+    reminderMsg2: 'يقترب موعد سداد دينك عند {name}: {amount} {currency}، الاستحقاق {date}.',
+    reminderCustomMsg: 'رسالة مخصصة',
+    reminderRecipient: 'المستلم',
+    reminderRecipientPlaceholder: 'بريد إلكتروني أو رقم هاتف',
+    shareVia: 'مشاركة عبر...',
+    copyMessage: 'نسخ الرسالة',
+    messageCopied: 'تم نسخ الرسالة!',
+    
+    wakilsTitle: 'وكلائي',
+    addWakil: 'إضافة وكيل',
+    wakilName: 'اسم الوكيل',
+    wakilEmail: 'البريد الإلكتروني',
+    wakilPhone: 'الهاتف',
+    wakilCode: 'رمز الوكيل',
+    revokeWakil: 'إلغاء',
+    activeWakil: 'نشط',
+    revokedWakil: 'ملغى',
+    copyCode: 'نسخ الرمز',
+    codeCopied: 'تم نسخ الرمز!',
+    
+    wakilMode: 'وضع الوكيل',
+    wakilModeDesc: 'الوصول إلى بيانات قريب',
+    enterUserId: 'معرّف المستخدم',
+    enterWakilCode: 'رمز الوكيل',
+    accessData: 'الوصول للبيانات',
+    readOnly: 'للقراءة فقط',
+    
+    cancel: 'إلغاء',
+    confirm: 'تأكيد',
+    loading: 'جارٍ التحميل...',
+    error: 'خطأ',
+    success: 'نجاح',
+
+    writeWill: 'اكتب وأمّن وصيتك',
+    manageDebts: 'أدِر ديونك ومستحقاتك',
+    designateTrusted: 'عيّن أشخاصك الموثوقين',
+    zakatCalc: 'احسب وأدِر زكاتك السنوية',
+    prepareWill: 'حضّر وصيتك الإسلامية',
+
+    accessVault: 'الوصول إلى خزنتك المؤمّنة',
+    protectWishes: 'احمِ وصاياك الأخيرة',
+    wakilAccessLink: 'وضع الوكيل — الوصول إلى بيانات قريب',
+    noAccountCreate: 'ليس لديك حساب؟ إنشاء حساب',
+    hasAccountLogin: 'لديك حساب بالفعل؟ تسجيل الدخول',
+
+    unlock: 'فتح القفل',
+    phraseMismatch: 'العبارتان غير متطابقتين.',
+    phraseMinLength: 'يجب أن تكون العبارة 8 أحرف على الأقل.',
+
+    declaration: 'الإعلان',
+    funeralWishes: 'رغبات الجنازة',
+    debtsObligations: 'الديون والالتزامات',
+    wasiyya: 'الوصية',
+    audioMessage: 'رسالة صوتية',
+    personalMessages: 'رسائل شخصية',
+    createdOn: 'أُنشئ في',
+    updatedOn: 'عُدّل في',
   },
 } as const;
 
 export type TranslationKey = keyof typeof translations.fr;
 
 export function t(key: TranslationKey, lang: Language = 'fr'): string {
-  return translations[lang][key] || key;
+  return translations[lang]?.[key] || translations.fr[key] || key;
 }
 
 export function useTranslation(lang: Language) {
   return (key: TranslationKey) => t(key, lang);
 }
+
+export function isRTL(lang: Language): boolean {
+  return lang === 'ar';
+}
+
+export const LANGUAGE_LABELS: Record<Language, string> = {
+  fr: 'FR',
+  en: 'EN',
+  ar: 'عر',
+};
+
+export const LANGUAGE_CYCLE: Record<Language, Language> = {
+  fr: 'en',
+  en: 'ar',
+  ar: 'fr',
+};

@@ -7,7 +7,7 @@ interface Profile {
   id: string;
   user_id: string;
   display_name: string | null;
-  language: Language;
+  language: string;
   pin_hash: string | null;
   encryption_salt: string | null;
   pin_attempts: number;
@@ -45,7 +45,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .single();
     if (data) {
       setProfile(data as Profile);
-      setLanguage((data as Profile).language);
+      const lang = (data as any).language;
+      if (lang === 'fr' || lang === 'en' || lang === 'ar') setLanguage(lang);
+      else setLanguage('fr');
     }
   };
 

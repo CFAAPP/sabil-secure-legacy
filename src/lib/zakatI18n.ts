@@ -1,6 +1,6 @@
 import type { Language } from './i18n';
 
-const zakatTranslations = {
+const zakatTranslations: Record<string, Record<string, string>> = {
   fr: {
     zakatTitle: 'Zakât al-Mâl',
     zakatSubtitle: 'Calculez et gérez votre Zakât annuelle',
@@ -22,8 +22,6 @@ const zakatTranslations = {
     editAssets: 'Modifier mes actifs',
     viewSimulation: 'Simulation détaillée',
     markAsPaid: 'Marquer comme payée',
-    
-    // Simulator sections
     moneyAccounts: 'Argent & Comptes',
     cashOnHand: 'Espèces',
     currentAccount: 'Compte courant',
@@ -46,8 +44,6 @@ const zakatTranslations = {
     importFromDebts: 'Importer depuis Dettes',
     importedDebts: 'Importé depuis vos dettes',
     saveData: 'Enregistrer',
-    
-    // Rates
     dailyRate: 'Taux du jour',
     lastUpdate: 'Dernière maj',
     refresh: 'Actualiser',
@@ -56,8 +52,6 @@ const zakatTranslations = {
     goldPrice: 'Or',
     silverPrice: 'Argent',
     perGram: '/g',
-    
-    // Settings
     currency: 'Devise',
     nisabMethod: 'Méthode Nisab',
     goldMethod: 'Or (87,48g)',
@@ -70,8 +64,6 @@ const zakatTranslations = {
     reminders: 'Rappels',
     reminder30d: '30 jours avant',
     reminder7d: '7 jours avant',
-    
-    // History
     year: 'Année',
     method: 'Méthode',
     paid: 'Payée',
@@ -79,8 +71,6 @@ const zakatTranslations = {
     paymentDate: 'Date de paiement',
     duplicatePrevious: 'Dupliquer année précédente',
     noHistory: 'Aucun historique enregistré',
-    
-    // Info tooltips
     infoCash: 'Argent liquide en votre possession',
     infoBank: 'Solde de votre compte courant',
     infoSavings: 'Comptes épargne, livrets, etc.',
@@ -91,8 +81,6 @@ const zakatTranslations = {
     infoInvestments: 'Valeur marchande actuelle',
     infoCrypto: 'Valeur marchande actuelle de vos cryptomonnaies',
     infoDebts: 'Dettes que vous devez payer dans l\'année',
-
-    // Banner
     zakatDueSoon: 'Votre date de Zakât approche !',
     zakatDueToday: 'C\'est le jour de votre Zakât !',
     daysRemaining: 'jours restants',
@@ -101,11 +89,9 @@ const zakatTranslations = {
     setDateInSettings: 'Définir dans les réglages',
     today: 'Aujourd\'hui',
     zakatDay: 'Jour de Zakât',
-    
     saving: 'Sauvegarde...',
     saved: 'Sauvegardé !',
     error: 'Erreur',
-    
     cashBank: 'Cash / Banque',
     goldSilverShort: 'Or / Argent',
     businessShort: 'Business',
@@ -133,7 +119,6 @@ const zakatTranslations = {
     editAssets: 'Edit my assets',
     viewSimulation: 'Detailed simulation',
     markAsPaid: 'Mark as paid',
-    
     moneyAccounts: 'Money & Accounts',
     cashOnHand: 'Cash on hand',
     currentAccount: 'Current account',
@@ -156,7 +141,6 @@ const zakatTranslations = {
     importFromDebts: 'Import from Debts',
     importedDebts: 'Imported from your debts',
     saveData: 'Save',
-    
     dailyRate: 'Daily rate',
     lastUpdate: 'Last update',
     refresh: 'Refresh',
@@ -165,7 +149,6 @@ const zakatTranslations = {
     goldPrice: 'Gold',
     silverPrice: 'Silver',
     perGram: '/g',
-    
     currency: 'Currency',
     nisabMethod: 'Nisab Method',
     goldMethod: 'Gold (87.48g)',
@@ -178,7 +161,6 @@ const zakatTranslations = {
     reminders: 'Reminders',
     reminder30d: '30 days before',
     reminder7d: '7 days before',
-    
     year: 'Year',
     method: 'Method',
     paid: 'Paid',
@@ -186,7 +168,6 @@ const zakatTranslations = {
     paymentDate: 'Payment date',
     duplicatePrevious: 'Duplicate previous year',
     noHistory: 'No history recorded',
-    
     infoCash: 'Cash in your possession',
     infoBank: 'Current account balance',
     infoSavings: 'Savings accounts, etc.',
@@ -197,7 +178,6 @@ const zakatTranslations = {
     infoInvestments: 'Current market value',
     infoCrypto: 'Current market value of your crypto',
     infoDebts: 'Debts you must pay within the year',
-    
     zakatDueSoon: 'Your Zakât date is approaching!',
     zakatDueToday: 'Today is your Zakât day!',
     daysRemaining: 'days remaining',
@@ -206,21 +186,116 @@ const zakatTranslations = {
     setDateInSettings: 'Set in settings',
     today: 'Today',
     zakatDay: 'Zakât Day',
-    
     saving: 'Saving...',
     saved: 'Saved!',
     error: 'Error',
-    
     cashBank: 'Cash / Bank',
     goldSilverShort: 'Gold / Silver',
     businessShort: 'Business',
     investmentsShort: 'Investments',
     cryptoShort: 'Crypto',
   },
-} as const;
+  ar: {
+    zakatTitle: 'زكاة المال',
+    zakatSubtitle: 'احسب وأدِر زكاتك السنوية',
+    dashboard: 'نظرة عامة',
+    simulator: 'المحاكي',
+    history: 'السجل',
+    settings: 'الإعدادات',
+    totalAssets: 'إجمالي الأصول',
+    deductibleDebts: 'الديون القابلة للخصم',
+    netZakatable: 'صافي المال الزكوي',
+    nisab: 'النصاب',
+    zakatDue: 'الزكاة المستحقة (٢.٥٪)',
+    nisabReached: 'من النصاب',
+    zakatIsDue: 'الزكاة مستحقة',
+    belowNisab: 'تحت النصاب',
+    assetBreakdown: 'توزيع الأصول',
+    zakatOverYears: 'الزكاة عبر السنوات',
+    noHistoryYet: 'لا يوجد سجل بعد',
+    editAssets: 'تعديل أصولي',
+    viewSimulation: 'محاكاة مفصلة',
+    markAsPaid: 'تحديد كمدفوعة',
+    moneyAccounts: 'النقد والحسابات',
+    cashOnHand: 'نقد في اليد',
+    currentAccount: 'حساب جاري',
+    savingsAccount: 'حساب توفير',
+    otherLiquid: 'سيولة أخرى',
+    goldSilver: 'الذهب والفضة',
+    goldGrams: 'ذهب (غرام)',
+    silverGrams: 'فضة (غرام)',
+    pricePerGram: 'السعر/غرام',
+    calculatedValue: 'القيمة',
+    business: 'تجارة',
+    stockValue: 'قيمة البضاعة',
+    receivables: 'مستحقات قابلة للتحصيل',
+    investmentsSection: 'استثمارات',
+    stocksEtf: 'أسهم/صناديق',
+    cryptoAssets: 'عملات رقمية',
+    otherInvestments: 'أخرى',
+    debtsSection: 'الديون القابلة للخصم',
+    totalDebts: 'إجمالي الديون',
+    importFromDebts: 'استيراد من الديون',
+    importedDebts: 'تم الاستيراد من ديونك',
+    saveData: 'حفظ',
+    dailyRate: 'سعر اليوم',
+    lastUpdate: 'آخر تحديث',
+    refresh: 'تحديث',
+    manualMode: 'يدوي',
+    apiMode: 'أسعار مباشرة',
+    goldPrice: 'ذهب',
+    silverPrice: 'فضة',
+    perGram: '/غ',
+    currency: 'العملة',
+    nisabMethod: 'طريقة النصاب',
+    goldMethod: 'ذهب (٨٧.٤٨غ)',
+    silverMethod: 'فضة (٦١٢.٣٦غ)',
+    annualDate: 'تاريخ الزكاة السنوي',
+    calendarType: 'نوع التقويم',
+    solarYear: 'سنة شمسية (ميلادي)',
+    lunarYear: 'سنة قمرية (هجري)',
+    pickDate: 'اختر تاريخاً',
+    reminders: 'التذكيرات',
+    reminder30d: 'قبل ٣٠ يوماً',
+    reminder7d: 'قبل ٧ أيام',
+    year: 'السنة',
+    method: 'الطريقة',
+    paid: 'مدفوعة',
+    unpaid: 'غير مدفوعة',
+    paymentDate: 'تاريخ الدفع',
+    duplicatePrevious: 'تكرار السنة السابقة',
+    noHistory: 'لا يوجد سجل',
+    infoCash: 'النقد الذي بحوزتك',
+    infoBank: 'رصيد حسابك الجاري',
+    infoSavings: 'حسابات التوفير',
+    infoGold: 'الوزن الإجمالي بالغرام (مجوهرات، سبائك، عملات)',
+    infoSilver: 'الوزن الإجمالي بالغرام',
+    infoBusiness: 'قيمة البضاعة المعدة للبيع',
+    infoReceivables: 'ديون متأكد من تحصيلها',
+    infoInvestments: 'القيمة السوقية الحالية',
+    infoCrypto: 'القيمة السوقية لعملاتك الرقمية',
+    infoDebts: 'ديون يجب سدادها خلال العام',
+    zakatDueSoon: 'موعد زكاتك يقترب!',
+    zakatDueToday: 'اليوم هو يوم زكاتك!',
+    daysRemaining: 'يوم متبقي',
+    daysRemainingTimeline: 'أيام متبقية قبل الزكاة',
+    noDateSet: 'لم يتم تحديد تاريخ سنوي',
+    setDateInSettings: 'حدد في الإعدادات',
+    today: 'اليوم',
+    zakatDay: 'يوم الزكاة',
+    saving: 'جارٍ الحفظ...',
+    saved: 'تم الحفظ!',
+    error: 'خطأ',
+    cashBank: 'نقد / بنك',
+    goldSilverShort: 'ذهب / فضة',
+    businessShort: 'تجارة',
+    investmentsShort: 'استثمارات',
+    cryptoShort: 'عملات رقمية',
+  },
+};
 
 export type ZakatTranslationKey = keyof typeof zakatTranslations.fr;
 
-export function zt(key: ZakatTranslationKey, lang: Language = 'fr'): string {
-  return zakatTranslations[lang][key] || key;
+export function zt(key: string, lang: Language = 'fr'): string {
+  return zakatTranslations[lang]?.[key] || zakatTranslations.fr[key] || key;
 }

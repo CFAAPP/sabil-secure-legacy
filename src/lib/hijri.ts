@@ -12,7 +12,14 @@ const HIJRI_MONTHS_EN = [
   'Ramadan', 'Shawwal', 'Dhul Qi\'dah', 'Dhul Hijjah',
 ];
 
-export function getHijriMonths(lang: 'fr' | 'en') {
+const HIJRI_MONTHS_AR = [
+  'محرّم', 'صفر', 'ربيع الأول', 'ربيع الثاني',
+  'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان',
+  'رمضان', 'شوّال', 'ذو القعدة', 'ذو الحجة',
+];
+
+export function getHijriMonths(lang: string) {
+  if (lang === 'ar') return HIJRI_MONTHS_AR;
   return lang === 'fr' ? HIJRI_MONTHS_FR : HIJRI_MONTHS_EN;
 }
 
@@ -125,7 +132,7 @@ export function parseStoredDate(value: string | null): { type: 'gregorian' | 'hi
 /**
  * Format Hijri date for display
  */
-export function formatHijriDisplay(h: HijriDate, lang: 'fr' | 'en'): string {
+export function formatHijriDisplay(h: HijriDate, lang: string): string {
   const months = getHijriMonths(lang);
   return `${h.day} ${months[h.month - 1]} ${h.year}`;
 }

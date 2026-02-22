@@ -49,7 +49,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
 
   // Rates info bar
   const rateDate = data.rates.updated_at
-    ? new Date(data.rates.updated_at).toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US')
+    ? new Date(data.rates.updated_at).toLocaleDateString(language === 'fr' ? 'fr-FR' : language === 'ar' ? 'ar-SA' : 'en-US')
     : '—';
 
   // Donut data
