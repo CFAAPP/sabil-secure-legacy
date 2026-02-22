@@ -36,7 +36,7 @@ const translations = {
     // Navigation
     dashboard: 'Tableau de bord',
     testament: 'Mon Testament',
-    debts: 'Mes Dettes',
+    debts: 'Mes Dettes & Créances',
     wakils: 'Mes Wakils',
     settings: 'Paramètres',
     vault: 'Coffre-fort',
