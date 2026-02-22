@@ -12,7 +12,7 @@ export default function Dashboard() {
   const cards = [
     {
       title: t('testament'),
-      description: language === 'fr' ? 'Rédigez et sécurisez votre testament' : 'Write and secure your will',
+      description: t('writeWill'),
       icon: FileText,
       path: '/testament',
       iconColor: 'text-blue-400',
@@ -20,7 +20,7 @@ export default function Dashboard() {
     },
     {
       title: t('debts'),
-      description: language === 'fr' ? 'Gérez vos dettes et créances' : 'Manage your debts and credits',
+      description: t('manageDebts'),
       icon: Wallet,
       path: '/debts',
       iconColor: 'text-gold',
@@ -28,7 +28,7 @@ export default function Dashboard() {
     },
     {
       title: t('wakils'),
-      description: language === 'fr' ? 'Désignez vos personnes de confiance' : 'Designate your trusted ones',
+      description: t('designateTrusted'),
       icon: Users,
       path: '/wakils',
       iconColor: 'text-emerald-400',
@@ -36,15 +36,15 @@ export default function Dashboard() {
     },
     {
       title: 'Zakât al-Mâl',
-      description: language === 'fr' ? 'Calculez et gérez votre Zakât annuelle' : 'Calculate and manage your annual Zakât',
+      description: t('zakatCalc'),
       icon: Calculator,
       path: '/zakat',
       iconColor: 'text-amber-400',
       glowColor: 'hsl(38 80% 55% / 0.15)',
     },
     {
-      title: language === 'fr' ? 'Profil & Héritiers' : 'Profile & Heirs',
-      description: language === 'fr' ? 'Préparez votre testament islamique' : 'Prepare your Islamic will',
+      title: t('profileHeirs'),
+      description: t('prepareWill'),
       icon: UserCircle,
       path: '/profile',
       iconColor: 'text-violet-400',
@@ -106,7 +106,7 @@ export default function Dashboard() {
         {/* User ID */}
         <div className="rounded-xl border border-border/50 bg-muted/20 p-4">
           <p className="text-xs text-muted-foreground mb-2">
-            {language === 'fr' ? 'Votre ID (à partager avec vos Wakils)' : 'Your ID (share with your Wakils)'}
+            {t('yourId')}
           </p>
           <code className="text-xs text-muted-foreground/70 bg-muted/40 px-2 py-1 rounded-lg font-mono select-all break-all">
             {user?.id}

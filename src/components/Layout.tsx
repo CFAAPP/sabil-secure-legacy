@@ -1,9 +1,9 @@
 import { Link, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation, type Language } from '@/lib/i18n';
+import { useTranslation, isRTL, LANGUAGE_LABELS, LANGUAGE_CYCLE, type Language } from '@/lib/i18n';
 import { Shield, FileText, Wallet, Users, LogOut, Menu, X, UserCircle, ArrowLeft, Calculator } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import mirathLogo from '@/assets/mirath-logo.png';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -12,6 +12,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Apply RTL direction to document
+  useEffect(() => {
+    const rtl = isRTL(language);
+    document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [language]);
+
   if (!user) return <Navigate to="/" replace />;
 
   const navItems = [
@@ -19,11 +26,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { path: '/testament', label: t('testament'), icon: FileText },
     { path: '/debts', label: t('debts'), icon: Wallet },
     { path: '/zakat', label: 'Zakât', icon: Calculator },
-    { path: '/profile', label: language === 'fr' ? 'Profil & Héritiers' : 'Profile & Heirs', icon: UserCircle },
+    { path: '/profile', label: t('profileHeirs'), icon: UserCircle },
     { path: '/wakils', label: t('wakils'), icon: Users },
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const cycleLanguage = () => {
+    setLanguage(LANGUAGE_CYCLE[language]);
+  };
 
   return (
     <div className="min-h-screen islamic-pattern">
@@ -45,7 +56,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <span
                 className="text-gold-gradient font-display text-xl font-bold tracking-[0.12em] uppercase"
               >
-                MIRATH
+                {language === 'ar' ? 'ميراث' : 'MIRATH'}
               </span>
             </Link>
           </div>
@@ -54,10 +65,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')}
-              className="text-xs text-muted-foreground hover:text-gold hover:bg-gold/5 tracking-widest font-medium"
+              onClick={cycleLanguage}
+              className="text-xs text-muted-foreground hover:text-gold hover:bg-gold/5 tracking-widest font-medium min-w-[40px]"
             >
-              {language === 'fr' ? 'EN' : 'FR'}
+              {LANGUAGE_LABELS[language]}
             </Button>
             <Button
               variant="ghost"
@@ -82,8 +93,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Sidebar */}
         <nav
-          className={`fixed top-14 left-0 z-40 h-[calc(100vh-3.5rem)] w-60 border-r border-border bg-card p-4 shadow-sm transition-transform duration-300 md:sticky md:translate-x-0 overflow-y-auto ${
-            menuOpen ? 'translate-x-0' : '-translate-x-full'
+          className={`fixed top-14 z-40 h-[calc(100vh-3.5rem)] w-60 border-border bg-card p-4 shadow-sm transition-transform duration-300 md:sticky md:translate-x-0 overflow-y-auto ${
+            isRTL(language) 
+              ? `right-0 border-l ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`
+              : `left-0 border-r ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`
           }`}
         >
           {/* Glow top */}
@@ -110,7 +123,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 )}
                 {item.label}
                 {isActive(item.path) && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_6px_hsl(43_72%_58%/0.8)]" />
+                  <div className="ms-auto w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_6px_hsl(43_72%_58%/0.8)]" />
                 )}
               </Link>
             ))}
@@ -143,10 +156,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {location.pathname !== '/dashboard' && (
         <Link
           to="/dashboard"
-          className="md:hidden fixed bottom-6 left-5 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-card border border-gold/30 shadow-lg shadow-black/30 hover:bg-gold/10 hover:border-gold/60 transition-all active:scale-95"
-          aria-label="Tableau de bord"
+          className={`md:hidden fixed bottom-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-card border border-gold/30 shadow-lg shadow-black/30 hover:bg-gold/10 hover:border-gold/60 transition-all active:scale-95 ${
+            isRTL(language) ? 'right-5' : 'left-5'
+          }`}
+          aria-label={t('dashboard')}
         >
-          <ArrowLeft className="h-5 w-5 text-gold" />
+          <ArrowLeft className={`h-5 w-5 text-gold ${isRTL(language) ? 'rotate-180' : ''}`} />
         </Link>
       )}
     </div>

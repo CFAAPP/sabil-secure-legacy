@@ -8,8 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation, LANGUAGE_LABELS, LANGUAGE_CYCLE } from '@/lib/i18n';
 
 export default function Auth() {
+  const { language, setLanguage } = useAuth();
+  const t = useTranslation(language);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +26,7 @@ export default function Auth() {
     setLoading(true);
 
     if (!isLogin && password !== confirmPassword) {
-      toast({ title: 'Erreur', description: 'Les mots de passe ne correspondent pas.', variant: 'destructive' });
+      toast({ title: t('error'), description: t('phraseMismatch'), variant: 'destructive' });
       setLoading(false);
       return;
     }
@@ -30,7 +34,7 @@ export default function Auth() {
     if (isLogin) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        toast({ title: 'Erreur', description: 'Email ou mot de passe incorrect.', variant: 'destructive' });
+        toast({ title: t('error'), description: t('loginError'), variant: 'destructive' });
       }
     } else {
       const { error } = await supabase.auth.signUp({
@@ -39,9 +43,9 @@ export default function Auth() {
         options: { emailRedirectTo: window.location.origin },
       });
       if (error) {
-        toast({ title: 'Erreur', description: error.message, variant: 'destructive' });
+        toast({ title: t('error'), description: error.message, variant: 'destructive' });
       } else {
-        toast({ title: 'Succès', description: 'Vérifiez votre email pour confirmer votre inscription.' });
+        toast({ title: t('success'), description: t('signupSuccess') });
       }
     }
     setLoading(false);
@@ -49,27 +53,37 @@ export default function Auth() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background islamic-pattern px-4">
+      {/* Language toggle top-right */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => setLanguage(LANGUAGE_CYCLE[language])}
+        className="fixed top-4 right-4 z-50 text-xs text-muted-foreground hover:text-gold hover:bg-gold/5 tracking-widest font-medium"
+      >
+        {LANGUAGE_LABELS[language]}
+      </Button>
+
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center gap-3">
           <img src={mirathLogo} alt="Mirath" className="h-20 w-20 rounded-2xl object-cover shadow-lg" />
-          <h1 className="font-serif text-3xl font-bold text-foreground">Mirath</h1>
-          <p className="text-sm text-muted-foreground">Votre héritage islamique sécurisé</p>
+          <h1 className="font-serif text-3xl font-bold text-foreground">{language === 'ar' ? 'ميراث' : 'Mirath'}</h1>
+          <p className="text-sm text-muted-foreground">{t('appTagline')}</p>
         </div>
 
         <Card className="border-border/50 shadow-xl">
           <CardHeader className="text-center">
             <CardTitle className="font-serif text-xl">
-              {isLogin ? 'Se connecter' : 'Créer un compte'}
+              {isLogin ? t('login') : t('signup')}
             </CardTitle>
             <CardDescription>
-              {isLogin ? 'Accédez à votre coffre-fort sécurisé' : 'Protégez vos dernières volontés'}
+              {isLogin ? t('accessVault') : t('protectWishes')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -80,7 +94,7 @@ export default function Auth() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Mot de passe</Label>
+                <Label htmlFor="password">{t('password')}</Label>
                 <Input
                   id="password"
                   type="password"
@@ -93,7 +107,7 @@ export default function Auth() {
               </div>
               {!isLogin && (
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+                  <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
                   <Input
                     id="confirmPassword"
                     type="password"
@@ -107,7 +121,7 @@ export default function Auth() {
               )}
               <Button type="submit" className="w-full" disabled={loading}>
                 <Shield className="mr-2 h-4 w-4" />
-                {loading ? 'Chargement...' : isLogin ? 'Se connecter' : 'Créer un compte'}
+                {loading ? t('loading') : isLogin ? t('login') : t('signup')}
               </Button>
             </form>
 
@@ -117,7 +131,7 @@ export default function Auth() {
                 onClick={() => setIsLogin(!isLogin)}
                 className="text-primary hover:underline"
               >
-                {isLogin ? "Pas encore de compte ? Créer un compte" : 'Déjà un compte ? Se connecter'}
+                {isLogin ? t('noAccountCreate') : t('hasAccountLogin')}
               </button>
             </div>
 
@@ -127,7 +141,7 @@ export default function Auth() {
                 className="text-sm text-accent hover:underline inline-flex items-center gap-1"
               >
                 <Shield className="h-3 w-3" />
-                Mode Wakil — Accéder aux données d'un proche
+                {t('wakilAccessLink')}
               </Link>
             </div>
           </CardContent>

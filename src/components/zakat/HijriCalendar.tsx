@@ -13,7 +13,7 @@ import {
 interface Props {
   selected?: HijriDate;
   onSelect: (date: HijriDate) => void;
-  language: 'fr' | 'en';
+  language: string;
   className?: string;
 }
 
