@@ -170,7 +170,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {location.pathname !== '/dashboard' && (
         <Link
           to="/dashboard"
-          className={`md:hidden fixed bottom-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-card border border-gold/30 shadow-lg shadow-black/30 hover:bg-gold/10 hover:border-gold/60 transition-all active:scale-95 ${
+          className={`lg:hidden fixed bottom-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-card border border-gold/30 shadow-lg shadow-black/30 hover:bg-gold/10 hover:border-gold/60 transition-all active:scale-95 ${
             isRTL(language) ? 'right-5' : 'left-5'
           }`}
           aria-label={t('dashboard')}
