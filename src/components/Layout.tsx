@@ -1,7 +1,8 @@
 import { Link, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation, isRTL, LANGUAGE_LABELS, LANGUAGE_CYCLE, type Language } from '@/lib/i18n';
-import { Shield, FileText, Wallet, Users, LogOut, Menu, X, UserCircle, ArrowLeft, Calculator } from 'lucide-react';
+import { useTranslation, isRTL, LANGUAGE_LABELS, type Language } from '@/lib/i18n';
+import { Shield, FileText, Wallet, Users, LogOut, Menu, X, UserCircle, ArrowLeft, Calculator, Globe } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import mirathLogo from '@/assets/mirath-logo.png';
@@ -32,9 +33,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const cycleLanguage = () => {
-    setLanguage(LANGUAGE_CYCLE[language]);
-  };
+  const languages: Language[] = ['fr', 'en', 'ar'];
 
   return (
     <div className="min-h-screen islamic-pattern">
@@ -62,14 +61,29 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={cycleLanguage}
-              className="text-xs text-muted-foreground hover:text-gold hover:bg-gold/5 tracking-widest font-medium min-w-[40px]"
-            >
-              {LANGUAGE_LABELS[language]}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs text-muted-foreground hover:text-gold hover:bg-gold/5 tracking-widest font-medium min-w-[40px] gap-1"
+                >
+                  <Globe className="h-3.5 w-3.5" />
+                  {LANGUAGE_LABELS[language]}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[120px]">
+                {languages.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang}
+                    onClick={() => setLanguage(lang)}
+                    className={language === lang ? 'bg-gold/10 text-gold font-medium' : ''}
+                  >
+                    {LANGUAGE_LABELS[lang]}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button
               variant="ghost"
               size="sm"
