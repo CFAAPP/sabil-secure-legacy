@@ -382,7 +382,7 @@ export default function Testament() {
             <p className="text-center text-lg font-arabic text-gold/80">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
             <p className="text-sm text-muted-foreground leading-relaxed border-l-2 border-gold/30 pl-3 italic">
               {tx(
-                'Ceci est ma wasiyya rédigée en pleine conscience, en bonne santé et dans le respect de la foi islamique. Je témoigne qu\'il n\'y a de divinité qu\'Allah et que Muhammad est Son Messager.',
+                'Ceci est ma wasiyya rédigée en pleine conscience, en bonne santé et dans le respect de la foi islamique. Je témoigne qu\'il n\'y a rien de digne d\'être adoré qu\'Allah et que Muhammad est Son Messager.',
                 'This is my wasiyya written in full consciousness, in good health and in accordance with Islamic faith. I testify that there is no deity but Allah and that Muhammad is His Messenger.',
                 'هذه وصيتي كُتبت بكامل وعيي وصحتي ووفقاً للشريعة الإسلامية. أشهد أن لا إله إلا الله وأن محمداً رسول الله.'
               )}
