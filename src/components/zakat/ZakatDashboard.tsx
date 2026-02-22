@@ -288,7 +288,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
       <Card className="border-border">
         <CardContent className="pt-4 pb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground">{Math.round(calc.nisabPercent)}% {z('nisabReached')}</span>
+            <span className="text-xs text-muted-foreground">{calc.nisabPercent >= 100 ? '100' : Math.round(calc.nisabPercent)}% {z('nisabReached')}</span>
             {calc.isAboveNisab ? (
               <Badge className={`text-[10px] ${isGold ? 'bg-gold/15 text-gold border-gold/30' : 'bg-silver/15 text-silver border-silver/30'}`}>✓ {z('zakatIsDue')}</Badge>
             ) : (
