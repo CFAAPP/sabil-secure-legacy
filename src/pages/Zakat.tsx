@@ -44,8 +44,9 @@ export default function Zakat() {
     }
   }, [data.settings.currency, fetchRates, setData]);
 
+  // Only auto-fetch rates if source is not manual (manual rates persist until cleared)
   useEffect(() => {
-    if (!loading) loadRates();
+    if (!loading && data.rates.source !== 'manual') loadRates();
   }, [loading, data.settings.currency]);
 
   // Calculate zakat
@@ -225,6 +226,7 @@ export default function Zakat() {
               onClearManualRates={() => {
                 loadRates();
               }}
+              onGoToSettings={() => setActiveTab('settings')}
             />
           </TabsContent>
 

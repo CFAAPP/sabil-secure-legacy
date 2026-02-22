@@ -5,13 +5,14 @@ import type { ZakatCalcResult } from '@/lib/zakatCalc';
 import type { ZakatData } from '@/hooks/useZakatData';
 import { formatMoney, getCurrencySymbol } from '@/lib/zakatCalc';
 import { zt } from '@/lib/zakatI18n';
+import { parseStoredDate, hijriToGregorian, formatHijriDisplay } from '@/lib/hijri';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
-import { RefreshCw, Calculator, Clock, CheckCircle2, TrendingUp, Wallet, Coins, Loader2, Info, ExternalLink, Edit3, Trash2 } from 'lucide-react';
+import { RefreshCw, Calculator, Clock, CheckCircle2, TrendingUp, Wallet, Coins, Loader2, Info, ExternalLink, Edit3, Trash2, CalendarClock, Settings } from 'lucide-react';
 
 interface Props {
   calc: ZakatCalcResult;
@@ -24,6 +25,7 @@ interface Props {
   onMarkPaid: () => void;
   onManualRateChange: (gold: number, silver: number) => void;
   onClearManualRates: () => void;
+  onGoToSettings: () => void;
 }
 
 const CHART_COLORS = [
@@ -34,7 +36,7 @@ const CHART_COLORS = [
   'hsl(340 50% 50%)', // pink
 ];
 
-export default function ZakatDashboard({ calc, data, language, ratesFetching, onRefreshRates, onGoToSimulator, onGoToHistory, onMarkPaid, onManualRateChange, onClearManualRates }: Props) {
+export default function ZakatDashboard({ calc, data, language, ratesFetching, onRefreshRates, onGoToSimulator, onGoToHistory, onMarkPaid, onManualRateChange, onClearManualRates, onGoToSettings }: Props) {
   const z = (key: Parameters<typeof zt>[0]) => zt(key, language);
   const cur = data.settings.currency;
   const sym = getCurrencySymbol(cur);
@@ -70,6 +72,43 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
     })), [data.history]);
 
   const progressValue = Math.min(calc.nisabPercent, 100);
+
+  // Calculate days remaining until zakat date
+  const daysInfo = useMemo(() => {
+    if (!data.settings.annual_date) return null;
+    const parsed = parseStoredDate(data.settings.annual_date);
+    let targetDate: Date;
+    let displayLabel: string;
+
+    if (parsed.type === 'hijri' && parsed.hijri) {
+      targetDate = hijriToGregorian(parsed.hijri);
+      displayLabel = formatHijriDisplay(parsed.hijri, language);
+    } else if (parsed.gregorianStr) {
+      // Build this year's date from month/day
+      const parts = parsed.gregorianStr.split('-');
+      const month = parseInt(parts[1]) - 1;
+      const day = parseInt(parts[2]);
+      targetDate = new Date(new Date().getFullYear(), month, day);
+      // If already passed this year, use next year
+      if (targetDate < new Date()) {
+        targetDate = new Date(new Date().getFullYear() + 1, month, day);
+      }
+      displayLabel = targetDate.toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+    } else {
+      return null;
+    }
+
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    targetDate.setHours(0, 0, 0, 0);
+    const diffMs = targetDate.getTime() - now.getTime();
+    const daysLeft = Math.ceil(diffMs / 86400000);
+    const totalDays = 365; // approximate cycle
+    const elapsed = Math.max(0, totalDays - daysLeft);
+    const percent = Math.min(100, Math.max(0, (elapsed / totalDays) * 100));
+
+    return { daysLeft, displayLabel, percent };
+  }, [data.settings.annual_date, language]);
 
   return (
     <div className="space-y-4">
@@ -171,6 +210,47 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
           )}
         </CardContent>
       </Card>
+
+      {/* Days remaining timeline */}
+      {daysInfo ? (
+        <Card className={`border-${themeColor}/20 overflow-hidden`}>
+          <CardContent className="pt-4 pb-4">
+            <div className="flex items-center gap-2 mb-3">
+              <CalendarClock className={`h-4 w-4 text-${themeColor}`} />
+              <span className="text-xs font-medium">{z('daysRemainingTimeline')}</span>
+            </div>
+            <div className="relative mb-3">
+              <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all bg-gradient-to-r ${isGold ? 'from-gold-dim to-gold' : 'from-silver-dim to-silver'}`}
+                  style={{ width: `${daysInfo.percent}%` }}
+                />
+              </div>
+              {/* Markers */}
+              <div className="flex justify-between mt-2">
+                <span className="text-[10px] text-muted-foreground">{z('today')}</span>
+                <span className={`text-[10px] font-medium text-${themeColor}`}>{daysInfo.displayLabel}</span>
+              </div>
+            </div>
+            <div className="text-center">
+              <span className={`text-3xl font-bold ${isGold ? 'text-gold-gradient' : 'text-silver-gradient'}`} style={{ fontFamily: "'Amiri', serif" }}>
+                {daysInfo.daysLeft}
+              </span>
+              <span className="text-xs text-muted-foreground ml-2">{z('daysRemaining')}</span>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="border-border border-dashed">
+          <CardContent className="pt-4 pb-4 text-center">
+            <CalendarClock className="h-5 w-5 text-muted-foreground/40 mx-auto mb-2" />
+            <p className="text-xs text-muted-foreground mb-2">{z('noDateSet')}</p>
+            <Button variant="outline" size="sm" onClick={onGoToSettings} className="text-xs h-8 gap-1.5">
+              <Settings className="h-3.5 w-3.5" /> {z('setDateInSettings')}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 gap-3">
