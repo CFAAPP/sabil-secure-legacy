@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import DebtEdit from "./pages/DebtEdit";
 import DebtApprove from "./pages/DebtApprove";
 import Profile from "./pages/Profile";
+import Zakat from "./pages/Zakat";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/testament" element={<Testament />} />
                 <Route path="/debts" element={<Debts />} />
+                <Route path="/zakat" element={<Zakat />} />
                 <Route path="/wakils" element={<Wakils />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<NotFound />} />

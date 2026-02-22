@@ -1,7 +1,7 @@
 import { Link, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation, type Language } from '@/lib/i18n';
-import { Shield, FileText, Wallet, Users, LogOut, Menu, X, UserCircle, ArrowLeft } from 'lucide-react';
+import { Shield, FileText, Wallet, Users, LogOut, Menu, X, UserCircle, ArrowLeft, Calculator } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import mirathLogo from '@/assets/mirath-logo.png';
@@ -18,6 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { path: '/dashboard', label: t('dashboard'), icon: Shield },
     { path: '/testament', label: t('testament'), icon: FileText },
     { path: '/debts', label: t('debts'), icon: Wallet },
+    { path: '/zakat', label: 'Zakât', icon: Calculator },
     { path: '/profile', label: language === 'fr' ? 'Profil & Héritiers' : 'Profile & Heirs', icon: UserCircle },
     { path: '/wakils', label: t('wakils'), icon: Users },
   ];
