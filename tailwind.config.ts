@@ -13,7 +13,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Space Grotesk', 'Inter', 'sans-serif'],
-        serif: ['Provicali', 'Syne', 'sans-serif'],
+        serif: ['Cocogoose', 'Syne', 'sans-serif'],
         arabic: ['Amiri', 'serif'],
         display: ['Syne', 'sans-serif'],
         milker: ['Milker', 'sans-serif'],
