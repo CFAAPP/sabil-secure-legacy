@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useState } from 'react';
 import type { Language } from '@/lib/i18n';
 import type { ZakatCalcResult } from '@/lib/zakatCalc';
 import type { ZakatData } from '@/hooks/useZakatData';
@@ -6,10 +7,11 @@ import { formatMoney, getCurrencySymbol } from '@/lib/zakatCalc';
 import { zt } from '@/lib/zakatI18n';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { PieChart, Pie, Cell, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
-import { RefreshCw, Calculator, Clock, CheckCircle2, TrendingUp, Wallet, Coins, Loader2, Info } from 'lucide-react';
+import { RefreshCw, Calculator, Clock, CheckCircle2, TrendingUp, Wallet, Coins, Loader2, Info, ExternalLink, Edit3 } from 'lucide-react';
 
 interface Props {
   calc: ZakatCalcResult;
@@ -20,6 +22,7 @@ interface Props {
   onGoToSimulator: () => void;
   onGoToHistory: () => void;
   onMarkPaid: () => void;
+  onManualRateChange: (gold: number, silver: number) => void;
 }
 
 const CHART_COLORS = [
@@ -30,9 +33,13 @@ const CHART_COLORS = [
   'hsl(340 50% 50%)', // pink
 ];
 
-export default function ZakatDashboard({ calc, data, language, ratesFetching, onRefreshRates, onGoToSimulator, onGoToHistory, onMarkPaid }: Props) {
+export default function ZakatDashboard({ calc, data, language, ratesFetching, onRefreshRates, onGoToSimulator, onGoToHistory, onMarkPaid, onManualRateChange }: Props) {
   const z = (key: Parameters<typeof zt>[0]) => zt(key, language);
   const cur = data.settings.currency;
+  const sym = getCurrencySymbol(cur);
+  const [editingRates, setEditingRates] = useState(false);
+  const [manualGold, setManualGold] = useState(data.rates.gold_price_per_gram.toString());
+  const [manualSilver, setManualSilver] = useState(data.rates.silver_price_per_gram.toString());
 
   // Rates info bar
   const rateDate = data.rates.updated_at
@@ -63,20 +70,83 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
   return (
     <div className="space-y-4">
       {/* Rates bar */}
-      <div className="flex items-center justify-between bg-card rounded-xl border border-border px-4 py-2.5">
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <Badge variant="outline" className="text-[10px] gap-1 border-gold/30 text-gold">
-            <Coins className="h-3 w-3" />
-            {data.rates.source === 'api' ? z('apiMode') : z('manualMode')}
-          </Badge>
-          <span>{z('goldPrice')}: {data.rates.gold_price_per_gram.toFixed(2)} {getCurrencySymbol(cur)}{z('perGram')}</span>
-          <span className="hidden sm:inline">|</span>
-          <span className="hidden sm:inline">{z('silverPrice')}: {data.rates.silver_price_per_gram.toFixed(2)} {getCurrencySymbol(cur)}{z('perGram')}</span>
-        </div>
-        <Button variant="ghost" size="sm" onClick={onRefreshRates} disabled={ratesFetching} className="h-7 text-xs text-muted-foreground hover:text-gold">
-          {ratesFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
-        </Button>
-      </div>
+      <Card className="border-border">
+        <CardContent className="pt-3 pb-3 px-4 space-y-3">
+          {/* Rate display row */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+              <Badge variant="outline" className="text-[10px] gap-1 border-gold/30 text-gold">
+                <Coins className="h-3 w-3" />
+                {data.rates.source === 'api' ? z('apiMode') : z('manualMode')}
+              </Badge>
+              <span>{z('goldPrice')}: {data.rates.gold_price_per_gram.toFixed(2)} {sym}{z('perGram')}</span>
+              <span className="hidden sm:inline">|</span>
+              <span className="hidden sm:inline">{z('silverPrice')}: {data.rates.silver_price_per_gram.toFixed(2)} {sym}{z('perGram')}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" onClick={() => { setManualGold(data.rates.gold_price_per_gram.toString()); setManualSilver(data.rates.silver_price_per_gram.toString()); setEditingRates(!editingRates); }} className="h-7 text-xs text-muted-foreground hover:text-gold">
+                <Edit3 className="h-3.5 w-3.5" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={onRefreshRates} disabled={ratesFetching} className="h-7 text-xs text-muted-foreground hover:text-gold">
+                {ratesFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+              </Button>
+            </div>
+          </div>
+
+          {/* Manual input fields */}
+          {editingRates && (
+            <div className="space-y-2 pt-1 border-t border-border/50">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1 block">{z('goldPrice')} ({sym}/g)</label>
+                  <Input
+                    type="number"
+                    step="any"
+                    min="0"
+                    value={manualGold}
+                    onChange={e => setManualGold(e.target.value)}
+                    className="h-8 text-sm bg-background"
+                    placeholder="0.00"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1 block">{z('silverPrice')} ({sym}/g)</label>
+                  <Input
+                    type="number"
+                    step="any"
+                    min="0"
+                    value={manualSilver}
+                    onChange={e => setManualSilver(e.target.value)}
+                    className="h-8 text-sm bg-background"
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    onManualRateChange(parseFloat(manualGold) || 0, parseFloat(manualSilver) || 0);
+                    setEditingRates(false);
+                  }}
+                  className="h-8 text-xs bg-gold hover:bg-gold-dim text-primary-foreground flex-1"
+                >
+                  {language === 'fr' ? 'Appliquer' : 'Apply'}
+                </Button>
+                <a
+                  href="https://www.veracash.com/fr/cours-or"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-gold/30 text-xs text-gold hover:bg-gold/5 transition-colors flex-1 justify-center"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  {language === 'fr' ? "Cours de l'or/argent en direct" : 'Live gold/silver prices'}
+                </a>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 gap-3">
