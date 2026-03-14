@@ -148,7 +148,7 @@ export default function Auth() {
                   type="button"
                   onClick={async () => {
                     if (!email) {
-                      toast({ title: t('error'), description: t('email'), variant: 'destructive' });
+                      toast({ title: t('error'), description: language === 'ar' ? 'أدخل بريدك الإلكتروني أولاً' : language === 'en' ? 'Please enter your email first' : 'Veuillez entrer votre email d\'abord', variant: 'destructive' });
                       return;
                     }
                     setLoading(true);
