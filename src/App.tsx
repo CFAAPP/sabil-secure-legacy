@@ -15,6 +15,7 @@ import DebtEdit from "./pages/DebtEdit";
 import DebtApprove from "./pages/DebtApprove";
 import Profile from "./pages/Profile";
 import Zakat from "./pages/Zakat";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           {/* Public routes - no auth required */}
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/debt-approve/:token" element={<DebtApprove />} />
           <Route path="/debt-edit/:token" element={<DebtEdit />} />
           <Route path="/wakil-access" element={<WakilAccess />} />
