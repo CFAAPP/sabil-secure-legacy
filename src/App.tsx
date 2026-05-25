@@ -25,28 +25,24 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          {/* Public routes - no auth required */}
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/debt-approve/:token" element={<DebtApprove />} />
-          <Route path="/debt-edit/:token" element={<DebtEdit />} />
-          <Route path="/wakil-access" element={<WakilAccess />} />
-          {/* Authenticated routes */}
-          <Route path="/*" element={
-            <AuthProvider>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/testament" element={<Testament />} />
-                <Route path="/debts" element={<Debts />} />
-                <Route path="/zakat" element={<Zakat />} />
-                <Route path="/wakils" element={<Wakils />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AuthProvider>
-          } />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            {/* Public routes - no auth required */}
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/debt-approve/:token" element={<DebtApprove />} />
+            <Route path="/debt-edit/:token" element={<DebtEdit />} />
+            <Route path="/wakil-access" element={<WakilAccess />} />
+            {/* Authenticated routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/testament" element={<Testament />} />
+            <Route path="/debts" element={<Debts />} />
+            <Route path="/zakat" element={<Zakat />} />
+            <Route path="/wakils" element={<Wakils />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
