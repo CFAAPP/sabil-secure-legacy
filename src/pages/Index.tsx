@@ -17,6 +17,7 @@ export default function Index() {
   }
 
   if (!user) return <Auth />;
-  if (!passphrase) return <PassphraseSetup />;
+  // Phrase secrète mise en pause — on passe directement au dashboard
+  // if (!passphrase) return <PassphraseSetup />;
   return <Navigate to="/dashboard" replace />;
 }
