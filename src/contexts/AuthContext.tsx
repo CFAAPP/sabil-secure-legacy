@@ -2,6 +2,10 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import type { Language } from '@/lib/i18n';
+import { generateSalt } from '@/lib/crypto';
+
+// Mettre à true pour désactiver temporairement la phrase secrète
+const PASSPHRASE_PAUSED = true;
 
 interface Profile {
   id: string;
@@ -38,16 +42,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [passphrase, setPassphrase] = useState<string | null>(null);
 
   const fetchProfile = async (userId: string) => {
-    const { data } = await supabase
+    let { data } = await supabase
       .from('profiles')
       .select('*')
       .eq('user_id', userId)
       .single();
     if (data) {
+      // Si la phrase secrète est mise en pause, générer un salt par défaut si manquant
+      if (PASSPHRASE_PAUSED && !data.encryption_salt) {
+        const salt = generateSalt();
+        await supabase.from('profiles').update({ encryption_salt: salt }).eq('user_id', userId);
+        const { data: updated } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', userId)
+          .single();
+        if (updated) data = updated;
+      }
       setProfile(data as Profile);
       const lang = (data as any).language;
       if (lang === 'fr' || lang === 'en' || lang === 'ar') setLanguage(lang);
       else setLanguage('fr');
+      if (PASSPHRASE_PAUSED) {
+        setPassphrase('mirath-paused-default');
+      }
     }
   };
 
