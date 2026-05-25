@@ -2,6 +2,10 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import type { Language } from '@/lib/i18n';
+import { generateSalt } from '@/lib/crypto';
+
+// Mettre à true pour désactiver temporairement la phrase secrète
+const PASSPHRASE_PAUSED = true;
 
 interface Profile {
   id: string;
