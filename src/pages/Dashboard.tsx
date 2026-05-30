@@ -1,7 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
 import { Card, CardContent } from '@/components/ui/card';
-import { Shield, FileText, Wallet, Users, Lock, ChevronRight, UserCircle, Calculator } from 'lucide-react';
+import { Shield, FileText, Wallet, Users, Lock, ChevronRight, UserCircle, Calculator, ScrollText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 
@@ -25,6 +25,14 @@ export default function Dashboard() {
       path: '/debts',
       iconColor: 'text-gold',
       glowColor: 'hsl(43 72% 58% / 0.15)',
+    },
+    {
+      title: t('contracts'),
+      description: language === 'fr' ? 'Gérez vos contrats et engagements' : language === 'ar' ? 'أدِر عقودك والتزاماتك' : 'Manage your contracts and engagements',
+      icon: ScrollText,
+      path: '/contracts',
+      iconColor: 'text-rose-400',
+      glowColor: 'hsl(350 70% 55% / 0.15)',
     },
     {
       title: t('wakils'),
