@@ -16,6 +16,7 @@ import DebtApprove from "./pages/DebtApprove";
 import Profile from "./pages/Profile";
 import Zakat from "./pages/Zakat";
 import ResetPassword from "./pages/ResetPassword";
+import Contracts from "./pages/Contracts";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/debts" element={<Debts />} />
             <Route path="/zakat" element={<Zakat />} />
             <Route path="/wakils" element={<Wakils />} />
+            <Route path="/contracts" element={<Contracts />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

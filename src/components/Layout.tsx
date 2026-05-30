@@ -1,7 +1,7 @@
 import { Link, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation, isRTL, LANGUAGE_LABELS, type Language } from '@/lib/i18n';
-import { Shield, FileText, Wallet, Users, LogOut, Menu, X, UserCircle, ArrowLeft, Calculator, Globe } from 'lucide-react';
+import { Shield, FileText, Wallet, Users, LogOut, Menu, X, UserCircle, ArrowLeft, Calculator, Globe, ScrollText } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
@@ -26,6 +26,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { path: '/dashboard', label: t('dashboard'), icon: Shield },
     { path: '/testament', label: t('testament'), icon: FileText },
     { path: '/debts', label: t('debts'), icon: Wallet },
+    { path: '/contracts', label: t('contracts'), icon: ScrollText },
     { path: '/zakat', label: 'Zakât', icon: Calculator },
     { path: '/profile', label: t('profileHeirs'), icon: UserCircle },
     { path: '/wakils', label: t('wakils'), icon: Users },
