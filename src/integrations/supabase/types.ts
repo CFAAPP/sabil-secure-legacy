@@ -47,6 +47,95 @@ export type Database = {
         }
         Relationships: []
       }
+      contract_attachments: {
+        Row: {
+          contract_id: string
+          created_at: string
+          file_name: string
+          file_path: string
+          file_type: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          contract_id: string
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_type: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          contract_id?: string
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_type?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_attachments_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contracts: {
+        Row: {
+          clauses_encrypted: string | null
+          contract_date_encrypted: string | null
+          contract_type: string
+          created_at: string
+          execution_delay_encrypted: string | null
+          id: string
+          iv: string
+          notes_encrypted: string | null
+          parties_encrypted: string | null
+          penalties_encrypted: string | null
+          title_encrypted: string
+          updated_at: string
+          user_id: string
+          witnesses_encrypted: string | null
+        }
+        Insert: {
+          clauses_encrypted?: string | null
+          contract_date_encrypted?: string | null
+          contract_type: string
+          created_at?: string
+          execution_delay_encrypted?: string | null
+          id?: string
+          iv: string
+          notes_encrypted?: string | null
+          parties_encrypted?: string | null
+          penalties_encrypted?: string | null
+          title_encrypted: string
+          updated_at?: string
+          user_id: string
+          witnesses_encrypted?: string | null
+        }
+        Update: {
+          clauses_encrypted?: string | null
+          contract_date_encrypted?: string | null
+          contract_type?: string
+          created_at?: string
+          execution_delay_encrypted?: string | null
+          id?: string
+          iv?: string
+          notes_encrypted?: string | null
+          parties_encrypted?: string | null
+          penalties_encrypted?: string | null
+          title_encrypted?: string
+          updated_at?: string
+          user_id?: string
+          witnesses_encrypted?: string | null
+        }
+        Relationships: []
+      }
       debt_modification_requests: {
         Row: {
           approval_token: string
