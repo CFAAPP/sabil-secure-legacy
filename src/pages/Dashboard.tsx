@@ -93,19 +93,21 @@ export default function Dashboard() {
         {/* Feature cards */}
         <div className="grid gap-3">
           {cards.map((card) => (
-            <Link key={card.path} to={card.path}>
-              <div className="group relative overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/40 hover:shadow-md cursor-pointer shadow-sm">
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative flex items-center gap-4">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted border border-border">
-                    <card.icon className={`h-5 w-5 ${card.iconColor}`} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{card.title}</h3>
-                    <p className="text-sm text-muted-foreground">{card.description}</p>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+            <Link
+              key={card.path}
+              to={card.path}
+              className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/40 hover:shadow-md cursor-pointer shadow-sm no-underline"
+            >
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex items-center gap-4">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted border border-border">
+                  <card.icon className={`h-5 w-5 ${card.iconColor}`} />
                 </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{card.title}</h3>
+                  <p className="text-sm text-muted-foreground">{card.description}</p>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </div>
             </Link>
           ))}
