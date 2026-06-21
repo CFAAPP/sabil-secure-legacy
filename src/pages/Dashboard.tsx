@@ -1,6 +1,6 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation, isRTL } from '@/lib/i18n';
-import { Shield, FileText, Wallet, Users, Lock, UserCircle, Calculator, ScrollText } from 'lucide-react';
+import { FileText, Wallet, Users, Lock, UserCircle, Calculator, ScrollText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 
