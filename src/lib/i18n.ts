@@ -147,6 +147,7 @@ const translations = {
     // Dashboard cards
     writeWill: 'Rédigez et sécurisez votre testament',
     manageDebts: 'Gérez vos dettes et créances',
+    manageContracts: 'Gérez vos contrats et engagements',
     designateTrusted: 'Désignez vos personnes de confiance',
     zakatCalc: 'Calculez et gérez votre Zakât annuelle',
     prepareWill: 'Préparez votre testament islamique',
