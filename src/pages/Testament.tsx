@@ -557,35 +557,6 @@ export default function Testament() {
         {saving ? <Loader2 className="h-5 w-5 text-white animate-spin" /> : <Save className="h-5 w-5 text-white" />}
       </button>
 
-      {/* Delete audio confirmation dialog */}
-      <AlertDialog open={showDeleteAudioDialog} onOpenChange={setShowDeleteAudioDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {tx('Supprimer le message audio ?', 'Delete audio message?', 'حذف الرسالة الصوتية؟')}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {tx(
-                'Cette action est irréversible. Le message audio sera définitivement supprimé.',
-                'This action cannot be undone. The audio message will be permanently deleted.',
-                'هذا الإجراء لا يمكن التراجع عنه. سيتم حذف الرسالة الصوتية نهائياً.'
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
-              {t('cancel')}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDeleteAudio}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {t('delete')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
     </Layout>
 
   );
