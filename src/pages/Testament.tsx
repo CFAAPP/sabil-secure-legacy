@@ -1,26 +1,16 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
 import { encrypt, decrypt } from '@/lib/crypto';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import {
   Save, FileText, Loader2, ChevronDown, ChevronUp, Plus, Trash2,
-  Mic, MicOff, Play, Pause, Square, MessageSquare, Users,
+  MessageSquare, Users,
   ExternalLink, AlertCircle, Info, Lock, Calendar
 } from 'lucide-react';
 import Layout from '@/components/Layout';
@@ -45,16 +35,10 @@ interface PersonalMessage {
   visible_post_death: boolean;
 }
 
-interface AudioMessage {
-  file_reference: string;
-  duration: number;
-}
-
 interface TestamentData {
   funeral_wishes: string;
   additional_debts: string;
   wasiyya: WasiyyaBeneficiary[];
-  audio_message: AudioMessage | null;
   personal_messages: PersonalMessage[];
 }
 
@@ -62,7 +46,6 @@ const DEFAULT_DATA: TestamentData = {
   funeral_wishes: '',
   additional_debts: '',
   wasiyya: [],
-  audio_message: null,
   personal_messages: [],
 };
 
@@ -113,20 +96,6 @@ export default function Testament() {
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Audio recording
-  const [recording, setRecording] = useState(false);
-  const [recordingTime, setRecordingTime] = useState(0);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [playingAudio, setPlayingAudio] = useState(false);
-  const [showDeleteAudioDialog, setShowDeleteAudioDialog] = useState(false);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const MAX_RECORDING_SECONDS = 300; // 5 minutes
-
   // Tri-language helper
   const tx = (fr: string, en: string, ar: string) =>
     language === 'ar' ? ar : language === 'en' ? en : fr;
@@ -161,17 +130,6 @@ export default function Testament() {
         setExistingId(row.id);
         setCreatedAt((row as any).created_at);
         setUpdatedAt((row as any).updated_at);
-
-        // Load audio if present
-        if (parsed.audio_message?.file_reference) {
-          const { data: audioData } = await supabase.storage
-            .from('testament-audio')
-            .download(parsed.audio_message.file_reference);
-          if (audioData) {
-            setAudioBlob(audioData);
-            setAudioUrl(URL.createObjectURL(audioData));
-          }
-        }
       } catch {
         toast({ title: t('error'), description: tx('Phrase secrète incorrecte.', 'Incorrect passphrase.', 'عبارة المرور غير صحيحة.'), variant: 'destructive' });
       }
@@ -193,21 +151,7 @@ export default function Testament() {
 
     setSaving(true);
     try {
-      let audioRef = data.audio_message;
-
-      // Upload encrypted audio if new recording
-      if (audioBlob && !data.audio_message?.file_reference) {
-        const arrayBuffer = await audioBlob.arrayBuffer();
-        const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-        const { ciphertext: audioCipher, iv: audioIv } = await encrypt(audioBase64, passphrase, profile.encryption_salt);
-        const encryptedBlob = new Blob([JSON.stringify({ c: audioCipher, iv: audioIv })], { type: 'application/json' });
-        const filePath = `${user.id}/${uuidv4()}.enc`;
-        await supabase.storage.from('testament-audio').upload(filePath, encryptedBlob);
-        audioRef = { file_reference: filePath, duration: recordingTime };
-      }
-
-      const payload: TestamentData = { ...data, audio_message: audioRef };
-      const jsonStr = JSON.stringify(payload);
+      const jsonStr = JSON.stringify(data);
       const { ciphertext, iv } = await encrypt(jsonStr, passphrase, profile.encryption_salt);
 
       if (existingId) {
@@ -244,64 +188,6 @@ export default function Testament() {
     }
     setSaving(false);
   };
-
-  // ─── Audio recording ──────────────────────────────────────────────────────
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream);
-      mediaRecorderRef.current = mr;
-      audioChunksRef.current = [];
-      mr.ondataavailable = (e) => audioChunksRef.current.push(e.data);
-      mr.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        setAudioBlob(blob);
-        setAudioUrl(URL.createObjectURL(blob));
-        stream.getTracks().forEach(t => t.stop());
-      };
-      mr.start();
-      setRecording(true);
-      setRecordingTime(0);
-      timerRef.current = setInterval(() => {
-        setRecordingTime(prev => {
-          if (prev >= MAX_RECORDING_SECONDS - 1) { stopRecording(); return prev; }
-          return prev + 1;
-        });
-      }, 1000);
-    } catch {
-      toast({ title: t('error'), description: tx('Accès au microphone refusé.', 'Microphone access denied.', 'تم رفض الوصول إلى الميكروفون.'), variant: 'destructive' });
-    }
-  };
-
-  const stopRecording = () => {
-    mediaRecorderRef.current?.stop();
-    setRecording(false);
-    if (timerRef.current) clearInterval(timerRef.current);
-  };
-
-  const deleteAudio = () => setShowDeleteAudioDialog(true);
-
-  const confirmDeleteAudio = () => {
-    setAudioBlob(null);
-    setAudioUrl(null);
-    setRecordingTime(0);
-    setData(d => ({ ...d, audio_message: null }));
-    setShowDeleteAudioDialog(false);
-  };
-
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (playingAudio) {
-      audioRef.current.pause();
-      setPlayingAudio(false);
-    } else {
-      audioRef.current.play();
-      setPlayingAudio(true);
-    }
-  };
-
-  const formatTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 
   // ─── Wasiyya helpers ──────────────────────────────────────────────────────
 
@@ -553,75 +439,9 @@ export default function Testament() {
           </div>
         </Section>
 
-        {/* ⑤ Message audio */}
+        {/* ⑤ Messages personnalisés */}
         <Section
-          title={tx('⑤ Message audio', '⑤ Audio Message', '⑤ رسالة صوتية')}
-          icon={<Mic className="h-3.5 w-3.5 text-gold" />}
-          defaultOpen={false}
-        >
-          <div className="p-5 space-y-4">
-            {!audioUrl ? (
-              <div className="flex flex-col items-center gap-4 py-6">
-                <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${recording ? 'bg-destructive/20 border-2 border-destructive animate-pulse' : 'bg-muted/40 border-2 border-border/50'}`}>
-                  {recording ? <MicOff className="h-7 w-7 text-destructive" /> : <Mic className="h-7 w-7 text-muted-foreground" />}
-                </div>
-                {recording && (
-                  <div className="text-center">
-                    <p className="text-lg font-mono text-destructive">{formatTime(recordingTime)}</p>
-                    <p className="text-xs text-muted-foreground">{tx('Max 5 min', 'Max 5 min', 'الحد الأقصى ٥ دقائق')}</p>
-                  </div>
-                )}
-                {recording ? (
-                  <Button variant="outline" size="sm" onClick={stopRecording} className="gap-2 border-destructive/50 text-destructive hover:bg-destructive/10">
-                    <Square className="h-3.5 w-3.5" />
-                    {tx('Arrêter', 'Stop', 'إيقاف')}
-                  </Button>
-                ) : (
-                  <Button variant="outline" size="sm" onClick={startRecording} className="gap-2 border-gold/40 text-gold hover:bg-gold/5">
-                    <Mic className="h-3.5 w-3.5" />
-                    {tx('Enregistrer un message audio', 'Record audio message', 'تسجيل رسالة صوتية')}
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/20 px-4 py-3">
-                  <button onClick={togglePlay} className="w-9 h-9 rounded-full flex items-center justify-center border border-gold/30 bg-gold/10 hover:bg-gold/20 transition-colors">
-                    {playingAudio ? <Pause className="h-4 w-4 text-gold" /> : <Play className="h-4 w-4 text-gold" />}
-                  </button>
-                  <div className="flex-1">
-                    <p className="text-xs font-medium">{tx('Message audio', 'Audio message', 'رسالة صوتية')}</p>
-                    <p className="text-xs text-muted-foreground">{formatTime(data.audio_message?.duration || recordingTime)}</p>
-                  </div>
-                  <button onClick={deleteAudio} className="text-muted-foreground hover:text-destructive transition-colors">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-                <audio
-                  ref={audioRef}
-                  src={audioUrl}
-                  onEnded={() => setPlayingAudio(false)}
-                  className="hidden"
-                />
-                <Button variant="outline" size="sm" onClick={() => { deleteAudio(); }} className="gap-2 border-dashed border-border/50">
-                  <Mic className="h-3.5 w-3.5" />
-                  {tx('Réenregistrer', 'Re-record', 'إعادة التسجيل')}
-                </Button>
-              </div>
-            )}
-            <InfoBox>
-              {tx(
-                'L\'audio est chiffré côté client avant upload. Le serveur ne stocke que du ciphertext.',
-                'Audio is encrypted client-side before upload. The server only stores ciphertext.',
-                'يتم تشفير الصوت من جهة العميل قبل الرفع. الخادم يخزّن فقط النص المشفّر.'
-              )}
-            </InfoBox>
-          </div>
-        </Section>
-
-        {/* ⑥ Messages personnalisés */}
-        <Section
-          title={tx('⑥ Messages personnalisés', '⑥ Personal Messages', '⑥ رسائل شخصية')}
+          title={tx('⑤ Messages personnalisés', '⑤ Personal Messages', '⑤ رسائل شخصية')}
           icon={<MessageSquare className="h-3.5 w-3.5 text-gold" />}
           defaultOpen={false}
         >
@@ -672,9 +492,9 @@ export default function Testament() {
           </div>
         </Section>
 
-        {/* ⑦ Récapitulatif héritage */}
+        {/* ⑥ Récapitulatif héritage */}
         <Section
-          title={tx('⑦ Récapitulatif héritage (lecture seule)', '⑦ Inheritance Summary (read only)', '⑦ ملخص الميراث (للقراءة فقط)')}
+          title={tx('⑥ Récapitulatif héritage (lecture seule)', '⑥ Inheritance Summary (read only)', '⑥ ملخص الميراث (للقراءة فقط)')}
           icon={<Users className="h-3.5 w-3.5 text-gold" />}
           defaultOpen={false}
         >
@@ -726,35 +546,6 @@ export default function Testament() {
       >
         {saving ? <Loader2 className="h-5 w-5 text-white animate-spin" /> : <Save className="h-5 w-5 text-white" />}
       </button>
-
-      {/* Delete audio confirmation dialog */}
-      <AlertDialog open={showDeleteAudioDialog} onOpenChange={setShowDeleteAudioDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {tx('Supprimer le message audio ?', 'Delete audio message?', 'حذف الرسالة الصوتية؟')}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {tx(
-                'Cette action est irréversible. Le message audio sera définitivement supprimé.',
-                'This action cannot be undone. The audio message will be permanently deleted.',
-                'هذا الإجراء لا يمكن التراجع عنه. سيتم حذف الرسالة الصوتية نهائياً.'
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
-              {t('cancel')}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDeleteAudio}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {t('delete')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
     </Layout>
 
