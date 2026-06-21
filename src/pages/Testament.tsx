@@ -161,21 +161,7 @@ export default function Testament() {
 
     setSaving(true);
     try {
-      let audioRef = data.audio_message;
-
-      // Upload encrypted audio if new recording
-      if (audioBlob && !data.audio_message?.file_reference) {
-        const arrayBuffer = await audioBlob.arrayBuffer();
-        const audioBase64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-        const { ciphertext: audioCipher, iv: audioIv } = await encrypt(audioBase64, passphrase, profile.encryption_salt);
-        const encryptedBlob = new Blob([JSON.stringify({ c: audioCipher, iv: audioIv })], { type: 'application/json' });
-        const filePath = `${user.id}/${uuidv4()}.enc`;
-        await supabase.storage.from('testament-audio').upload(filePath, encryptedBlob);
-        audioRef = { file_reference: filePath, duration: recordingTime };
-      }
-
-      const payload: TestamentData = { ...data, audio_message: audioRef };
-      const jsonStr = JSON.stringify(payload);
+      const jsonStr = JSON.stringify(data);
       const { ciphertext, iv } = await encrypt(jsonStr, passphrase, profile.encryption_salt);
 
       if (existingId) {
