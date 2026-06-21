@@ -93,7 +93,7 @@ export default function Dashboard() {
             <p className="text-sm font-medium text-foreground">{t('securityStatus')}</p>
             <p className="text-xs text-muted-foreground">AES-256-GCM · {t('encrypted')} · E2E</p>
           </div>
-          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_hsl(142_71_45%/0.6)] animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_hsl(142.1_76.2%_36.3%/0.6)] animate-pulse" />
         </div>
 
         {/* Feature grid */}
