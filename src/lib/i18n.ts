@@ -464,6 +464,7 @@ const translations = {
 
     writeWill: 'اكتب وأمّن وصيتك',
     manageDebts: 'أدِر ديونك ومستحقاتك',
+    manageContracts: 'أدِر عقودك والتزاماتك',
     designateTrusted: 'عيّن أشخاصك الموثوقين',
     zakatCalc: 'احسب وأدِر زكاتك السنوية',
     prepareWill: 'حضّر وصيتك الإسلامية',
