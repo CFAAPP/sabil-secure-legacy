@@ -199,64 +199,6 @@ export default function Testament() {
     setSaving(false);
   };
 
-  // ─── Audio recording ──────────────────────────────────────────────────────
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream);
-      mediaRecorderRef.current = mr;
-      audioChunksRef.current = [];
-      mr.ondataavailable = (e) => audioChunksRef.current.push(e.data);
-      mr.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        setAudioBlob(blob);
-        setAudioUrl(URL.createObjectURL(blob));
-        stream.getTracks().forEach(t => t.stop());
-      };
-      mr.start();
-      setRecording(true);
-      setRecordingTime(0);
-      timerRef.current = setInterval(() => {
-        setRecordingTime(prev => {
-          if (prev >= MAX_RECORDING_SECONDS - 1) { stopRecording(); return prev; }
-          return prev + 1;
-        });
-      }, 1000);
-    } catch {
-      toast({ title: t('error'), description: tx('Accès au microphone refusé.', 'Microphone access denied.', 'تم رفض الوصول إلى الميكروفون.'), variant: 'destructive' });
-    }
-  };
-
-  const stopRecording = () => {
-    mediaRecorderRef.current?.stop();
-    setRecording(false);
-    if (timerRef.current) clearInterval(timerRef.current);
-  };
-
-  const deleteAudio = () => setShowDeleteAudioDialog(true);
-
-  const confirmDeleteAudio = () => {
-    setAudioBlob(null);
-    setAudioUrl(null);
-    setRecordingTime(0);
-    setData(d => ({ ...d, audio_message: null }));
-    setShowDeleteAudioDialog(false);
-  };
-
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-    if (playingAudio) {
-      audioRef.current.pause();
-      setPlayingAudio(false);
-    } else {
-      audioRef.current.play();
-      setPlayingAudio(true);
-    }
-  };
-
-  const formatTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
-
   // ─── Wasiyya helpers ──────────────────────────────────────────────────────
 
   const totalWasiyya = data.wasiyya.filter(b => b.type === 'percentage').reduce((s, b) => s + (b.value || 0), 0);
