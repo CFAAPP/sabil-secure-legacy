@@ -140,17 +140,6 @@ export default function Testament() {
         setExistingId(row.id);
         setCreatedAt((row as any).created_at);
         setUpdatedAt((row as any).updated_at);
-
-        // Load audio if present
-        if (parsed.audio_message?.file_reference) {
-          const { data: audioData } = await supabase.storage
-            .from('testament-audio')
-            .download(parsed.audio_message.file_reference);
-          if (audioData) {
-            setAudioBlob(audioData);
-            setAudioUrl(URL.createObjectURL(audioData));
-          }
-        }
       } catch {
         toast({ title: t('error'), description: tx('Phrase secrète incorrecte.', 'Incorrect passphrase.', 'عبارة المرور غير صحيحة.'), variant: 'destructive' });
       }
