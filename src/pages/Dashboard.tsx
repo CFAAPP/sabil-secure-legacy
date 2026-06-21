@@ -1,13 +1,13 @@
 import { useAuth } from '@/contexts/AuthContext';
-import { useTranslation } from '@/lib/i18n';
-import { Card, CardContent } from '@/components/ui/card';
-import { Shield, FileText, Wallet, Users, Lock, ChevronRight, UserCircle, Calculator, ScrollText } from 'lucide-react';
+import { useTranslation, isRTL } from '@/lib/i18n';
+import { FileText, Wallet, Users, Lock, UserCircle, Calculator, ScrollText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 
 export default function Dashboard() {
   const { user, profile, language } = useAuth();
   const t = useTranslation(language);
+  const rtl = isRTL(language);
 
   const cards = [
     {
@@ -16,7 +16,7 @@ export default function Dashboard() {
       icon: FileText,
       path: '/testament',
       iconColor: 'text-blue-400',
-      glowColor: 'hsl(210 80% 55% / 0.15)',
+      iconBg: 'bg-blue-400/10',
     },
     {
       title: t('debts'),
@@ -24,15 +24,15 @@ export default function Dashboard() {
       icon: Wallet,
       path: '/debts',
       iconColor: 'text-gold',
-      glowColor: 'hsl(43 72% 58% / 0.15)',
+      iconBg: 'bg-gold/10',
     },
     {
       title: t('contracts'),
-      description: language === 'fr' ? 'Gérez vos contrats et engagements' : language === 'ar' ? 'أدِر عقودك والتزاماتك' : 'Manage your contracts and engagements',
+      description: t('manageContracts'),
       icon: ScrollText,
       path: '/contracts',
       iconColor: 'text-rose-400',
-      glowColor: 'hsl(350 70% 55% / 0.15)',
+      iconBg: 'bg-rose-400/10',
     },
     {
       title: t('wakils'),
@@ -40,7 +40,7 @@ export default function Dashboard() {
       icon: Users,
       path: '/wakils',
       iconColor: 'text-emerald-400',
-      glowColor: 'hsl(155 60% 45% / 0.15)',
+      iconBg: 'bg-emerald-400/10',
     },
     {
       title: 'Zakât al-Mâl',
@@ -48,7 +48,7 @@ export default function Dashboard() {
       icon: Calculator,
       path: '/zakat',
       iconColor: 'text-amber-400',
-      glowColor: 'hsl(38 80% 55% / 0.15)',
+      iconBg: 'bg-amber-400/10',
     },
     {
       title: t('profileHeirs'),
@@ -56,7 +56,7 @@ export default function Dashboard() {
       icon: UserCircle,
       path: '/profile',
       iconColor: 'text-violet-400',
-      glowColor: 'hsl(270 60% 55% / 0.15)',
+      iconBg: 'bg-violet-400/10',
     },
   ];
 
@@ -64,12 +64,18 @@ export default function Dashboard() {
     <Layout>
       <div className="space-y-6 animate-fade-in">
         {/* Welcome header */}
-        <div className="relative overflow-hidden rounded-2xl border border-primary/20 p-6 bg-primary/8"
-          style={{ background: 'linear-gradient(135deg, hsl(155 28% 26%) 0%, hsl(155 22% 22%) 100%)' }}>
+        <div
+          className="relative overflow-hidden rounded-2xl border border-primary/20 p-6"
+          style={{ background: 'linear-gradient(135deg, hsl(155 28% 26%) 0%, hsl(155 22% 22%) 100%)' }}
+        >
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
-          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-10"
-            style={{ background: 'radial-gradient(circle, hsl(43 62% 52%) 0%, transparent 70%)' }} />
-          <p className="text-xs mb-2 font-arabic" style={{ color: 'hsl(43 62% 72%)' }}>بسم الله الرحمن الرحيم</p>
+          <div
+            className="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-10"
+            style={{ background: 'radial-gradient(circle, hsl(43 62% 52%) 0%, transparent 70%)' }}
+          />
+          <p className="text-xs mb-2 font-arabic" style={{ color: 'hsl(43 62% 72%)' }}>
+            بسم الله الرحمن الرحيم
+          </p>
           <h1 className="font-serif text-3xl font-bold text-gold-gradient">
             {t('welcomeBack')},
           </h1>
@@ -87,27 +93,32 @@ export default function Dashboard() {
             <p className="text-sm font-medium text-foreground">{t('securityStatus')}</p>
             <p className="text-xs text-muted-foreground">AES-256-GCM · {t('encrypted')} · E2E</p>
           </div>
-          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_hsl(142_71%_45%/0.6)] animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_hsl(142.1_76.2%_36.3%/0.6)] animate-pulse" />
         </div>
 
-        {/* Feature cards */}
-        <div className="grid gap-3">
+        {/* Feature grid */}
+        <div className="grid grid-cols-2 gap-3">
           {cards.map((card) => (
             <Link
               key={card.path}
               to={card.path}
-              className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/40 hover:shadow-md cursor-pointer shadow-sm no-underline"
+              className="group relative flex flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-border bg-card p-4 pt-6 pb-5 text-center transition-all duration-300 hover:border-primary/40 hover:shadow-md hover:-translate-y-0.5 no-underline shadow-sm"
             >
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative flex items-center gap-4">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted border border-border">
-                  <card.icon className={`h-5 w-5 ${card.iconColor}`} />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{card.title}</h3>
-                  <p className="text-sm text-muted-foreground">{card.description}</p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              <div
+                className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity`}
+              />
+              <div
+                className={`flex h-12 w-12 items-center justify-center rounded-2xl ${card.iconBg} border border-border`}
+              >
+                <card.icon className={`h-6 w-6 ${card.iconColor}`} />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-sm font-semibold leading-tight text-foreground group-hover:text-primary transition-colors">
+                  {card.title}
+                </h3>
+                <p className="text-[11px] leading-snug text-muted-foreground line-clamp-2">
+                  {card.description}
+                </p>
               </div>
             </Link>
           ))}
@@ -115,10 +126,11 @@ export default function Dashboard() {
 
         {/* User ID */}
         <div className="rounded-xl border border-border/50 bg-muted/20 p-4">
-          <p className="text-xs text-muted-foreground mb-2">
-            {t('yourId')}
-          </p>
-          <code className="text-xs text-muted-foreground/70 bg-muted/40 px-2 py-1 rounded-lg font-mono select-all break-all">
+          <p className="text-xs text-muted-foreground mb-2">{t('yourId')}</p>
+          <code
+            className="text-xs text-muted-foreground/70 bg-muted/40 px-2 py-1 rounded-lg font-mono select-all break-all"
+            dir={rtl ? 'rtl' : 'ltr'}
+          >
             {user?.id}
           </code>
         </div>

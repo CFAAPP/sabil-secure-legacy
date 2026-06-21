@@ -147,6 +147,7 @@ const translations = {
     // Dashboard cards
     writeWill: 'Rédigez et sécurisez votre testament',
     manageDebts: 'Gérez vos dettes et créances',
+    manageContracts: 'Gérez vos contrats et engagements',
     designateTrusted: 'Désignez vos personnes de confiance',
     zakatCalc: 'Calculez et gérez votre Zakât annuelle',
     prepareWill: 'Préparez votre testament islamique',
@@ -306,6 +307,7 @@ const translations = {
 
     writeWill: 'Write and secure your will',
     manageDebts: 'Manage your debts and credits',
+    manageContracts: 'Manage your contracts and engagements',
     designateTrusted: 'Designate your trusted ones',
     zakatCalc: 'Calculate and manage your annual Zakât',
     prepareWill: 'Prepare your Islamic will',
@@ -462,6 +464,7 @@ const translations = {
 
     writeWill: 'اكتب وأمّن وصيتك',
     manageDebts: 'أدِر ديونك ومستحقاتك',
+    manageContracts: 'أدِر عقودك والتزاماتك',
     designateTrusted: 'عيّن أشخاصك الموثوقين',
     zakatCalc: 'احسب وأدِر زكاتك السنوية',
     prepareWill: 'حضّر وصيتك الإسلامية',
