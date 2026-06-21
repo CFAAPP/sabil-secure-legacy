@@ -307,6 +307,7 @@ const translations = {
 
     writeWill: 'Write and secure your will',
     manageDebts: 'Manage your debts and credits',
+    manageContracts: 'Manage your contracts and engagements',
     designateTrusted: 'Designate your trusted ones',
     zakatCalc: 'Calculate and manage your annual Zakât',
     prepareWill: 'Prepare your Islamic will',
