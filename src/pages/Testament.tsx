@@ -106,20 +106,6 @@ export default function Testament() {
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Audio recording
-  const [recording, setRecording] = useState(false);
-  const [recordingTime, setRecordingTime] = useState(0);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [playingAudio, setPlayingAudio] = useState(false);
-  const [showDeleteAudioDialog, setShowDeleteAudioDialog] = useState(false);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const MAX_RECORDING_SECONDS = 300; // 5 minutes
-
   // Tri-language helper
   const tx = (fr: string, en: string, ar: string) =>
     language === 'ar' ? ar : language === 'en' ? en : fr;
