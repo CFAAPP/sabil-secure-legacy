@@ -449,75 +449,9 @@ export default function Testament() {
           </div>
         </Section>
 
-        {/* ⑤ Message audio */}
+        {/* ⑤ Messages personnalisés */}
         <Section
-          title={tx('⑤ Message audio', '⑤ Audio Message', '⑤ رسالة صوتية')}
-          icon={<Mic className="h-3.5 w-3.5 text-gold" />}
-          defaultOpen={false}
-        >
-          <div className="p-5 space-y-4">
-            {!audioUrl ? (
-              <div className="flex flex-col items-center gap-4 py-6">
-                <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${recording ? 'bg-destructive/20 border-2 border-destructive animate-pulse' : 'bg-muted/40 border-2 border-border/50'}`}>
-                  {recording ? <MicOff className="h-7 w-7 text-destructive" /> : <Mic className="h-7 w-7 text-muted-foreground" />}
-                </div>
-                {recording && (
-                  <div className="text-center">
-                    <p className="text-lg font-mono text-destructive">{formatTime(recordingTime)}</p>
-                    <p className="text-xs text-muted-foreground">{tx('Max 5 min', 'Max 5 min', 'الحد الأقصى ٥ دقائق')}</p>
-                  </div>
-                )}
-                {recording ? (
-                  <Button variant="outline" size="sm" onClick={stopRecording} className="gap-2 border-destructive/50 text-destructive hover:bg-destructive/10">
-                    <Square className="h-3.5 w-3.5" />
-                    {tx('Arrêter', 'Stop', 'إيقاف')}
-                  </Button>
-                ) : (
-                  <Button variant="outline" size="sm" onClick={startRecording} className="gap-2 border-gold/40 text-gold hover:bg-gold/5">
-                    <Mic className="h-3.5 w-3.5" />
-                    {tx('Enregistrer un message audio', 'Record audio message', 'تسجيل رسالة صوتية')}
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/20 px-4 py-3">
-                  <button onClick={togglePlay} className="w-9 h-9 rounded-full flex items-center justify-center border border-gold/30 bg-gold/10 hover:bg-gold/20 transition-colors">
-                    {playingAudio ? <Pause className="h-4 w-4 text-gold" /> : <Play className="h-4 w-4 text-gold" />}
-                  </button>
-                  <div className="flex-1">
-                    <p className="text-xs font-medium">{tx('Message audio', 'Audio message', 'رسالة صوتية')}</p>
-                    <p className="text-xs text-muted-foreground">{formatTime(data.audio_message?.duration || recordingTime)}</p>
-                  </div>
-                  <button onClick={deleteAudio} className="text-muted-foreground hover:text-destructive transition-colors">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-                <audio
-                  ref={audioRef}
-                  src={audioUrl}
-                  onEnded={() => setPlayingAudio(false)}
-                  className="hidden"
-                />
-                <Button variant="outline" size="sm" onClick={() => { deleteAudio(); }} className="gap-2 border-dashed border-border/50">
-                  <Mic className="h-3.5 w-3.5" />
-                  {tx('Réenregistrer', 'Re-record', 'إعادة التسجيل')}
-                </Button>
-              </div>
-            )}
-            <InfoBox>
-              {tx(
-                'L\'audio est chiffré côté client avant upload. Le serveur ne stocke que du ciphertext.',
-                'Audio is encrypted client-side before upload. The server only stores ciphertext.',
-                'يتم تشفير الصوت من جهة العميل قبل الرفع. الخادم يخزّن فقط النص المشفّر.'
-              )}
-            </InfoBox>
-          </div>
-        </Section>
-
-        {/* ⑥ Messages personnalisés */}
-        <Section
-          title={tx('⑥ Messages personnalisés', '⑥ Personal Messages', '⑥ رسائل شخصية')}
+          title={tx('⑤ Messages personnalisés', '⑤ Personal Messages', '⑤ رسائل شخصية')}
           icon={<MessageSquare className="h-3.5 w-3.5 text-gold" />}
           defaultOpen={false}
         >
