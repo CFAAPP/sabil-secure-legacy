@@ -45,16 +45,10 @@ interface PersonalMessage {
   visible_post_death: boolean;
 }
 
-interface AudioMessage {
-  file_reference: string;
-  duration: number;
-}
-
 interface TestamentData {
   funeral_wishes: string;
   additional_debts: string;
   wasiyya: WasiyyaBeneficiary[];
-  audio_message: AudioMessage | null;
   personal_messages: PersonalMessage[];
 }
 
@@ -62,7 +56,6 @@ const DEFAULT_DATA: TestamentData = {
   funeral_wishes: '',
   additional_debts: '',
   wasiyya: [],
-  audio_message: null,
   personal_messages: [],
 };
 
