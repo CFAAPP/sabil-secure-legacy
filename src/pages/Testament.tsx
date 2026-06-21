@@ -20,7 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import {
   Save, FileText, Loader2, ChevronDown, ChevronUp, Plus, Trash2,
-  Mic, MicOff, Play, Pause, Square, MessageSquare, Users,
+  MessageSquare, Users,
   ExternalLink, AlertCircle, Info, Lock, Calendar
 } from 'lucide-react';
 import Layout from '@/components/Layout';
