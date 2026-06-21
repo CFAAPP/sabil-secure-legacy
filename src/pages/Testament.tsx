@@ -502,9 +502,9 @@ export default function Testament() {
           </div>
         </Section>
 
-        {/* ⑦ Récapitulatif héritage */}
+        {/* ⑥ Récapitulatif héritage */}
         <Section
-          title={tx('⑦ Récapitulatif héritage (lecture seule)', '⑦ Inheritance Summary (read only)', '⑦ ملخص الميراث (للقراءة فقط)')}
+          title={tx('⑥ Récapitulatif héritage (lecture seule)', '⑥ Inheritance Summary (read only)', '⑥ ملخص الميراث (للقراءة فقط)')}
           icon={<Users className="h-3.5 w-3.5 text-gold" />}
           defaultOpen={false}
         >
