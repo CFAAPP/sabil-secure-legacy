@@ -229,7 +229,130 @@ export default function Testament() {
     setData(d => ({ ...d, personal_messages: d.personal_messages.filter(m => m.id !== id) }));
   };
 
+  // ─── Export PDF ───────────────────────────────────────────────────────────
+
+  const exportPDF = async () => {
+    setExporting(true);
+    try {
+      const isAr = language === 'ar';
+      const container = document.createElement('div');
+      container.style.cssText = `position:fixed;left:-10000px;top:0;width:794px;padding:48px;background:#ffffff;color:#1a1a1a;font-family:${isAr ? "'Amiri', 'Times New Roman', serif" : "'Helvetica Neue', Arial, sans-serif"};font-size:13px;line-height:1.6;direction:${isAr ? 'rtl' : 'ltr'};`;
+
+      const esc = (s: string) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
+      const gold = '#b8935a';
+
+      const dateStr = new Date().toLocaleDateString(dateFmt);
+      const createdStr = createdAt ? new Date(createdAt).toLocaleDateString(dateFmt) : '—';
+      const updatedStr = updatedAt ? new Date(updatedAt).toLocaleDateString(dateFmt) : '—';
+      const fullName = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') || '—';
+
+      const wasiyyaRows = data.wasiyya.length
+        ? data.wasiyya.map(b => `<tr>
+            <td style="padding:8px;border:1px solid #e5e5e5">${esc(b.beneficiary) || '—'}</td>
+            <td style="padding:8px;border:1px solid #e5e5e5;text-align:center">${b.type === 'percentage' ? `${b.value}%` : b.value}</td>
+            <td style="padding:8px;border:1px solid #e5e5e5">${esc(b.notes)}</td>
+          </tr>`).join('')
+        : `<tr><td colspan="3" style="padding:12px;border:1px solid #e5e5e5;text-align:center;color:#888">${tx('Aucun bénéficiaire', 'No beneficiaries', 'لا يوجد مستفيدون')}</td></tr>`;
+
+      const messagesHtml = data.personal_messages.length
+        ? data.personal_messages.map(m => `<div style="margin:12px 0;padding:12px;border:1px solid #e5e5e5;border-radius:6px;background:#fafafa">
+            <div style="font-weight:600;margin-bottom:4px">${esc(m.recipient) || '—'} — ${esc(m.title)}</div>
+            <div style="color:#444">${esc(m.content)}</div>
+            <div style="font-size:11px;color:#888;margin-top:6px">${m.visible_post_death ? tx('Visible après décès', 'Visible after death', 'مرئي بعد الوفاة') : tx('Visible immédiatement', 'Visible immediately', 'مرئي فورا')}</div>
+          </div>`).join('')
+        : `<p style="color:#888;font-style:italic">${tx('Aucun message', 'No messages', 'لا توجد رسائل')}</p>`;
+
+      const sec = (n: string, title: string, body: string) => `
+        <div style="margin-top:24px;page-break-inside:avoid">
+          <h2 style="font-size:16px;color:${gold};border-bottom:2px solid ${gold};padding-bottom:6px;margin:0 0 12px">${n} ${title}</h2>
+          ${body}
+        </div>`;
+
+      container.innerHTML = `
+        <div style="text-align:center;border-bottom:3px double ${gold};padding-bottom:20px;margin-bottom:24px">
+          <div style="font-size:20px;color:${gold};margin-bottom:8px">﷽</div>
+          <h1 style="font-size:26px;margin:0;letter-spacing:1px">${tx('MON TESTAMENT', 'MY WILL', 'وصيتي')}</h1>
+          <div style="margin-top:10px;font-size:13px;color:#555">${esc(fullName)}</div>
+          <div style="font-size:11px;color:#888;margin-top:4px">
+            ${tx('Créé le', 'Created', 'أُنشئ في')}: ${createdStr} · ${tx('Modifié le', 'Updated', 'عُدّل في')}: ${updatedStr} · ${tx('Exporté le', 'Exported', 'صُدّر في')}: ${dateStr}
+          </div>
+        </div>
+
+        ${sec('①', tx('Déclaration', 'Declaration', 'الإعلان'),
+          `<p style="font-style:italic;border-${isAr ? 'right' : 'left'}:3px solid ${gold};padding-${isAr ? 'right' : 'left'}:12px;color:#333">${esc(tx(
+            "Ceci est ma wasiyya rédigée en pleine conscience, en bonne santé et dans le respect de la foi islamique. Je témoigne qu'il n'y a rien de digne d'être adoré qu'Allah et que Muhammad est Son Messager.",
+            'This is my wasiyya written in full consciousness, in good health and in accordance with Islamic faith. I testify that there is nothing worthy of worship but Allah and that Muhammad is His Messenger.',
+            'هذه وصيتي كُتبت بكامل وعيي وصحتي ووفقاً للشريعة الإسلامية. أشهد أن لا إله إلا الله وأن محمداً رسول الله.'
+          ))}</p>`)}
+
+        ${sec('②', tx('Souhaits funéraires', 'Funeral Wishes', 'رغبات الجنازة'),
+          `<div style="white-space:pre-wrap">${esc(data.funeral_wishes) || `<span style="color:#888;font-style:italic">${tx('Non renseigné', 'Not specified', 'غير محدد')}</span>`}</div>`)}
+
+        ${sec('③', tx('Dettes & Obligations', 'Debts & Obligations', 'الديون والالتزامات'),
+          `<div style="white-space:pre-wrap">${esc(data.additional_debts) || `<span style="color:#888;font-style:italic">${tx('Aucune dette additionnelle renseignée', 'No additional debts', 'لا توجد ديون إضافية')}</span>`}</div>`)}
+
+        ${sec('④', tx('Wasiyya (max. 1/3)', 'Wasiyya (max. 1/3)', 'الوصية (الحد الأقصى ١/٣)'),
+          `<div style="margin-bottom:8px;font-size:12px;color:#555">${tx('Total', 'Total', 'المجموع')}: <strong>${totalWasiyya.toFixed(2)}%</strong></div>
+           <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead><tr style="background:#f5f0e6">
+              <th style="padding:8px;border:1px solid #e5e5e5;text-align:${isAr ? 'right' : 'left'}">${tx('Bénéficiaire', 'Beneficiary', 'المستفيد')}</th>
+              <th style="padding:8px;border:1px solid #e5e5e5">${tx('Part', 'Share', 'الحصة')}</th>
+              <th style="padding:8px;border:1px solid #e5e5e5;text-align:${isAr ? 'right' : 'left'}">${tx('Notes', 'Notes', 'ملاحظات')}</th>
+            </tr></thead>
+            <tbody>${wasiyyaRows}</tbody>
+           </table>`)}
+
+        ${sec('⑤', tx('Messages personnalisés', 'Personal Messages', 'رسائل شخصية'), messagesHtml)}
+
+        <div style="margin-top:40px;padding-top:16px;border-top:1px solid #ddd;font-size:10px;color:#999;text-align:center">
+          Mirath — ${tx('Document généré pour usage personnel', 'Document generated for personal use', 'وثيقة تم إنشاؤها للاستخدام الشخصي')}
+        </div>
+      `;
+
+      document.body.appendChild(container);
+
+      const canvas = await html2canvas(container, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+      document.body.removeChild(container);
+
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgW = pageW;
+      const imgH = (canvas.height * imgW) / canvas.width;
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+      let heightLeft = imgH;
+      let position = 0;
+      pdf.addImage(imgData, 'JPEG', 0, position, imgW, imgH);
+      heightLeft -= pageH;
+      while (heightLeft > 0) {
+        position = heightLeft - imgH;
+        pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, position, imgW, imgH);
+        heightLeft -= pageH;
+      }
+
+      pdf.save(`testament-${(profile?.last_name || 'mirath').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.pdf`);
+
+      if (user) {
+        await supabase.from('audit_logs').insert({
+          user_id: user.id,
+          action: 'testament_exported_pdf',
+          entity_type: 'vault_items',
+          entity_id: existingId,
+        } as any);
+      }
+
+      toast({ title: t('success'), description: tx('PDF exporté', 'PDF exported', 'تم تصدير PDF') });
+    } catch (e) {
+      console.error(e);
+      toast({ title: t('error'), description: tx("Échec de l'export PDF", 'PDF export failed', 'فشل تصدير PDF'), variant: 'destructive' });
+    }
+    setExporting(false);
+  };
+
   // ─── Render ───────────────────────────────────────────────────────────────
+
 
   if (loading) {
     return (
