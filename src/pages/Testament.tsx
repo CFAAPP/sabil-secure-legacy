@@ -97,6 +97,9 @@ export default function Testament() {
   const [existingId, setExistingId] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
+  const [identity, setIdentity] = useState<{ first_name: string; last_name: string; gender: 'male' | 'female' | ''; birth_date: string; father_first_name: string }>({
+    first_name: '', last_name: '', gender: '', birth_date: '', father_first_name: '',
+  });
   const { toast } = useToast();
 
   // Tri-language helper
@@ -137,8 +140,36 @@ export default function Testament() {
         toast({ title: t('error'), description: tx('Phrase secrète incorrecte.', 'Incorrect passphrase.', 'عبارة المرور غير صحيحة.'), variant: 'destructive' });
       }
     }
+
+    // Load family profile for identity
+    const { data: famRow } = await supabase
+      .from('vault_items')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('item_type', 'family_profile')
+      .maybeSingle();
+    if (famRow) {
+      try {
+        const famJson = await decrypt(
+          (famRow as any).content_encrypted,
+          (famRow as any).iv,
+          passphrase,
+          profile.encryption_salt
+        );
+        const fam = JSON.parse(famJson);
+        setIdentity({
+          first_name: fam?.personal_info?.first_name || '',
+          last_name: fam?.personal_info?.last_name || '',
+          gender: fam?.personal_info?.gender || '',
+          birth_date: fam?.personal_info?.birth_date || '',
+          father_first_name: fam?.parents?.father_first_name || '',
+        });
+      } catch { /* ignore */ }
+    }
+
     setLoading(false);
   };
+
 
   // ─── Save ────────────────────────────────────────────────────────────────
 
@@ -229,6 +260,26 @@ export default function Testament() {
     setData(d => ({ ...d, personal_messages: d.personal_messages.filter(m => m.id !== id) }));
   };
 
+  // ─── Declaration builder ─────────────────────────────────────────────────
+
+  const buildDeclaration = () => {
+    const { first_name, last_name, gender, birth_date, father_first_name } = identity;
+    const fullName = `${first_name} ${last_name}`.trim() || '—';
+    const birthStr = birth_date ? new Date(birth_date).toLocaleDateString(dateFmt) : '—';
+    const dateStr = new Date().toLocaleDateString(dateFmt);
+    const father = father_first_name || '—';
+    const isFemale = gender === 'female';
+    const soussigne = tx(isFemale ? 'soussignée' : 'soussigné', 'undersigned', isFemale ? 'الموقّعة أدناه' : 'الموقّع أدناه');
+    const fils = tx(isFemale ? 'fille' : 'fils', isFemale ? 'daughter' : 'son', isFemale ? 'ابنة' : 'ابن');
+    const ne = tx(isFemale ? 'née' : 'né', 'born', isFemale ? 'المولودة' : 'المولود');
+
+    return tx(
+      `Je ${soussigne}, ${fullName}, ${fils} de ${father}, ${ne} le ${birthStr}, sain(e) d'esprit et de corps, déclare en ce ${dateStr}, en pleine conscience et dans le respect de la foi islamique, que ceci constitue ma wasiyya (testament). J'atteste qu'il n'y a rien de digne d'être adoré qu'Allah et que Muhammad ﷺ est Son Messager.`,
+      `I, the ${soussigne} ${fullName}, ${fils} of ${father}, ${ne} on ${birthStr}, of sound mind and body, hereby declare on ${dateStr}, in full consciousness and in accordance with Islamic faith, that this constitutes my wasiyya (will). I bear witness that there is nothing worthy of worship but Allah and that Muhammad ﷺ is His Messenger.`,
+      `أنا ${soussigne}، ${fullName}، ${fils} ${father}، ${ne} في ${birthStr}، بكامل قواي العقلية والجسدية، أُعلن في هذا اليوم ${dateStr}، بكامل وعيي ووفقاً للشريعة الإسلامية، أن هذه وصيتي. أشهد أن لا إله إلا الله وأن محمداً ﷺ رسول الله.`
+    );
+  };
+
   // ─── Export PDF ───────────────────────────────────────────────────────────
 
   const exportPDF = async () => {
@@ -244,7 +295,8 @@ export default function Testament() {
       const dateStr = new Date().toLocaleDateString(dateFmt);
       const createdStr = createdAt ? new Date(createdAt).toLocaleDateString(dateFmt) : '—';
       const updatedStr = updatedAt ? new Date(updatedAt).toLocaleDateString(dateFmt) : '—';
-      const fullName = profile?.display_name || '—';
+      const fullName = `${identity.first_name} ${identity.last_name}`.trim() || profile?.display_name || '—';
+      const declaration = buildDeclaration();
 
       const wasiyyaRows = data.wasiyya.length
         ? data.wasiyya.map(b => `<tr>
@@ -279,11 +331,7 @@ export default function Testament() {
         </div>
 
         ${sec('①', tx('Déclaration', 'Declaration', 'الإعلان'),
-          `<p style="font-style:italic;border-${isAr ? 'right' : 'left'}:3px solid ${gold};padding-${isAr ? 'right' : 'left'}:12px;color:#333">${esc(tx(
-            "Ceci est ma wasiyya rédigée en pleine conscience, en bonne santé et dans le respect de la foi islamique. Je témoigne qu'il n'y a rien de digne d'être adoré qu'Allah et que Muhammad est Son Messager.",
-            'This is my wasiyya written in full consciousness, in good health and in accordance with Islamic faith. I testify that there is nothing worthy of worship but Allah and that Muhammad is His Messenger.',
-            'هذه وصيتي كُتبت بكامل وعيي وصحتي ووفقاً للشريعة الإسلامية. أشهد أن لا إله إلا الله وأن محمداً رسول الله.'
-          ))}</p>`)}
+          `<p style="font-style:italic;border-${isAr ? 'right' : 'left'}:3px solid ${gold};padding-${isAr ? 'right' : 'left'}:12px;color:#333">${esc(declaration)}</p>`)}
 
         ${sec('②', tx('Souhaits funéraires', 'Funeral Wishes', 'رغبات الجنازة'),
           `<div style="white-space:pre-wrap">${esc(data.funeral_wishes) || `<span style="color:#888;font-style:italic">${tx('Non renseigné', 'Not specified', 'غير محدد')}</span>`}</div>`)}
@@ -405,11 +453,7 @@ export default function Testament() {
           <div className="p-5 space-y-3">
             <p className="text-center text-lg font-arabic text-gold/80">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
             <p className="text-sm text-muted-foreground leading-relaxed border-l-2 border-gold/30 pl-3 italic">
-              {tx(
-                'Ceci est ma wasiyya rédigée en pleine conscience, en bonne santé et dans le respect de la foi islamique. Je témoigne qu\'il n\'y a rien de digne d\'être adoré qu\'Allah et que Muhammad est Son Messager.',
-                'This is my wasiyya written in full consciousness, in good health and in accordance with Islamic faith. I testify that there is nothing worthy of worship but Allah and that Muhammad is His Messenger.',
-                'هذه وصيتي كُتبت بكامل وعيي وصحتي ووفقاً للشريعة الإسلامية. أشهد أن لا إله إلا الله وأن محمداً رسول الله.'
-              )}
+              {buildDeclaration()}
             </p>
             <div className="flex gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">

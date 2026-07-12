@@ -38,6 +38,8 @@ interface CustomPerson {
 interface FamilyProfile {
   personal_info: {
     full_name: string;
+    first_name: string;
+    last_name: string;
     gender: 'male' | 'female' | '';
     birth_date: string;
     country: string;
@@ -55,6 +57,7 @@ interface FamilyProfile {
   parents: {
     father_alive: boolean;
     father_name: string;
+    father_first_name: string;
     mother_alive: boolean;
     mother_name: string;
   };
@@ -68,10 +71,10 @@ interface FamilyProfile {
 }
 
 const EMPTY_PROFILE: FamilyProfile = {
-  personal_info: { full_name: '', gender: '', birth_date: '', country: '', marital_status: '' },
+  personal_info: { full_name: '', first_name: '', last_name: '', gender: '', birth_date: '', country: '', marital_status: '' },
   spouse: { enabled: false, name: '', active_marriage: true },
   children: { count: 0, items: [] },
-  parents: { father_alive: false, father_name: '', mother_alive: false, mother_name: '' },
+  parents: { father_alive: false, father_name: '', father_first_name: '', mother_alive: false, mother_name: '' },
   siblings: { brothers_count: 0, sisters_count: 0, brothers: [], sisters: [] },
   custom_people: [],
 };
@@ -103,6 +106,9 @@ const tr: Record<string, Record<string, string>> = {
     siblings: 'Frères & Soeurs',
     customPeople: 'Personnes Personnalisées',
     fullName: 'Nom complet',
+    firstName: 'Prénom',
+    lastName: 'Nom de famille',
+    fatherFirstName: 'Prénom du père',
     gender: 'Sexe',
     male: 'Homme',
     female: 'Femme',
@@ -169,6 +175,9 @@ const tr: Record<string, Record<string, string>> = {
     siblings: 'Brothers & Sisters',
     customPeople: 'Custom People',
     fullName: 'Full name',
+    firstName: 'First name',
+    lastName: 'Last name',
+    fatherFirstName: "Father's first name",
     gender: 'Gender',
     male: 'Male',
     female: 'Female',
@@ -235,6 +244,9 @@ const tr: Record<string, Record<string, string>> = {
     siblings: 'الإخوة والأخوات',
     customPeople: 'أشخاص مخصصون',
     fullName: 'الاسم الكامل',
+    firstName: 'الاسم',
+    lastName: 'اسم العائلة',
+    fatherFirstName: 'اسم الأب',
     gender: 'الجنس',
     male: 'ذكر',
     female: 'أنثى',
@@ -679,15 +691,27 @@ export default function Profile() {
             {/* ── 1. MES INFOS ── */}
             <SectionCard icon={User} title={T.myInfo}>
               <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{T.fullName}</label>
-                  <Input
-                    placeholder={T.fullName}
-                    value={pi.full_name}
-                    onChange={(e) => setPI({ full_name: e.target.value })}
-                    disabled={isReadOnly}
-                    className="bg-muted/30"
-                  />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{T.firstName} *</label>
+                    <Input
+                      placeholder={T.firstName}
+                      value={pi.first_name}
+                      onChange={(e) => setPI({ first_name: e.target.value, full_name: `${e.target.value} ${pi.last_name}`.trim() })}
+                      disabled={isReadOnly}
+                      className="bg-muted/30"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{T.lastName} *</label>
+                    <Input
+                      placeholder={T.lastName}
+                      value={pi.last_name}
+                      onChange={(e) => setPI({ last_name: e.target.value, full_name: `${pi.first_name} ${e.target.value}`.trim() })}
+                      disabled={isReadOnly}
+                      className="bg-muted/30"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-1.5">
@@ -837,7 +861,15 @@ export default function Profile() {
               <div className="space-y-5">
                 {/* Father */}
                 <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{T.fatherAlive}</label>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{T.fatherFirstName} *</label>
+                  <Input
+                    placeholder={T.fatherFirstName}
+                    value={parents.father_first_name}
+                    onChange={(e) => setParents({ father_first_name: e.target.value })}
+                    disabled={isReadOnly}
+                    className="bg-muted/30"
+                  />
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider pt-2 block">{T.fatherAlive}</label>
                   <ToggleYesNo
                     value={parents.father_alive}
                     onChange={(v) => setParents({ father_alive: v })}
