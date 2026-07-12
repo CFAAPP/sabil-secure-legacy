@@ -295,7 +295,8 @@ export default function Testament() {
       const dateStr = new Date().toLocaleDateString(dateFmt);
       const createdStr = createdAt ? new Date(createdAt).toLocaleDateString(dateFmt) : '—';
       const updatedStr = updatedAt ? new Date(updatedAt).toLocaleDateString(dateFmt) : '—';
-      const fullName = profile?.display_name || '—';
+      const fullName = `${identity.first_name} ${identity.last_name}`.trim() || profile?.display_name || '—';
+      const declaration = buildDeclaration();
 
       const wasiyyaRows = data.wasiyya.length
         ? data.wasiyya.map(b => `<tr>
