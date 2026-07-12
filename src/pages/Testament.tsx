@@ -140,8 +140,36 @@ export default function Testament() {
         toast({ title: t('error'), description: tx('Phrase secrète incorrecte.', 'Incorrect passphrase.', 'عبارة المرور غير صحيحة.'), variant: 'destructive' });
       }
     }
+
+    // Load family profile for identity
+    const { data: famRow } = await supabase
+      .from('vault_items')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('item_type', 'family_profile')
+      .maybeSingle();
+    if (famRow) {
+      try {
+        const famJson = await decrypt(
+          (famRow as any).content_encrypted,
+          (famRow as any).iv,
+          passphrase,
+          profile.encryption_salt
+        );
+        const fam = JSON.parse(famJson);
+        setIdentity({
+          first_name: fam?.personal_info?.first_name || '',
+          last_name: fam?.personal_info?.last_name || '',
+          gender: fam?.personal_info?.gender || '',
+          birth_date: fam?.personal_info?.birth_date || '',
+          father_first_name: fam?.parents?.father_first_name || '',
+        });
+      } catch { /* ignore */ }
+    }
+
     setLoading(false);
   };
+
 
   // ─── Save ────────────────────────────────────────────────────────────────
 
