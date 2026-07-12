@@ -123,8 +123,32 @@ export default function Identity() {
       return;
     }
 
+    const uname = username.trim().toLowerCase();
+    if (!/^[a-z0-9_.]{3,30}$/.test(uname)) {
+      toast({ title: language === 'ar' ? 'اسم مستعار غير صالح' : language === 'en' ? 'Invalid username' : 'Pseudonyme invalide', variant: 'destructive' });
+      return;
+    }
+
     setSaving(true);
     try {
+      if (uname !== (profile.username || '').toLowerCase()) {
+        const { error: unameErr } = await supabase
+          .from('profiles')
+          .update({ username: uname })
+          .eq('user_id', user.id);
+        if (unameErr) {
+          const taken = (unameErr as any).code === '23505';
+          toast({
+            title: taken
+              ? (language === 'ar' ? 'هذا الاسم المستعار محجوز.' : language === 'en' ? 'This username is already taken.' : 'Ce pseudonyme est déjà pris.')
+              : t.error,
+            variant: 'destructive',
+          });
+          setSaving(false);
+          return;
+        }
+      }
+
       const base = existingProfile || EMPTY_FAMILY_PROFILE;
       const next = {
         ...base,
@@ -150,6 +174,7 @@ export default function Identity() {
       });
       setExistingId(savedId);
       setExistingProfile(next);
+      await refreshProfile();
       toast({ title: t.saved });
     } catch (err) {
       console.error(err);
