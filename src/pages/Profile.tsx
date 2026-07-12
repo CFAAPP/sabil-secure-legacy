@@ -38,6 +38,8 @@ interface CustomPerson {
 interface FamilyProfile {
   personal_info: {
     full_name: string;
+    first_name: string;
+    last_name: string;
     gender: 'male' | 'female' | '';
     birth_date: string;
     country: string;
@@ -55,6 +57,7 @@ interface FamilyProfile {
   parents: {
     father_alive: boolean;
     father_name: string;
+    father_first_name: string;
     mother_alive: boolean;
     mother_name: string;
   };
@@ -68,10 +71,10 @@ interface FamilyProfile {
 }
 
 const EMPTY_PROFILE: FamilyProfile = {
-  personal_info: { full_name: '', gender: '', birth_date: '', country: '', marital_status: '' },
+  personal_info: { full_name: '', first_name: '', last_name: '', gender: '', birth_date: '', country: '', marital_status: '' },
   spouse: { enabled: false, name: '', active_marriage: true },
   children: { count: 0, items: [] },
-  parents: { father_alive: false, father_name: '', mother_alive: false, mother_name: '' },
+  parents: { father_alive: false, father_name: '', father_first_name: '', mother_alive: false, mother_name: '' },
   siblings: { brothers_count: 0, sisters_count: 0, brothers: [], sisters: [] },
   custom_people: [],
 };
