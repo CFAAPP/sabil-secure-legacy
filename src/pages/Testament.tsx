@@ -17,6 +17,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import Layout from '@/components/Layout';
 import { Link } from 'react-router-dom';
+import { EMPTY_IDENTITY, getFamilyIdentity, loadLatestFamilyProfile } from '@/lib/familyProfile';
 const uuidv4 = () => crypto.randomUUID();
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -97,9 +98,7 @@ export default function Testament() {
   const [existingId, setExistingId] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
-  const [identity, setIdentity] = useState<{ first_name: string; last_name: string; gender: 'male' | 'female' | ''; birth_date: string; father_first_name: string }>({
-    first_name: '', last_name: '', gender: '', birth_date: '', father_first_name: '',
-  });
+  const [identity, setIdentity] = useState(EMPTY_IDENTITY);
   const { toast } = useToast();
 
   // Tri-language helper
@@ -142,30 +141,10 @@ export default function Testament() {
     }
 
     // Load family profile for identity
-    const { data: famRow } = await supabase
-      .from('vault_items')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('item_type', 'family_profile')
-      .maybeSingle();
-    if (famRow) {
-      try {
-        const famJson = await decrypt(
-          (famRow as any).content_encrypted,
-          (famRow as any).iv,
-          passphrase,
-          profile.encryption_salt
-        );
-        const fam = JSON.parse(famJson);
-        setIdentity({
-          first_name: fam?.personal_info?.first_name || '',
-          last_name: fam?.personal_info?.last_name || '',
-          gender: fam?.personal_info?.gender || '',
-          birth_date: fam?.personal_info?.birth_date || '',
-          father_first_name: fam?.parents?.father_first_name || '',
-        });
-      } catch { /* ignore */ }
-    }
+    try {
+      const latest = await loadLatestFamilyProfile(user.id, passphrase, profile.encryption_salt);
+      setIdentity(getFamilyIdentity(latest?.data));
+    } catch { /* ignore */ }
 
     setLoading(false);
   };

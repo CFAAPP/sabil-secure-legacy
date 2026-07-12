@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import Layout from '@/components/Layout';
+import { loadLatestFamilyProfile, saveFamilyProfile } from '@/lib/familyProfile';
 import {
   User, Heart, Baby, Users, UserCheck, Plus, Minus, Save, Loader2,
   ChevronDown, ChevronUp, Star, Lock
@@ -469,25 +470,13 @@ export default function Profile() {
     if (!user || !passphrase || !profile?.encryption_salt) { setLoading(false); return; }
     setLoading(true);
 
-    const { data: row } = await supabase
-      .from('vault_items')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('item_type', 'family_profile')
-      .maybeSingle();
-
-    if (row) {
-      try {
-        const json = await decrypt(
-          (row as any).content_encrypted,
-          (row as any).iv,
-          passphrase,
-          profile.encryption_salt!
-        );
-        setData(JSON.parse(json));
-        setVaultItemId(row.id);
-      } catch { /* passphrase mismatch */ }
-    }
+    try {
+      const latest = await loadLatestFamilyProfile(user.id, passphrase, profile.encryption_salt!);
+      if (latest) {
+        setData(latest.data as FamilyProfile);
+        setVaultItemId(latest.id);
+      }
+    } catch { /* passphrase mismatch */ }
     setLoading(false);
   }, [user, passphrase, profile]);
 
@@ -498,28 +487,20 @@ export default function Profile() {
     if (!user || !passphrase || !profile?.encryption_salt) return;
     setSaving(true);
     try {
-      const json = JSON.stringify(data);
-      const { ciphertext, iv } = await encrypt(json, passphrase, profile.encryption_salt);
-      const row: any = {
-        user_id: user.id,
-        item_type: 'family_profile',
-        title_encrypted: ciphertext.slice(0, 50),
-        content_encrypted: ciphertext,
-        iv,
-      };
-
-      if (vaultItemId) {
-        await supabase.from('vault_items').update(row).eq('id', vaultItemId);
-      } else {
-        const { data: inserted } = await supabase.from('vault_items').insert(row).select().single();
-        if (inserted) setVaultItemId(inserted.id);
-      }
+      const savedId = await saveFamilyProfile({
+        userId: user.id,
+        passphrase,
+        salt: profile.encryption_salt,
+        data,
+        existingId: vaultItemId,
+      });
+      setVaultItemId(savedId);
 
       await supabase.from('audit_logs').insert({
         user_id: user.id,
         action: 'family_profile_updated',
         entity_type: 'vault_items',
-        entity_id: vaultItemId,
+        entity_id: savedId,
       } as any);
 
       toast({ title: T.saved });
