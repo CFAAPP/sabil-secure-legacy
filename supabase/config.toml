@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.get-metal-rates]
 verify_jwt = false
+
+[functions.get-debt-share-link]
+verify_jwt = false
