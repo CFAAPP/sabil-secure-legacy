@@ -36,20 +36,18 @@ export default function DebtEdit() {
   useEffect(() => {
     async function load() {
       if (!token) return;
-      const { data, error } = await supabase
-        .from('debt_share_links')
-        .select('*')
-        .eq('share_token', token)
-        .eq('is_active', true)
-        .single();
+      const { data, error } = await supabase.functions.invoke('get-debt-share-link', {
+        body: { share_token: token },
+      });
 
-      if (error || !data) {
+      if (error || !data?.share_link) {
         setError('Lien invalide ou expiré.');
       } else {
-        setShareLink(data as ShareLink);
-        setAmount(data.debtor_visible_amount);
-        setCurrency(data.debtor_visible_currency);
-        setDueDate(data.debtor_visible_due_date || '');
+        const sl = data.share_link as ShareLink;
+        setShareLink(sl);
+        setAmount(sl.debtor_visible_amount);
+        setCurrency(sl.debtor_visible_currency);
+        setDueDate(sl.debtor_visible_due_date || '');
       }
       setLoading(false);
     }
