@@ -82,7 +82,7 @@ export default function Dashboard() {
             {t('welcomeBack')},
           </h1>
           <p className="text-xl font-medium mt-0.5" style={{ color: 'hsl(38 30% 90%)' }}>
-            {profile?.display_name || user?.email?.split('@')[0]}
+            {formalName || profile?.display_name || user?.email?.split('@')[0]}
           </p>
         </div>
 
