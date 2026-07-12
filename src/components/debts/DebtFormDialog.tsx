@@ -278,6 +278,12 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
             onProofsChange={setProofs}
           />
 
+          <MentionsInput
+            value={form.mentions}
+            onChange={(v) => setForm({ ...form, mentions: v })}
+            language={language}
+          />
+
           {/* Status */}
           <div className="space-y-2">
             <Label>Statut</Label>
