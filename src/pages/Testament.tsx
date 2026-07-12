@@ -244,7 +244,7 @@ export default function Testament() {
       const dateStr = new Date().toLocaleDateString(dateFmt);
       const createdStr = createdAt ? new Date(createdAt).toLocaleDateString(dateFmt) : '—';
       const updatedStr = updatedAt ? new Date(updatedAt).toLocaleDateString(dateFmt) : '—';
-      const fullName = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') || '—';
+      const fullName = profile?.display_name || '—';
 
       const wasiyyaRows = data.wasiyya.length
         ? data.wasiyya.map(b => `<tr>
@@ -332,7 +332,7 @@ export default function Testament() {
         heightLeft -= pageH;
       }
 
-      pdf.save(`testament-${(profile?.last_name || 'mirath').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.pdf`);
+      pdf.save(`testament-${(profile?.display_name?.replace(/\s+/g, '-') || 'mirath').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.pdf`);
 
       if (user) {
         await supabase.from('audit_logs').insert({
