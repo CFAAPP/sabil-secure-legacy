@@ -365,6 +365,51 @@ export type Database = {
         }
         Relationships: []
       }
+      mentions: {
+        Row: {
+          created_at: string
+          details: Json
+          id: string
+          mentioned_user_id: string
+          mentioned_username: string
+          owner_user_id: string
+          responded_at: string | null
+          response_token: string
+          source_id: string
+          source_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json
+          id?: string
+          mentioned_user_id: string
+          mentioned_username: string
+          owner_user_id: string
+          responded_at?: string | null
+          response_token?: string
+          source_id: string
+          source_type: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json
+          id?: string
+          mentioned_user_id?: string
+          mentioned_username?: string
+          owner_user_id?: string
+          responded_at?: string | null
+          response_token?: string
+          source_id?: string
+          source_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -377,6 +422,7 @@ export type Database = {
           pin_locked_until: string | null
           updated_at: string
           user_id: string
+          username: string | null
         }
         Insert: {
           created_at?: string
@@ -389,6 +435,7 @@ export type Database = {
           pin_locked_until?: string | null
           updated_at?: string
           user_id: string
+          username?: string | null
         }
         Update: {
           created_at?: string
@@ -401,6 +448,7 @@ export type Database = {
           pin_locked_until?: string | null
           updated_at?: string
           user_id?: string
+          username?: string | null
         }
         Relationships: []
       }
@@ -478,7 +526,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      lookup_user_by_username: { Args: { _username: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
