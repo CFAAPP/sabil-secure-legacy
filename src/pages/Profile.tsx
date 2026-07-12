@@ -688,15 +688,27 @@ export default function Profile() {
             {/* ── 1. MES INFOS ── */}
             <SectionCard icon={User} title={T.myInfo}>
               <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{T.fullName}</label>
-                  <Input
-                    placeholder={T.fullName}
-                    value={pi.full_name}
-                    onChange={(e) => setPI({ full_name: e.target.value })}
-                    disabled={isReadOnly}
-                    className="bg-muted/30"
-                  />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{T.firstName} *</label>
+                    <Input
+                      placeholder={T.firstName}
+                      value={pi.first_name}
+                      onChange={(e) => setPI({ first_name: e.target.value, full_name: `${e.target.value} ${pi.last_name}`.trim() })}
+                      disabled={isReadOnly}
+                      className="bg-muted/30"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{T.lastName} *</label>
+                    <Input
+                      placeholder={T.lastName}
+                      value={pi.last_name}
+                      onChange={(e) => setPI({ last_name: e.target.value, full_name: `${pi.first_name} ${e.target.value}`.trim() })}
+                      disabled={isReadOnly}
+                      className="bg-muted/30"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-1.5">
