@@ -84,6 +84,8 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
   const [birthDate, setBirthDate] = useState('');
   const [fatherFirstName, setFatherFirstName] = useState('');
   const [gender, setGender] = useState<'male' | 'female' | ''>('');
+  const [username, setUsername] = useState('');
+  const [usernameError, setUsernameError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -111,13 +113,15 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
 
       const identity = getFamilyIdentity(decoded);
       const hasAll = isFamilyIdentityComplete(identity);
+      const hasUsername = !!profile.username;
 
-      if (!hasAll) {
+      if (!hasAll || !hasUsername) {
         setFirstName(identity.first_name);
         setLastName(identity.last_name);
         setBirthDate(identity.birth_date);
         setFatherFirstName(identity.father_first_name);
         setGender(identity.gender);
+        setUsername(profile.username || '');
         setNeedsOnboarding(true);
       } else {
         setNeedsOnboarding(false);
@@ -138,10 +142,34 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
       return;
     }
 
-    setSaving(true);
-    try {
-      const base = existingProfile || EMPTY_FAMILY_PROFILE;
+    const uname = username.trim().toLowerCase();
+    if (!/^[a-z0-9_.]{3,30}$/.test(uname)) {
+      setUsernameError('invalid');
+      toast({ title: language === 'ar' ? 'اسم مستعار غير صالح' : language === 'en' ? 'Invalid username (3-30 chars, letters/digits/./_)' : 'Pseudonyme invalide (3-30 caractères, lettres/chiffres/./_).', variant: 'destructive' });
+      return;
+    }
 
+    setSaving(true);
+    setUsernameError(null);
+    try {
+      // Save username on profiles (unique constraint enforces uniqueness)
+      if (uname !== (profile.username || '').toLowerCase()) {
+        const { error: unameErr } = await supabase
+          .from('profiles')
+          .update({ username: uname })
+          .eq('user_id', user.id);
+        if (unameErr) {
+          const msg = (unameErr as any).code === '23505'
+            ? (language === 'ar' ? 'هذا الاسم المستعار محجوز.' : language === 'en' ? 'This username is already taken.' : 'Ce pseudonyme est déjà pris.')
+            : (unameErr.message || t.error);
+          toast({ title: msg, variant: 'destructive' });
+          setUsernameError('taken');
+          setSaving(false);
+          return;
+        }
+      }
+
+      const base = existingProfile || EMPTY_FAMILY_PROFILE;
       const next = {
         ...base,
         personal_info: {
@@ -175,7 +203,8 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
         entity_id: savedId,
       } as any);
 
-      setNeedsOnboarding(false);
+      // Force a reload so AuthContext picks up the new username
+      window.location.reload();
     } catch (err) {
       console.error(err);
       toast({ title: t.error, variant: 'destructive' });
@@ -272,6 +301,29 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              {language === 'ar' ? 'اسم مستعار (@)' : language === 'en' ? 'Username (@)' : 'Pseudonyme (@)'} *
+            </label>
+            <div className="flex items-center gap-1 rounded-md border border-input bg-muted/30 px-2 focus-within:ring-2 focus-within:ring-ring">
+              <span className="text-muted-foreground text-sm">@</span>
+              <input
+                value={username}
+                onChange={(e) => { setUsername(e.target.value); setUsernameError(null); }}
+                maxLength={30}
+                required
+                pattern="[a-zA-Z0-9_.]{3,30}"
+                className="flex-1 bg-transparent py-2 text-sm outline-none"
+                placeholder={language === 'ar' ? 'مثال: youssef.n' : 'ex: youssef.n'}
+              />
+            </div>
+            <p className={`text-[11px] ${usernameError ? 'text-destructive' : 'text-muted-foreground'} leading-snug`}>
+              {usernameError === 'taken'
+                ? (language === 'ar' ? 'هذا الاسم المستعار محجوز.' : language === 'en' ? 'This username is already taken.' : 'Ce pseudonyme est déjà pris.')
+                : (language === 'ar' ? '3-30 حرفًا: أحرف، أرقام، . أو _' : language === 'en' ? '3-30 chars: letters, digits, . or _' : '3-30 caractères : lettres, chiffres, . ou _')}
+            </p>
           </div>
 
           <Button

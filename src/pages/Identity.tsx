@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
@@ -67,7 +68,7 @@ const T = {
 };
 
 export default function Identity() {
-  const { user, profile, passphrase, language } = useAuth();
+  const { user, profile, passphrase, language, refreshProfile } = useAuth();
   const t = T[language as 'fr' | 'en' | 'ar'] || T.fr;
   const { toast } = useToast();
 
@@ -81,6 +82,7 @@ export default function Identity() {
   const [birthDate, setBirthDate] = useState('');
   const [fatherFirstName, setFatherFirstName] = useState('');
   const [gender, setGender] = useState<'male' | 'female' | ''>('');
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -102,6 +104,7 @@ export default function Identity() {
           setFatherFirstName(id.father_first_name);
           setGender(id.gender);
         }
+        setUsername(profile.username || '');
       } catch (err) {
         console.error(err);
       }
@@ -120,8 +123,32 @@ export default function Identity() {
       return;
     }
 
+    const uname = username.trim().toLowerCase();
+    if (!/^[a-z0-9_.]{3,30}$/.test(uname)) {
+      toast({ title: language === 'ar' ? 'اسم مستعار غير صالح' : language === 'en' ? 'Invalid username' : 'Pseudonyme invalide', variant: 'destructive' });
+      return;
+    }
+
     setSaving(true);
     try {
+      if (uname !== (profile.username || '').toLowerCase()) {
+        const { error: unameErr } = await supabase
+          .from('profiles')
+          .update({ username: uname })
+          .eq('user_id', user.id);
+        if (unameErr) {
+          const taken = (unameErr as any).code === '23505';
+          toast({
+            title: taken
+              ? (language === 'ar' ? 'هذا الاسم المستعار محجوز.' : language === 'en' ? 'This username is already taken.' : 'Ce pseudonyme est déjà pris.')
+              : t.error,
+            variant: 'destructive',
+          });
+          setSaving(false);
+          return;
+        }
+      }
+
       const base = existingProfile || EMPTY_FAMILY_PROFILE;
       const next = {
         ...base,
@@ -147,6 +174,7 @@ export default function Identity() {
       });
       setExistingId(savedId);
       setExistingProfile(next);
+      await refreshProfile();
       toast({ title: t.saved });
     } catch (err) {
       console.error(err);
@@ -194,6 +222,27 @@ export default function Identity() {
               <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t.fatherFirstName} *</label>
               <Input value={fatherFirstName} onChange={(e) => setFatherFirstName(e.target.value)} maxLength={60} required className="bg-muted/30" />
             </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                {language === 'ar' ? 'اسم مستعار (@)' : language === 'en' ? 'Username (@)' : 'Pseudonyme (@)'} *
+              </label>
+              <div className="flex items-center gap-1 rounded-md border border-input bg-muted/30 px-2 focus-within:ring-2 focus-within:ring-ring">
+                <span className="text-muted-foreground text-sm">@</span>
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  maxLength={30}
+                  required
+                  pattern="[a-zA-Z0-9_.]{3,30}"
+                  className="flex-1 bg-transparent py-2 text-sm outline-none"
+                />
+              </div>
+              <p className="text-[11px] text-muted-foreground leading-snug">
+                {language === 'ar' ? '3-30 حرفًا. فريد ويُستخدم للإشارات.' : language === 'en' ? '3-30 chars. Unique, used for mentions.' : '3-30 caractères. Unique, utilisé pour les mentions.'}
+              </p>
+            </div>
+
 
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t.birthDate} *</label>

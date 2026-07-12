@@ -14,6 +14,7 @@ import DebtFormDialog from '@/components/debts/DebtFormDialog';
 import ReminderSettingsDialog, { type ReminderSettingsData } from '@/components/debts/ReminderSettingsDialog';
 import SendReminderDialog from '@/components/debts/SendReminderDialog';
 import ShareDebtDialog from '@/components/debts/ShareDebtDialog';
+import { syncMentions, parseUsernames, loadMentionUsernames, serializeUsernames } from '@/lib/mentions';
 import { format } from 'date-fns';
 
 const DEFAULT_REMINDER_SETTINGS: ReminderSettingsData = {
@@ -32,6 +33,7 @@ export default function Debts() {
 
   const [formOpen, setFormOpen] = useState(false);
   const [editingDebt, setEditingDebt] = useState<DebtItem | null>(null);
+  const [editingMentions, setEditingMentions] = useState<string>('');
 
   const [reminderSettingsOpen, setReminderSettingsOpen] = useState(false);
   const [reminderSettings, setReminderSettings] = useState<ReminderSettingsData>(DEFAULT_REMINDER_SETTINGS);
@@ -250,6 +252,34 @@ export default function Debts() {
         });
       }
 
+      // Sync @mentions (optional)
+      if (debtId) {
+        const usernames = parseUsernames(formData.mentions || '');
+        const details = {
+          type: formData.type,
+          name: formData.name,
+          amount: formData.amount,
+          currency: formData.currency,
+          dueDate: formData.hasDueDate && formData.dueDate ? format(formData.dueDate, 'yyyy-MM-dd') : '',
+          notes: formData.notes || '',
+        };
+        const { unknown } = await syncMentions({
+          ownerUserId: user.id,
+          sourceType: 'debt',
+          sourceId: debtId,
+          usernames,
+          details,
+          language,
+          senderDisplay: profile?.display_name || user.email || undefined,
+        });
+        if (unknown.length) {
+          toast({
+            title: (language === 'fr' ? 'Pseudos inconnus ignorés : ' : language === 'ar' ? 'أسماء غير معروفة تم تجاهلها: ' : 'Unknown usernames skipped: ') + unknown.map(u => '@' + u).join(', '),
+          });
+        }
+      }
+
+
       // If needs approval, create share link + modification request + send email
       if (needsApproval && debtId) {
         const { data: shareLink } = await supabase
@@ -340,8 +370,10 @@ export default function Debts() {
     setReminderSaving(false);
   };
 
-  const openDetails = (debt: DebtItem) => {
+  const openDetails = async (debt: DebtItem) => {
     setEditingDebt(debt);
+    const list = await loadMentionUsernames('debt', debt.id);
+    setEditingMentions(serializeUsernames(list));
     setFormOpen(true);
   };
 
@@ -457,6 +489,7 @@ export default function Debts() {
           onDelete={handleDeleteDebt}
           saving={saving}
           userId={user?.id}
+          initialMentions={editingMentions}
         />
         <ReminderSettingsDialog
           open={reminderSettingsOpen}
@@ -482,7 +515,7 @@ export default function Debts() {
 
       {/* Floating add button */}
       <button
-        onClick={() => { setEditingDebt(null); setFormOpen(true); }}
+        onClick={() => { setEditingDebt(null); setEditingMentions(''); setFormOpen(true); }}
         className="lg:hidden fixed bottom-6 right-5 z-50 flex items-center justify-center w-12 h-12 rounded-full shadow-lg shadow-black/30 transition-all active:scale-95"
         style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
         aria-label={t('addDebt')}

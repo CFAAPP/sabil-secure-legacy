@@ -18,6 +18,8 @@ import Identity from "./pages/Identity";
 import Zakat from "./pages/Zakat";
 import ResetPassword from "./pages/ResetPassword";
 import Contracts from "./pages/Contracts";
+import SharedWithMe from "./pages/SharedWithMe";
+import MentionResponse from "./pages/MentionResponse";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,7 @@ const App = () => (
             <Route path="/debt-approve/:token" element={<DebtApprove />} />
             <Route path="/debt-edit/:token" element={<DebtEdit />} />
             <Route path="/wakil-access" element={<WakilAccess />} />
+            <Route path="/mention-response" element={<MentionResponse />} />
             {/* Authenticated routes */}
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -44,6 +47,7 @@ const App = () => (
             <Route path="/contracts" element={<Contracts />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/identity" element={<Identity />} />
+            <Route path="/shared" element={<SharedWithMe />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

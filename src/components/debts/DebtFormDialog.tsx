@@ -14,6 +14,7 @@ import type { Language } from '@/lib/i18n';
 import { useTranslation } from '@/lib/i18n';
 import type { DebtItem } from './DebtCard';
 import ProofUpload from './ProofUpload';
+import MentionsInput from '@/components/MentionsInput';
 
 export interface DebtFormData {
   type: 'i_owe' | 'owed_to_me';
@@ -32,6 +33,7 @@ export interface DebtFormData {
   witness2Name: string;
   witness2Email: string;
   witness2Phone: string;
+  mentions: string;
 }
 
 interface DebtFormDialogProps {
@@ -43,9 +45,10 @@ interface DebtFormDialogProps {
   onDelete?: (id: string) => Promise<void>;
   saving: boolean;
   userId?: string;
+  initialMentions?: string;
 }
 
-export default function DebtFormDialog({ open, onOpenChange, language, editingDebt, onSave, onDelete, saving, userId }: DebtFormDialogProps) {
+export default function DebtFormDialog({ open, onOpenChange, language, editingDebt, onSave, onDelete, saving, userId, initialMentions }: DebtFormDialogProps) {
   const t = useTranslation(language);
   const isFr = language === 'fr';
   const [proofs, setProofs] = useState<any[]>([]);
@@ -55,6 +58,7 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
     notes: '', status: 'pending', creditorEmail: '', creditorPhone: '',
     witness1Name: '', witness1Email: '', witness1Phone: '',
     witness2Name: '', witness2Email: '', witness2Phone: '',
+    mentions: '',
   };
 
   const [form, setForm] = useState<DebtFormData>(emptyForm);
@@ -91,11 +95,12 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
         witness2Name: (editingDebt as any).witness2_name || '',
         witness2Email: (editingDebt as any).witness2_email || '',
         witness2Phone: (editingDebt as any).witness2_phone || '',
+        mentions: initialMentions || '',
       });
     } else {
-      setForm(emptyForm);
+      setForm({ ...emptyForm, mentions: initialMentions || '' });
     }
-  }, [editingDebt, open]);
+  }, [editingDebt, open, initialMentions]);
 
   const isValid = form.name.trim() && form.amount.trim() && form.creditorEmail.trim() && form.creditorPhone.trim();
 
@@ -271,6 +276,12 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
             language={language}
             proofs={proofs}
             onProofsChange={setProofs}
+          />
+
+          <MentionsInput
+            value={form.mentions}
+            onChange={(v) => setForm({ ...form, mentions: v })}
+            language={language}
           />
 
           {/* Status */}

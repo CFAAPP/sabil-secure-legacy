@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { FileText, Plus, Loader2, Calendar, Users } from 'lucide-react';
 import Layout from '@/components/Layout';
 import ContractFormDialog, { type ContractFormData, type Attachment, TYPE_LABELS, type ContractType } from '@/components/contracts/ContractFormDialog';
+import { syncMentions, parseUsernames, loadMentionUsernames, serializeUsernames } from '@/lib/mentions';
 
 interface ContractItem {
   id: string;
@@ -34,6 +35,7 @@ export default function Contracts() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<ContractItem | null>(null);
   const [editingAttachments, setEditingAttachments] = useState<Attachment[]>([]);
+  const [editingMentions, setEditingMentions] = useState<string>('');
 
   const safeDecrypt = async (val: string | null, iv: string) => {
     if (!val || !passphrase || !profile?.encryption_salt) return '';
@@ -78,10 +80,12 @@ export default function Contracts() {
     }));
   };
 
-  const openCreate = () => { setEditing(null); setEditingAttachments([]); setFormOpen(true); };
+  const openCreate = () => { setEditing(null); setEditingAttachments([]); setEditingMentions(''); setFormOpen(true); };
   const openEdit = async (c: ContractItem) => {
     setEditing(c);
     setEditingAttachments(await loadAttachments(c.id));
+    const list = await loadMentionUsernames('contract', c.id);
+    setEditingMentions(serializeUsernames(list));
     setFormOpen(true);
   };
 
@@ -126,6 +130,36 @@ export default function Contracts() {
               file_path: path, file_type: file.type || 'application/octet-stream', file_name: file.name,
             });
           }
+        }
+      }
+
+      // Sync mentions (send invitation emails for new ones)
+      if (contractId) {
+        const usernames = parseUsernames(form.mentions || '');
+        const details = {
+          contract_type: form.contract_type,
+          title: form.title,
+          contract_date: form.contract_date,
+          parties: form.parties,
+          execution_delay: form.execution_delay,
+          clauses: form.clauses,
+          penalties: form.penalties,
+          witnesses: form.witnesses,
+          notes: form.notes,
+        };
+        const { unknown } = await syncMentions({
+          ownerUserId: user.id,
+          sourceType: 'contract',
+          sourceId: contractId,
+          usernames,
+          details,
+          language,
+          senderDisplay: profile?.display_name || (user as any).email || undefined,
+        });
+        if (unknown.length) {
+          toast({
+            title: (language === 'fr' ? "Pseudos inconnus ignorés : " : language === 'ar' ? 'أسماء غير معروفة تم تجاهلها: ' : 'Unknown usernames skipped: ') + unknown.map(u => '@' + u).join(', '),
+          });
         }
       }
 
@@ -230,7 +264,8 @@ export default function Contracts() {
           penalties: editing.penalties,
           witnesses: editing.witnesses,
           notes: editing.notes,
-        } : undefined}
+          mentions: editingMentions,
+        } : { mentions: editingMentions } as any}
         onSave={handleSave}
         onDelete={editing ? handleDelete : undefined}
         onDeleteAttachment={handleDeleteAttachment}

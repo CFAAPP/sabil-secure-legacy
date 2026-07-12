@@ -16,6 +16,7 @@ interface Profile {
   encryption_salt: string | null;
   pin_attempts: number;
   pin_locked_until: string | null;
+  username?: string | null;
 }
 
 interface AuthContextType {
