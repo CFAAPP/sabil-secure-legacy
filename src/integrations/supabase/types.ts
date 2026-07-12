@@ -47,6 +47,36 @@ export type Database = {
         }
         Relationships: []
       }
+      contacts: {
+        Row: {
+          contact_user_id: string
+          contact_username: string
+          created_at: string
+          id: string
+          label: string | null
+          owner_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          contact_user_id: string
+          contact_username: string
+          created_at?: string
+          id?: string
+          label?: string | null
+          owner_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          contact_user_id?: string
+          contact_username?: string
+          created_at?: string
+          id?: string
+          label?: string | null
+          owner_user_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contract_attachments: {
         Row: {
           contract_id: string
