@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import DebtEdit from "./pages/DebtEdit";
 import DebtApprove from "./pages/DebtApprove";
 import Profile from "./pages/Profile";
+import Identity from "./pages/Identity";
 import Zakat from "./pages/Zakat";
 import ResetPassword from "./pages/ResetPassword";
 import Contracts from "./pages/Contracts";
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/wakils" element={<Wakils />} />
             <Route path="/contracts" element={<Contracts />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/identity" element={<Identity />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

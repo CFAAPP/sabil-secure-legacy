@@ -29,6 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { path: '/debts', label: t('debts'), icon: Wallet },
     { path: '/contracts', label: t('contracts'), icon: ScrollText },
     { path: '/zakat', label: 'Zakât', icon: Calculator },
+    { path: '/identity', label: t('identity'), icon: UserCircle },
     { path: '/profile', label: t('profileHeirs'), icon: UserCircle },
     { path: '/wakils', label: t('wakils'), icon: Users },
   ];

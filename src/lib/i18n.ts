@@ -50,6 +50,7 @@ const translations = {
     settings: 'Paramètres',
     vault: 'Coffre-fort',
     profileHeirs: 'Profil & Héritiers',
+    identity: 'Mon identité',
     
     // Dashboard
     welcomeBack: 'Bienvenue',
@@ -217,6 +218,7 @@ const translations = {
     settings: 'Settings',
     vault: 'Vault',
     profileHeirs: 'Profile & Heirs',
+    identity: 'My identity',
     
     welcomeBack: 'Welcome back',
     securityStatus: 'Security status',
@@ -373,6 +375,7 @@ const translations = {
     settings: 'الإعدادات',
     vault: 'الخزنة',
     profileHeirs: 'الملف الشخصي والورثة',
+    identity: 'هويتي',
     
     welcomeBack: 'مرحباً بعودتك',
     securityStatus: 'حالة الأمان',
