@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useTranslation, type Language } from '@/lib/i18n';
 import { Plus, Trash2, Paperclip, Image as ImageIcon, Video, Mic, Loader2, FileText } from 'lucide-react';
+import MentionsInput from '@/components/MentionsInput';
 
 export type ContractType = 'commercial' | 'marriage' | 'engagement' | 'rental' | 'employment' | 'partnership' | 'loan' | 'other';
 
@@ -23,6 +24,7 @@ export interface ContractFormData {
   penalties: string;
   witnesses: Witness[];
   notes: string;
+  mentions: string;
 }
 
 export interface Attachment {
@@ -95,6 +97,7 @@ export default function ContractFormDialog({
     penalties: '',
     witnesses: [],
     notes: '',
+    mentions: '',
   });
   const [newFiles, setNewFiles] = useState<File[]>([]);
 
@@ -110,6 +113,7 @@ export default function ContractFormDialog({
         penalties: initial?.penalties || '',
         witnesses: initial?.witnesses || [],
         notes: initial?.notes || '',
+        mentions: initial?.mentions || '',
       });
       setNewFiles([]);
     }
@@ -266,6 +270,13 @@ export default function ContractFormDialog({
             <Label>{L.notes}</Label>
             <Textarea rows={3} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
           </div>
+
+          <MentionsInput
+            value={form.mentions}
+            onChange={(v) => setForm({ ...form, mentions: v })}
+            language={language}
+          />
+
 
           {/* Attachments */}
           <div className="space-y-2">
