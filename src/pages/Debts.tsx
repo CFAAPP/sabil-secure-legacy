@@ -370,8 +370,10 @@ export default function Debts() {
     setReminderSaving(false);
   };
 
-  const openDetails = (debt: DebtItem) => {
+  const openDetails = async (debt: DebtItem) => {
     setEditingDebt(debt);
+    const list = await loadMentionUsernames('debt', debt.id);
+    setEditingMentions(serializeUsernames(list));
     setFormOpen(true);
   };
 
@@ -512,7 +514,7 @@ export default function Debts() {
 
       {/* Floating add button */}
       <button
-        onClick={() => { setEditingDebt(null); setFormOpen(true); }}
+        onClick={() => { setEditingDebt(null); setEditingMentions(''); setFormOpen(true); }}
         className="lg:hidden fixed bottom-6 right-5 z-50 flex items-center justify-center w-12 h-12 rounded-full shadow-lg shadow-black/30 transition-all active:scale-95"
         style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
         aria-label={t('addDebt')}
