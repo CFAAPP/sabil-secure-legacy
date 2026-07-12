@@ -142,10 +142,34 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
       return;
     }
 
-    setSaving(true);
-    try {
-      const base = existingProfile || EMPTY_FAMILY_PROFILE;
+    const uname = username.trim().toLowerCase();
+    if (!/^[a-z0-9_.]{3,30}$/.test(uname)) {
+      setUsernameError('invalid');
+      toast({ title: language === 'ar' ? 'اسم مستعار غير صالح' : language === 'en' ? 'Invalid username (3-30 chars, letters/digits/./_)' : 'Pseudonyme invalide (3-30 caractères, lettres/chiffres/./_).', variant: 'destructive' });
+      return;
+    }
 
+    setSaving(true);
+    setUsernameError(null);
+    try {
+      // Save username on profiles (unique constraint enforces uniqueness)
+      if (uname !== (profile.username || '').toLowerCase()) {
+        const { error: unameErr } = await supabase
+          .from('profiles')
+          .update({ username: uname })
+          .eq('user_id', user.id);
+        if (unameErr) {
+          const msg = (unameErr as any).code === '23505'
+            ? (language === 'ar' ? 'هذا الاسم المستعار محجوز.' : language === 'en' ? 'This username is already taken.' : 'Ce pseudonyme est déjà pris.')
+            : (unameErr.message || t.error);
+          toast({ title: msg, variant: 'destructive' });
+          setUsernameError('taken');
+          setSaving(false);
+          return;
+        }
+      }
+
+      const base = existingProfile || EMPTY_FAMILY_PROFILE;
       const next = {
         ...base,
         personal_info: {
@@ -179,7 +203,8 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
         entity_id: savedId,
       } as any);
 
-      setNeedsOnboarding(false);
+      // Force a reload so AuthContext picks up the new username
+      window.location.reload();
     } catch (err) {
       console.error(err);
       toast({ title: t.error, variant: 'destructive' });
