@@ -164,9 +164,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Main content */}
         <main className="flex-1 px-4 py-6 md:px-8">
-          <div className="mx-auto max-w-3xl">{children}</div>
+          <div className="mx-auto max-w-3xl">
+            <OnboardingGate>{children}</OnboardingGate>
+          </div>
         </main>
       </div>
+
 
       {/* Floating home button — visible on mobile when sidebar is hidden */}
       {location.pathname !== '/dashboard' && (
