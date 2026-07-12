@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { encrypt, decrypt } from '@/lib/crypto';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, UserCircle, Save } from 'lucide-react';
+import {
+  EMPTY_FAMILY_PROFILE,
+  getFamilyIdentity,
+  isFamilyIdentityComplete,
+  loadLatestFamilyProfile,
+  saveFamilyProfile,
+} from '@/lib/familyProfile';
 
 const T = {
   fr: {
@@ -89,49 +95,29 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
       }
       setChecking(true);
 
-      const { data: row } = await supabase
-        .from('vault_items')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('item_type', 'family_profile')
-        .maybeSingle();
-
-      if (cancelled) return;
-
       let decoded: any = null;
-      if (row) {
-        try {
-          const json = await decrypt(
-            (row as any).content_encrypted,
-            (row as any).iv,
-            passphrase,
-            profile.encryption_salt
-          );
-          decoded = JSON.parse(json);
-          setExistingId(row.id);
+      try {
+        const latest = await loadLatestFamilyProfile(user.id, passphrase, profile.encryption_salt);
+        if (cancelled) return;
+        if (latest) {
+          decoded = latest.data;
+          setExistingId(latest.id);
           setExistingProfile(decoded);
-        } catch {
-          // wrong passphrase — don't block
-          setChecking(false);
-          return;
         }
+      } catch {
+        if (!cancelled) setChecking(false);
+        return;
       }
 
-      const pi = decoded?.personal_info || {};
-      const parents = decoded?.parents || {};
-      const hasAll =
-        !!pi.first_name?.trim() &&
-        !!pi.last_name?.trim() &&
-        !!pi.birth_date?.trim() &&
-        !!parents.father_first_name?.trim() &&
-        !!pi.gender;
+      const identity = getFamilyIdentity(decoded);
+      const hasAll = isFamilyIdentityComplete(identity);
 
       if (!hasAll) {
-        setFirstName(pi.first_name || '');
-        setLastName(pi.last_name || '');
-        setBirthDate(pi.birth_date || '');
-        setFatherFirstName(parents.father_first_name || '');
-        setGender(pi.gender || '');
+        setFirstName(identity.first_name);
+        setLastName(identity.last_name);
+        setBirthDate(identity.birth_date);
+        setFatherFirstName(identity.father_first_name);
+        setGender(identity.gender);
         setNeedsOnboarding(true);
       } else {
         setNeedsOnboarding(false);
@@ -154,14 +140,7 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
 
     setSaving(true);
     try {
-      const base = existingProfile || {
-        personal_info: { full_name: '', first_name: '', last_name: '', gender: '', birth_date: '', country: '', marital_status: '' },
-        spouse: { enabled: false, name: '', active_marriage: true },
-        children: { count: 0, items: [] },
-        parents: { father_alive: false, father_name: '', father_first_name: '', mother_alive: false, mother_name: '' },
-        siblings: { brothers_count: 0, sisters_count: 0, brothers: [], sisters: [] },
-        custom_people: [],
-      };
+      const base = existingProfile || EMPTY_FAMILY_PROFILE;
 
       const next = {
         ...base,
@@ -179,28 +158,21 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
         },
       };
 
-      const json = JSON.stringify(next);
-      const { ciphertext, iv } = await encrypt(json, passphrase, profile.encryption_salt);
-      const row: any = {
-        user_id: user.id,
-        item_type: 'family_profile',
-        title_encrypted: ciphertext.slice(0, 50),
-        content_encrypted: ciphertext,
-        iv,
-      };
-
-      if (existingId) {
-        await supabase.from('vault_items').update(row).eq('id', existingId);
-      } else {
-        const { data: inserted } = await supabase.from('vault_items').insert(row).select().single();
-        if (inserted) setExistingId(inserted.id);
-      }
+      const savedId = await saveFamilyProfile({
+        userId: user.id,
+        passphrase,
+        salt: profile.encryption_salt,
+        data: next,
+        existingId,
+      });
+      setExistingId(savedId);
+      setExistingProfile(next);
 
       await supabase.from('audit_logs').insert({
         user_id: user.id,
         action: 'onboarding_completed',
         entity_type: 'vault_items',
-        entity_id: existingId,
+        entity_id: savedId,
       } as any);
 
       setNeedsOnboarding(false);

@@ -1,56 +1,33 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { decrypt } from '@/lib/crypto';
+import {
+  EMPTY_IDENTITY,
+  type FamilyIdentity,
+  getFamilyIdentity,
+  isFamilyIdentityComplete,
+  loadLatestFamilyProfile,
+} from '@/lib/familyProfile';
 
-export interface Identity {
-  first_name: string;
-  last_name: string;
-  gender: 'male' | 'female' | '';
-  birth_date: string;
-  father_first_name: string;
-}
-
-const EMPTY: Identity = { first_name: '', last_name: '', gender: '', birth_date: '', father_first_name: '' };
+export type Identity = FamilyIdentity;
 
 export function useIdentity() {
   const { user, profile, passphrase } = useAuth();
-  const [identity, setIdentity] = useState<Identity>(EMPTY);
+  const [identity, setIdentity] = useState<Identity>(EMPTY_IDENTITY);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
       if (!user || !passphrase || !profile?.encryption_salt) {
+        setIdentity(EMPTY_IDENTITY);
         setLoading(false);
         return;
       }
-      const { data: row } = await supabase
-        .from('vault_items')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('item_type', 'family_profile')
-        .maybeSingle();
-      if (cancelled) return;
-      if (row) {
-        try {
-          const json = await decrypt(
-            (row as any).content_encrypted,
-            (row as any).iv,
-            passphrase,
-            profile.encryption_salt
-          );
-          const fam = JSON.parse(json);
-          if (!cancelled) {
-            setIdentity({
-              first_name: fam?.personal_info?.first_name || '',
-              last_name: fam?.personal_info?.last_name || '',
-              gender: fam?.personal_info?.gender || '',
-              birth_date: fam?.personal_info?.birth_date || '',
-              father_first_name: fam?.parents?.father_first_name || '',
-            });
-          }
-        } catch { /* ignore */ }
+      try {
+        const latest = await loadLatestFamilyProfile(user.id, passphrase, profile.encryption_salt);
+        if (!cancelled) setIdentity(getFamilyIdentity(latest?.data));
+      } catch {
+        if (!cancelled) setIdentity(EMPTY_IDENTITY);
       }
       if (!cancelled) setLoading(false);
     };
@@ -58,9 +35,7 @@ export function useIdentity() {
     return () => { cancelled = true; };
   }, [user, passphrase, profile]);
 
-  const isComplete =
-    !!identity.first_name && !!identity.last_name && !!identity.birth_date &&
-    !!identity.father_first_name && !!identity.gender;
+  const isComplete = isFamilyIdentityComplete(identity);
 
   const formalName = (() => {
     if (!identity.first_name) return '';
