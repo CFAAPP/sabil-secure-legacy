@@ -47,14 +47,14 @@ export default function Contacts() {
     setAdding(true);
     const res = await addContactByUsername(user.id, username, label);
     setAdding(false);
-    if (res.ok) {
+    if (res.ok === true) {
       setItems((prev) => [...prev, res.contact].sort((a, b) => a.contact_username.localeCompare(b.contact_username)));
       setUsername(''); setLabel('');
       toast.success(L.added);
-    } else {
-      const map: Record<string, string> = { invalid: L.invalid, not_found: L.notFound, self: L.self, exists: L.exists, error: 'Error' };
-      toast.error(map[res.reason]);
+      return;
     }
+    const map: Record<string, string> = { invalid: L.invalid, not_found: L.notFound, self: L.self, exists: L.exists, error: 'Error' };
+    toast.error(map[res.reason] ?? 'Error');
   }
 
   async function handleDelete(c: Contact) {
