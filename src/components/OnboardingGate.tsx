@@ -303,6 +303,29 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
             </div>
           </div>
 
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              {language === 'ar' ? 'اسم مستعار (@)' : language === 'en' ? 'Username (@)' : 'Pseudonyme (@)'} *
+            </label>
+            <div className="flex items-center gap-1 rounded-md border border-input bg-muted/30 px-2 focus-within:ring-2 focus-within:ring-ring">
+              <span className="text-muted-foreground text-sm">@</span>
+              <input
+                value={username}
+                onChange={(e) => { setUsername(e.target.value); setUsernameError(null); }}
+                maxLength={30}
+                required
+                pattern="[a-zA-Z0-9_.]{3,30}"
+                className="flex-1 bg-transparent py-2 text-sm outline-none"
+                placeholder={language === 'ar' ? 'مثال: youssef.n' : 'ex: youssef.n'}
+              />
+            </div>
+            <p className={`text-[11px] ${usernameError ? 'text-destructive' : 'text-muted-foreground'} leading-snug`}>
+              {usernameError === 'taken'
+                ? (language === 'ar' ? 'هذا الاسم المستعار محجوز.' : language === 'en' ? 'This username is already taken.' : 'Ce pseudonyme est déjà pris.')
+                : (language === 'ar' ? '3-30 حرفًا: أحرف، أرقام، . أو _' : language === 'en' ? '3-30 chars: letters, digits, . or _' : '3-30 caractères : lettres, chiffres, . ou _')}
+            </p>
+          </div>
+
           <Button
             type="submit"
             disabled={saving}
