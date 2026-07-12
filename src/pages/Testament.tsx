@@ -260,6 +260,26 @@ export default function Testament() {
     setData(d => ({ ...d, personal_messages: d.personal_messages.filter(m => m.id !== id) }));
   };
 
+  // ─── Declaration builder ─────────────────────────────────────────────────
+
+  const buildDeclaration = () => {
+    const { first_name, last_name, gender, birth_date, father_first_name } = identity;
+    const fullName = `${first_name} ${last_name}`.trim() || '—';
+    const birthStr = birth_date ? new Date(birth_date).toLocaleDateString(dateFmt) : '—';
+    const dateStr = new Date().toLocaleDateString(dateFmt);
+    const father = father_first_name || '—';
+    const isFemale = gender === 'female';
+    const soussigne = tx(isFemale ? 'soussignée' : 'soussigné', 'undersigned', isFemale ? 'الموقّعة أدناه' : 'الموقّع أدناه');
+    const fils = tx(isFemale ? 'fille' : 'fils', isFemale ? 'daughter' : 'son', isFemale ? 'ابنة' : 'ابن');
+    const ne = tx(isFemale ? 'née' : 'né', 'born', isFemale ? 'المولودة' : 'المولود');
+
+    return tx(
+      `Je ${soussigne}, ${fullName}, ${fils} de ${father}, ${ne} le ${birthStr}, sain(e) d'esprit et de corps, déclare en ce ${dateStr}, en pleine conscience et dans le respect de la foi islamique, que ceci constitue ma wasiyya (testament). J'atteste qu'il n'y a rien de digne d'être adoré qu'Allah et que Muhammad ﷺ est Son Messager.`,
+      `I, the ${soussigne} ${fullName}, ${fils} of ${father}, ${ne} on ${birthStr}, of sound mind and body, hereby declare on ${dateStr}, in full consciousness and in accordance with Islamic faith, that this constitutes my wasiyya (will). I bear witness that there is nothing worthy of worship but Allah and that Muhammad ﷺ is His Messenger.`,
+      `أنا ${soussigne}، ${fullName}، ${fils} ${father}، ${ne} في ${birthStr}، بكامل قواي العقلية والجسدية، أُعلن في هذا اليوم ${dateStr}، بكامل وعيي ووفقاً للشريعة الإسلامية، أن هذه وصيتي. أشهد أن لا إله إلا الله وأن محمداً ﷺ رسول الله.`
+    );
+  };
+
   // ─── Export PDF ───────────────────────────────────────────────────────────
 
   const exportPDF = async () => {
