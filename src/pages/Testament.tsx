@@ -373,13 +373,23 @@ export default function Testament() {
             <FileText className="h-5 w-5 text-gold" />
             <h1 className="font-serif text-xl font-bold">{tx('Mon Testament', 'My Will', 'وصيتي')}</h1>
           </div>
-          <Button
-            onClick={handleSave}
-            disabled={saving || wasiyyaExceeds}
-            className="h-9 gap-2"
-            style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
-          >
-            {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={exportPDF}
+              disabled={exporting || loading}
+              variant="outline"
+              className="h-9 gap-2 border-gold/30 text-gold hover:bg-gold/5"
+            >
+              {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileDown className="h-3.5 w-3.5" />}
+              <span className="text-xs font-medium">{exporting ? tx('Export…', 'Export…', 'تصدير…') : 'PDF'}</span>
+            </Button>
+            <Button
+              onClick={handleSave}
+              disabled={saving || wasiyyaExceeds}
+              className="h-9 gap-2"
+              style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
+            >
+              {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
             <span className="text-white text-xs font-medium">{saving ? t('saving') : t('save')}</span>
           </Button>
         </div>
