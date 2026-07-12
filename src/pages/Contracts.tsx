@@ -264,7 +264,8 @@ export default function Contracts() {
           penalties: editing.penalties,
           witnesses: editing.witnesses,
           notes: editing.notes,
-        } : undefined}
+          mentions: editingMentions,
+        } : { mentions: editingMentions } as any}
         onSave={handleSave}
         onDelete={editing ? handleDelete : undefined}
         onDeleteAttachment={handleDeleteAttachment}
