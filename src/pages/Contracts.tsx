@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { FileText, Plus, Loader2, Calendar, Users } from 'lucide-react';
 import Layout from '@/components/Layout';
 import ContractFormDialog, { type ContractFormData, type Attachment, TYPE_LABELS, type ContractType } from '@/components/contracts/ContractFormDialog';
+import { syncMentions, parseUsernames, loadMentionUsernames, serializeUsernames } from '@/lib/mentions';
 
 interface ContractItem {
   id: string;
