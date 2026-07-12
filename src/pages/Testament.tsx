@@ -331,11 +331,7 @@ export default function Testament() {
         </div>
 
         ${sec('①', tx('Déclaration', 'Declaration', 'الإعلان'),
-          `<p style="font-style:italic;border-${isAr ? 'right' : 'left'}:3px solid ${gold};padding-${isAr ? 'right' : 'left'}:12px;color:#333">${esc(tx(
-            "Ceci est ma wasiyya rédigée en pleine conscience, en bonne santé et dans le respect de la foi islamique. Je témoigne qu'il n'y a rien de digne d'être adoré qu'Allah et que Muhammad est Son Messager.",
-            'This is my wasiyya written in full consciousness, in good health and in accordance with Islamic faith. I testify that there is nothing worthy of worship but Allah and that Muhammad is His Messenger.',
-            'هذه وصيتي كُتبت بكامل وعيي وصحتي ووفقاً للشريعة الإسلامية. أشهد أن لا إله إلا الله وأن محمداً رسول الله.'
-          ))}</p>`)}
+          `<p style="font-style:italic;border-${isAr ? 'right' : 'left'}:3px solid ${gold};padding-${isAr ? 'right' : 'left'}:12px;color:#333">${esc(declaration)}</p>`)}
 
         ${sec('②', tx('Souhaits funéraires', 'Funeral Wishes', 'رغبات الجنازة'),
           `<div style="white-space:pre-wrap">${esc(data.funeral_wishes) || `<span style="color:#888;font-style:italic">${tx('Non renseigné', 'Not specified', 'غير محدد')}</span>`}</div>`)}
