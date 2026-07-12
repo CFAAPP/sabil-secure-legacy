@@ -858,7 +858,15 @@ export default function Profile() {
               <div className="space-y-5">
                 {/* Father */}
                 <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{T.fatherAlive}</label>
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{T.fatherFirstName} *</label>
+                  <Input
+                    placeholder={T.fatherFirstName}
+                    value={parents.father_first_name}
+                    onChange={(e) => setParents({ father_first_name: e.target.value })}
+                    disabled={isReadOnly}
+                    className="bg-muted/30"
+                  />
+                  <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider pt-2 block">{T.fatherAlive}</label>
                   <ToggleYesNo
                     value={parents.father_alive}
                     onChange={(v) => setParents({ father_alive: v })}
