@@ -390,9 +390,11 @@ export default function Testament() {
               style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
             >
               {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-            <span className="text-white text-xs font-medium">{saving ? t('saving') : t('save')}</span>
-          </Button>
+              <span className="text-white text-xs font-medium">{saving ? t('saving') : t('save')}</span>
+            </Button>
+          </div>
         </div>
+
 
         {/* ① Déclaration */}
         <Section
