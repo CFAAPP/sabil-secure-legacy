@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import mirathLogo from '@/assets/mirath-logo.png';
+import OnboardingGate from '@/components/OnboardingGate';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, signOut, language, setLanguage } = useAuth();
