@@ -489,6 +489,7 @@ export default function Debts() {
           onDelete={handleDeleteDebt}
           saving={saving}
           userId={user?.id}
+          initialMentions={editingMentions}
         />
         <ReminderSettingsDialog
           open={reminderSettingsOpen}
