@@ -52,7 +52,7 @@ export default function Contacts() {
       setUsername(''); setLabel('');
       toast.success(L.added);
     } else {
-      const map = { invalid: L.invalid, not_found: L.notFound, self: L.self, exists: L.exists, error: 'Error' };
+      const map: Record<string, string> = { invalid: L.invalid, not_found: L.notFound, self: L.self, exists: L.exists, error: 'Error' };
       toast.error(map[res.reason]);
     }
   }
