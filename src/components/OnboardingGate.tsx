@@ -84,6 +84,8 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
   const [birthDate, setBirthDate] = useState('');
   const [fatherFirstName, setFatherFirstName] = useState('');
   const [gender, setGender] = useState<'male' | 'female' | ''>('');
+  const [username, setUsername] = useState('');
+  const [usernameError, setUsernameError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -111,13 +113,15 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
 
       const identity = getFamilyIdentity(decoded);
       const hasAll = isFamilyIdentityComplete(identity);
+      const hasUsername = !!profile.username;
 
-      if (!hasAll) {
+      if (!hasAll || !hasUsername) {
         setFirstName(identity.first_name);
         setLastName(identity.last_name);
         setBirthDate(identity.birth_date);
         setFatherFirstName(identity.father_first_name);
         setGender(identity.gender);
+        setUsername(profile.username || '');
         setNeedsOnboarding(true);
       } else {
         setNeedsOnboarding(false);
