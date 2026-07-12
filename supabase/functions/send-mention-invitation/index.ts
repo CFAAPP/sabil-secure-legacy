@@ -68,11 +68,29 @@ Deno.serve(async (req) => {
 
     const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
+    // Auth check: require a valid session and verify caller owns the mention
+    const authHeader = req.headers.get("Authorization") || "";
+    const jwt = authHeader.replace(/^Bearer\s+/i, "");
+    if (!jwt) {
+      return new Response(JSON.stringify({ error: "unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const { data: userData } = await admin.auth.getUser(jwt);
+    const caller = userData?.user;
+    if (!caller) {
+      return new Response(JSON.stringify({ error: "unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const { data: mention, error } = await admin
       .from('mentions').select('*').eq('id', mention_id).single();
     if (error || !mention) {
       return new Response(JSON.stringify({ error: "mention not found" }),
         { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (mention.owner_user_id !== caller.id) {
+      return new Response(JSON.stringify({ error: "forbidden" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     // Look up recipient email (never exposed to sender)
