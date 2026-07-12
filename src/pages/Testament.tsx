@@ -97,6 +97,9 @@ export default function Testament() {
   const [existingId, setExistingId] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
+  const [identity, setIdentity] = useState<{ first_name: string; last_name: string; gender: 'male' | 'female' | ''; birth_date: string; father_first_name: string }>({
+    first_name: '', last_name: '', gender: '', birth_date: '', father_first_name: '',
+  });
   const { toast } = useToast();
 
   // Tri-language helper
