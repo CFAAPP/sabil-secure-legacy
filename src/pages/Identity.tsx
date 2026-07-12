@@ -224,6 +224,27 @@ export default function Identity() {
             </div>
 
             <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                {language === 'ar' ? 'اسم مستعار (@)' : language === 'en' ? 'Username (@)' : 'Pseudonyme (@)'} *
+              </label>
+              <div className="flex items-center gap-1 rounded-md border border-input bg-muted/30 px-2 focus-within:ring-2 focus-within:ring-ring">
+                <span className="text-muted-foreground text-sm">@</span>
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  maxLength={30}
+                  required
+                  pattern="[a-zA-Z0-9_.]{3,30}"
+                  className="flex-1 bg-transparent py-2 text-sm outline-none"
+                />
+              </div>
+              <p className="text-[11px] text-muted-foreground leading-snug">
+                {language === 'ar' ? '3-30 حرفًا. فريد ويُستخدم للإشارات.' : language === 'en' ? '3-30 chars. Unique, used for mentions.' : '3-30 caractères. Unique, utilisé pour les mentions.'}
+              </p>
+            </div>
+
+
+            <div className="space-y-1.5">
               <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t.birthDate} *</label>
               <Input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} max={new Date().toISOString().slice(0, 10)} required className="bg-muted/30" />
             </div>
