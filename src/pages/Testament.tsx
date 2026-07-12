@@ -11,8 +11,10 @@ import { useToast } from '@/hooks/use-toast';
 import {
   Save, FileText, Loader2, ChevronDown, ChevronUp, Plus, Trash2,
   MessageSquare, Users,
-  ExternalLink, AlertCircle, Info, Lock, Calendar
+  ExternalLink, AlertCircle, Info, Lock, Calendar, FileDown
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import Layout from '@/components/Layout';
 import { Link } from 'react-router-dom';
 const uuidv4 = () => crypto.randomUUID();
