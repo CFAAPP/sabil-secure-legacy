@@ -3,11 +3,13 @@ import { useTranslation, isRTL } from '@/lib/i18n';
 import { FileText, Wallet, Users, Lock, UserCircle, Calculator, ScrollText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
+import { useIdentity } from '@/hooks/useIdentity';
 
 export default function Dashboard() {
   const { user, profile, language } = useAuth();
   const t = useTranslation(language);
   const rtl = isRTL(language);
+  const { formalName } = useIdentity();
 
   const cards = [
     {
