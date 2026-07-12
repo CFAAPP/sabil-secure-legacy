@@ -3,11 +3,13 @@ import { useTranslation, isRTL } from '@/lib/i18n';
 import { FileText, Wallet, Users, Lock, UserCircle, Calculator, ScrollText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
+import { useIdentity } from '@/hooks/useIdentity';
 
 export default function Dashboard() {
   const { user, profile, language } = useAuth();
   const t = useTranslation(language);
   const rtl = isRTL(language);
+  const { formalName } = useIdentity();
 
   const cards = [
     {
@@ -80,7 +82,7 @@ export default function Dashboard() {
             {t('welcomeBack')},
           </h1>
           <p className="text-xl font-medium mt-0.5" style={{ color: 'hsl(38 30% 90%)' }}>
-            {profile?.display_name || user?.email?.split('@')[0]}
+            {formalName || profile?.display_name || user?.email?.split('@')[0]}
           </p>
         </div>
 
