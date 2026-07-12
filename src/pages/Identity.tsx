@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Layout from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
@@ -67,7 +68,7 @@ const T = {
 };
 
 export default function Identity() {
-  const { user, profile, passphrase, language } = useAuth();
+  const { user, profile, passphrase, language, refreshProfile } = useAuth();
   const t = T[language as 'fr' | 'en' | 'ar'] || T.fr;
   const { toast } = useToast();
 
@@ -81,6 +82,7 @@ export default function Identity() {
   const [birthDate, setBirthDate] = useState('');
   const [fatherFirstName, setFatherFirstName] = useState('');
   const [gender, setGender] = useState<'male' | 'female' | ''>('');
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -102,6 +104,7 @@ export default function Identity() {
           setFatherFirstName(id.father_first_name);
           setGender(id.gender);
         }
+        setUsername(profile.username || '');
       } catch (err) {
         console.error(err);
       }
