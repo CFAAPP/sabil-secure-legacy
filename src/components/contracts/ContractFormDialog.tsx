@@ -340,7 +340,15 @@ export default function ContractFormDialog({
               <Trash2 className="h-4 w-4 me-1" />{t('delete')}
             </Button>
           ) : <span />}
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => generateContractPdf(form, language)}
+              disabled={!form.title.trim()}
+            >
+              <Download className="h-4 w-4 me-1" />{L.downloadPdf}
+            </Button>
             <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>{t('cancel')}</Button>
             <Button onClick={handleSubmit} disabled={saving || !form.title.trim()}>
               {saving && <Loader2 className="h-4 w-4 me-1 animate-spin" />}
