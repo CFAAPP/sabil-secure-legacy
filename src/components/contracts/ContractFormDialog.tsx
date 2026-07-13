@@ -6,8 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useTranslation, type Language } from '@/lib/i18n';
-import { Plus, Trash2, Paperclip, Image as ImageIcon, Video, Mic, Loader2, FileText } from 'lucide-react';
+import { Plus, Trash2, Paperclip, Image as ImageIcon, Video, Mic, Loader2, FileText, Download } from 'lucide-react';
 import MentionsInput from '@/components/MentionsInput';
+import { generateContractPdf } from '@/lib/contractPdf';
 
 export type ContractType = 'commercial' | 'marriage' | 'engagement' | 'rental' | 'employment' | 'partnership' | 'loan' | 'other';
 
