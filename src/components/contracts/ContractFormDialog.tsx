@@ -140,6 +140,7 @@ export default function ContractFormDialog({
     edit: language === 'fr' ? 'Modifier le contrat' : language === 'ar' ? 'تعديل العقد' : 'Edit contract',
     add: language === 'fr' ? 'Ajouter un contrat' : language === 'ar' ? 'إضافة عقد' : 'Add contract',
     deleteConfirm: language === 'fr' ? 'Supprimer ce contrat ?' : language === 'ar' ? 'حذف هذا العقد؟' : 'Delete this contract?',
+    downloadPdf: language === 'fr' ? 'Télécharger le PDF' : language === 'ar' ? 'تنزيل PDF' : 'Download PDF',
   };
 
   const handleSubmit = async () => {
