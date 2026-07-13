@@ -229,6 +229,50 @@ export type Database = {
           },
         ]
       }
+      debt_payments: {
+        Row: {
+          amount_encrypted: string
+          created_at: string
+          debt_id: string
+          id: string
+          iv: string
+          notes_encrypted: string | null
+          paid_at_encrypted: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_encrypted: string
+          created_at?: string
+          debt_id: string
+          id?: string
+          iv: string
+          notes_encrypted?: string | null
+          paid_at_encrypted: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_encrypted?: string
+          created_at?: string
+          debt_id?: string
+          id?: string
+          iv?: string
+          notes_encrypted?: string | null
+          paid_at_encrypted?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "debt_payments_debt_id_fkey"
+            columns: ["debt_id"]
+            isOneToOne: false
+            referencedRelation: "debts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       debt_proofs: {
         Row: {
           created_at: string
