@@ -280,6 +280,15 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
             onProofsChange={setProofs}
           />
 
+          <PaymentsSection
+            debtId={editingDebt?.id || null}
+            totalAmount={parseFloat(form.amount) || 0}
+            currency={form.currency || 'EUR'}
+            dueDate={form.hasDueDate && form.dueDate ? fmtDate(form.dueDate, 'yyyy-MM-dd') : null}
+            language={language}
+          />
+
+
           <MentionsInput
             value={form.mentions}
             onChange={(v) => setForm({ ...form, mentions: v })}
