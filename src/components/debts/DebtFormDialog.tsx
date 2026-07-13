@@ -14,7 +14,9 @@ import type { Language } from '@/lib/i18n';
 import { useTranslation } from '@/lib/i18n';
 import type { DebtItem } from './DebtCard';
 import ProofUpload from './ProofUpload';
+import PaymentsSection from './PaymentsSection';
 import MentionsInput from '@/components/MentionsInput';
+import { format as fmtDate } from 'date-fns';
 
 export interface DebtFormData {
   type: 'i_owe' | 'owed_to_me';
