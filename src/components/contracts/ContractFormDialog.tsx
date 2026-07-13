@@ -6,8 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useTranslation, type Language } from '@/lib/i18n';
-import { Plus, Trash2, Paperclip, Image as ImageIcon, Video, Mic, Loader2, FileText } from 'lucide-react';
+import { Plus, Trash2, Paperclip, Image as ImageIcon, Video, Mic, Loader2, FileText, Download } from 'lucide-react';
 import MentionsInput from '@/components/MentionsInput';
+import { generateContractPdf } from '@/lib/contractPdf';
 
 export type ContractType = 'commercial' | 'marriage' | 'engagement' | 'rental' | 'employment' | 'partnership' | 'loan' | 'other';
 
@@ -139,6 +140,7 @@ export default function ContractFormDialog({
     edit: language === 'fr' ? 'Modifier le contrat' : language === 'ar' ? 'تعديل العقد' : 'Edit contract',
     add: language === 'fr' ? 'Ajouter un contrat' : language === 'ar' ? 'إضافة عقد' : 'Add contract',
     deleteConfirm: language === 'fr' ? 'Supprimer ce contrat ?' : language === 'ar' ? 'حذف هذا العقد؟' : 'Delete this contract?',
+    downloadPdf: language === 'fr' ? 'Télécharger le PDF' : language === 'ar' ? 'تنزيل PDF' : 'Download PDF',
   };
 
   const handleSubmit = async () => {
@@ -338,7 +340,15 @@ export default function ContractFormDialog({
               <Trash2 className="h-4 w-4 me-1" />{t('delete')}
             </Button>
           ) : <span />}
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => generateContractPdf(form, language)}
+              disabled={!form.title.trim()}
+            >
+              <Download className="h-4 w-4 me-1" />{L.downloadPdf}
+            </Button>
             <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>{t('cancel')}</Button>
             <Button onClick={handleSubmit} disabled={saving || !form.title.trim()}>
               {saving && <Loader2 className="h-4 w-4 me-1 animate-spin" />}
