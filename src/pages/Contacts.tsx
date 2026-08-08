@@ -69,12 +69,18 @@ export default function Contacts() {
 
   return (
     <Layout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-display font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
-            <Users className="h-6 w-6" /> {L.title}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">{L.subtitle}</p>
+      <div className="space-y-4 animate-fade-in pb-28">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-5 pt-4 pb-4">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-primary/15 border border-primary/20">
+              <Users className="h-4 w-4 text-primary" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="font-display text-2xl font-bold text-foreground uppercase tracking-wide">{L.title}</h1>
+              <p className="text-xs text-muted-foreground mt-0.5">{L.subtitle}</p>
+            </div>
+          </div>
         </div>
 
         <form onSubmit={handleAdd} className="rounded-xl border border-primary/20 bg-card p-4 space-y-3">
