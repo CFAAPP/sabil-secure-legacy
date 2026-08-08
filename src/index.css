@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap');
 
 @font-face {
   font-family: 'Milker';
@@ -105,7 +105,7 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Plus Jakarta Sans', 'Space Grotesk', sans-serif;
+    font-family: 'Outfit', 'Space Grotesk', sans-serif;
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.01em;
   }
