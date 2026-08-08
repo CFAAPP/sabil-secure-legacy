@@ -190,12 +190,13 @@ export default function Identity() {
 
   return (
     <Layout>
-      <div className="max-w-xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-primary/15 border border-primary/20">
-            <UserCircle className="h-5 w-5 text-primary" />
+      <div className="w-full min-w-0 space-y-4 animate-fade-in pb-28">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-5 py-4 flex items-center gap-3">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+          <div className="flex items-center justify-center w-9 h-9 shrink-0 rounded-2xl bg-primary/15 border border-primary/20">
+            <UserCircle className="h-4 w-4 text-primary" />
           </div>
-          <div>
+          <div className="min-w-0">
             <h1 className="font-display text-2xl font-bold text-foreground uppercase tracking-wide">{t.title}</h1>
             <p className="text-xs text-muted-foreground mt-0.5">{t.subtitle}</p>
           </div>

@@ -103,11 +103,14 @@ export default function Wakils() {
 
   return (
     <Layout>
-      <div className="space-y-6 animate-fade-in">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Users className="h-6 w-6 text-primary" />
-            <h1 className="font-display text-2xl font-bold">{t('wakilsTitle')}</h1>
+      <div className="space-y-4 animate-fade-in pb-28">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-5 pt-4 pb-4 flex items-center justify-between gap-3">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center justify-center w-9 h-9 shrink-0 rounded-2xl bg-primary/15 border border-primary/20">
+              <Users className="h-4 w-4 text-primary" />
+            </div>
+            <h1 className="font-display text-2xl font-bold text-foreground uppercase tracking-wide">{t('wakilsTitle')}</h1>
           </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
