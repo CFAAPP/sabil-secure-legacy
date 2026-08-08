@@ -56,25 +56,25 @@ export default function Dashboard() {
               <Link
                 key={card.path}
                 to={card.path}
-                className={`group relative flex flex-col justify-between gap-6 overflow-hidden rounded-3xl border p-4 no-underline transition-all duration-300 active:scale-[0.98] ${
+                className={`group relative flex flex-col items-center justify-center gap-4 overflow-hidden rounded-3xl border p-5 text-center no-underline transition-all duration-300 active:scale-[0.98] ${
                   highlight
                     ? 'border-primary bg-primary text-primary-foreground'
                     : 'border-border bg-card hover:border-primary/50'
                 }`}
               >
                 <div
-                  className={`flex h-11 w-11 items-center justify-center rounded-2xl ${
+                  className={`flex h-[72px] w-[72px] items-center justify-center rounded-[22px] ${
                     highlight ? 'bg-primary-foreground/10' : 'bg-primary/12'
                   }`}
                 >
                   <card.icon
-                    className={`h-5 w-5 ${highlight ? 'text-primary-foreground' : 'text-primary'}`}
-                    strokeWidth={2.2}
+                    className={`h-8 w-8 ${highlight ? 'text-primary-foreground' : 'text-primary'}`}
+                    strokeWidth={1.6}
                   />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <h3
-                    className={`font-display text-[13px] leading-tight ${
+                    className={`font-display text-base leading-tight ${
                       highlight ? 'text-primary-foreground' : 'text-foreground'
                     }`}
                   >
