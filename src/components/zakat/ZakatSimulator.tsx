@@ -46,7 +46,7 @@ export default function ZakatSimulator({ inputs, rates, settings, calc, language
       </SimSection>
 
       {/* Gold & Silver */}
-      <SimSection icon={<Gem className="h-4 w-4 text-gold" />} title={z('goldSilver')}>
+      <SimSection icon={<Gem className="h-4 w-4 text-primary" />} title={z('goldSilver')}>
         <SimField label={z('goldGrams')} info={z('infoGold')} value={inputs.gold_grams} onChange={v => update('gold_grams', v)} suffix="g" />
         <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
           <span>{z('pricePerGram')}: {rates.gold_price_per_gram.toFixed(2)} {sym}/g</span>
@@ -74,7 +74,7 @@ export default function ZakatSimulator({ inputs, rates, settings, calc, language
       {/* Debts */}
       <SimSection icon={<Minus className="h-4 w-4 text-destructive" />} title={z('debtsSection')}>
         <SimField label={z('totalDebts')} info={z('infoDebts')} value={inputs.debts_deductible} onChange={v => update('debts_deductible', v)} suffix={sym} />
-        <Button variant="outline" size="sm" onClick={onImportDebts} className="w-full text-xs gap-1.5 border-border hover:border-gold/30 hover:text-gold">
+        <Button variant="outline" size="sm" onClick={onImportDebts} className="w-full text-xs gap-1.5 border-border hover:border-primary/30 hover:text-primary">
           <Download className="h-3.5 w-3.5" /> {z('importFromDebts')}
         </Button>
       </SimSection>
@@ -94,16 +94,16 @@ export default function ZakatSimulator({ inputs, rates, settings, calc, language
               </div>
               <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">{z('zakatDue')}:</span>
-                <span className="font-bold text-gold">{formatMoney(calc.zakatDue, cur)}</span>
+                <span className="font-bold text-primary">{formatMoney(calc.zakatDue, cur)}</span>
               </div>
             </div>
-            <Button onClick={onSave} disabled={saving} className="bg-gold hover:bg-gold-dim text-primary-foreground gap-1.5 h-10">
+            <Button onClick={onSave} disabled={saving} className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 h-10">
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               {z('saveData')}
             </Button>
           </div>
           {calc.isAboveNisab && (
-            <Badge className="bg-gold/15 text-gold border-gold/30 text-[10px]">✓ {z('zakatIsDue')}</Badge>
+            <Badge className="bg-primary/15 text-primary border-primary/30 text-[10px]">✓ {z('zakatIsDue')}</Badge>
           )}
         </div>
       </div>

@@ -310,7 +310,7 @@ const tr: Record<string, Record<string, string>> = {
 function SectionCard({
   icon: Icon,
   title,
-  iconColor = 'text-gold',
+  iconColor = 'text-primary',
   children,
   defaultOpen = true,
 }: {
@@ -329,7 +329,7 @@ function SectionCard({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`flex items-center justify-center w-8 h-8 rounded-lg bg-gold/10 border border-gold/20 ${iconColor}`}>
+            <div className={`flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 ${iconColor}`}>
               <Icon className="h-4 w-4" />
             </div>
             <CardTitle className="text-base font-semibold">{title}</CardTitle>
@@ -439,7 +439,7 @@ function GenderSelector({
           disabled={readOnly}
           onClick={() => onChange(g)}
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
-            value === g ? 'bg-gold/15 border-gold/40 text-gold' : 'border-border text-muted-foreground hover:border-gold/30'
+            value === g ? 'bg-primary/15 border-primary/40 text-primary' : 'border-border text-muted-foreground hover:border-primary/30'
           } ${readOnly ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
         >
           {g === 'male' ? labelMale : labelFemale}
@@ -620,16 +620,15 @@ export default function Profile() {
       <div className="space-y-4 animate-fade-in pb-28">
 
         {/* ── Header ── */}
-        <div className="relative overflow-hidden rounded-2xl border border-primary/20 px-5 pt-5 pb-4"
-          style={{ background: 'linear-gradient(135deg, hsl(155 28% 26%) 0%, hsl(155 22% 22%) 100%)' }}>
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-5 pt-5 pb-4">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gold/10 border border-gold/20">
-                <Users className="h-4 w-4 text-gold" />
+              <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-primary/15 border border-primary/20">
+                <Users className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h1 className="font-display text-xl font-bold text-gold-gradient">{T.title}</h1>
+                <h1 className="font-display text-xl font-bold text-foreground">{T.title}</h1>
                 <p className="text-xs text-muted-foreground mt-0.5">{T.subtitle}</p>
               </div>
             </div>
@@ -638,7 +637,7 @@ export default function Profile() {
                 size="sm"
                 onClick={handleSave}
                 disabled={saving || loading}
-                className="bg-gold/20 hover:bg-gold/30 text-gold border border-gold/30 text-xs"
+                className="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 text-xs"
                 variant="outline"
               >
                 {saving ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Save className="h-3 w-3 mr-1" />}
@@ -739,8 +738,8 @@ export default function Profile() {
                         onClick={() => setPI({ marital_status: s })}
                         className={`rounded-lg border px-3 py-2 text-sm font-medium transition-all text-left ${
                           pi.marital_status === s
-                            ? 'bg-gold/15 border-gold/40 text-gold'
-                            : 'border-border text-muted-foreground hover:border-gold/30'
+                            ? 'bg-primary/15 border-primary/40 text-primary'
+                            : 'border-border text-muted-foreground hover:border-primary/30'
                         } ${isReadOnly ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
                       >
                         {T[s]}
@@ -944,7 +943,7 @@ export default function Profile() {
             </SectionCard>
 
             {/* ── 6. PERSONNES PERSONNALISÉES ── */}
-            <SectionCard icon={Star} title={T.customPeople} iconColor="text-gold" defaultOpen={false}>
+            <SectionCard icon={Star} title={T.customPeople} iconColor="text-primary" defaultOpen={false}>
               <div className="space-y-3">
                 {data.custom_people.map((cp, i) => (
                   <div key={cp.id} className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
@@ -991,7 +990,7 @@ export default function Profile() {
                             disabled={isReadOnly}
                             onClick={() => patchCustom(i, { tag })}
                             className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-all ${
-                              cp.tag === tag ? 'bg-gold/15 border-gold/40 text-gold' : 'border-border text-muted-foreground hover:border-gold/30'
+                              cp.tag === tag ? 'bg-primary/15 border-primary/40 text-primary' : 'border-border text-muted-foreground hover:border-primary/30'
                             } ${isReadOnly ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
                           >
                             {tag === 'info' ? T.tagInfo : tag === 'potential_heir' ? T.tagHeir : T.tagWakil}
@@ -1006,7 +1005,7 @@ export default function Profile() {
                   <button
                     type="button"
                     onClick={addCustom}
-                    className="w-full rounded-xl border border-dashed border-gold/30 py-3 text-sm text-gold/70 hover:text-gold hover:border-gold/50 hover:bg-gold/5 transition-all flex items-center justify-center gap-2"
+                    className="w-full rounded-xl border border-dashed border-primary/30 py-3 text-sm text-primary/70 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
                   >
                     <Plus className="h-4 w-4" />
                     {T.addCustom}

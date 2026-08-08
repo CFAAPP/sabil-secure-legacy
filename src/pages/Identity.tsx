@@ -192,8 +192,8 @@ export default function Identity() {
     <Layout>
       <div className="max-w-xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gold/10 border border-gold/20">
-            <UserCircle className="h-5 w-5 text-gold" />
+          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-primary/15 border border-primary/20">
+            <UserCircle className="h-5 w-5 text-primary" />
           </div>
           <div>
             <h1 className="font-display text-2xl font-bold text-foreground uppercase tracking-wide">{t.title}</h1>
@@ -203,10 +203,10 @@ export default function Identity() {
 
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-6 w-6 animate-spin text-gold/60" />
+            <Loader2 className="h-6 w-6 animate-spin text-primary/60" />
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-gold/15 bg-card p-6 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-primary/15 bg-card p-6 shadow-sm">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t.firstName} *</label>
@@ -258,7 +258,7 @@ export default function Identity() {
                     type="button"
                     onClick={() => setGender(g)}
                     className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
-                      gender === g ? 'bg-gold/15 border-gold/40 text-gold' : 'border-border text-muted-foreground hover:border-gold/30'
+                      gender === g ? 'bg-primary/15 border-primary/40 text-primary' : 'border-border text-muted-foreground hover:border-primary/30'
                     }`}
                   >
                     {g === 'male' ? t.male : t.female}
@@ -267,9 +267,9 @@ export default function Identity() {
               </div>
             </div>
 
-            <div className="rounded-lg border border-gold/15 bg-muted/20 px-3 py-2.5">
+            <div className="rounded-lg border border-primary/15 bg-muted/20 px-3 py-2.5">
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{t.preview}</p>
-              <p className="font-display text-base text-gold mt-0.5">{preview}</p>
+              <p className="font-display text-base text-primary mt-0.5">{preview}</p>
             </div>
 
             <Button

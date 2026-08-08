@@ -215,7 +215,7 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
   if (checking) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-6 w-6 animate-spin text-gold/60" />
+        <Loader2 className="h-6 w-6 animate-spin text-primary/60" />
       </div>
     );
   }
@@ -225,10 +225,10 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
   // Blocking full-screen onboarding
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-md p-4 overflow-y-auto">
-      <div className="w-full max-w-md rounded-2xl border border-gold/20 bg-card shadow-2xl shadow-black/40 p-6 my-6 animate-fade-in">
+      <div className="w-full max-w-md rounded-2xl border border-primary/20 bg-card shadow-2xl shadow-black/40 p-6 my-6 animate-fade-in">
         <div className="flex items-center gap-3 mb-4">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gold/10 border border-gold/20">
-            <UserCircle className="h-5 w-5 text-gold" />
+          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-primary/15 border border-primary/20">
+            <UserCircle className="h-5 w-5 text-primary" />
           </div>
           <div>
             <h2 className="font-display text-lg font-bold text-foreground">{t.title}</h2>
@@ -293,8 +293,8 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
                   onClick={() => setGender(g)}
                   className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
                     gender === g
-                      ? 'bg-gold/15 border-gold/40 text-gold'
-                      : 'border-border text-muted-foreground hover:border-gold/30'
+                      ? 'bg-primary/15 border-primary/40 text-primary'
+                      : 'border-border text-muted-foreground hover:border-primary/30'
                   }`}
                 >
                   {g === 'male' ? t.male : t.female}

@@ -405,21 +405,20 @@ export default function Debts() {
       <div className="space-y-4 animate-fade-in pb-28">
 
         {/* Header with tabs */}
-        <div className="relative overflow-hidden rounded-2xl border border-primary/20 px-5 pt-4 pb-3"
-          style={{ background: 'linear-gradient(135deg, hsl(155 28% 26%) 0%, hsl(155 22% 22%) 100%)' }}>
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-5 pt-4 pb-3">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gold/10 border border-gold/20">
-                <Wallet className="h-4 w-4 text-gold" />
+              <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-primary/15 border border-primary/20">
+                <Wallet className="h-4 w-4 text-primary" />
               </div>
-              <h1 className="font-display text-2xl font-bold text-gold-gradient">{t('debtsTitle')}</h1>
+              <h1 className="font-display text-2xl font-bold text-foreground">{t('debtsTitle')}</h1>
             </div>
             <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-gold hover:bg-gold/5"
+                className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/5"
                 onClick={() => setShowStats(s => !s)}
                 title={language === 'fr' ? 'Graphiques' : 'Charts'}
               >
@@ -428,7 +427,7 @@ export default function Debts() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-gold hover:bg-gold/5"
+                className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/5"
                 onClick={() => setReminderSettingsOpen(true)}
               >
                 <Settings className="h-4 w-4" />
@@ -462,8 +461,8 @@ export default function Debts() {
 
         {/* Reminder banner */}
         {showBanner && (
-          <div className="flex items-center gap-2 rounded-xl border border-gold/20 bg-gold/10 p-3 text-sm mt-4">
-            <AlertTriangle className="h-4 w-4 text-gold shrink-0" />
+          <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/10 p-3 text-sm mt-4">
+            <AlertTriangle className="h-4 w-4 text-primary shrink-0" />
             <span className="text-muted-foreground">{t('reminderBanner')}</span>
             <Button variant="ghost" size="sm" className="ml-auto text-xs text-muted-foreground hover:text-primary-foreground h-6 px-2" onClick={() => setShowBanner(false)}>✕</Button>
           </div>

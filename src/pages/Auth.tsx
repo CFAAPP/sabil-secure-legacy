@@ -61,7 +61,7 @@ export default function Auth() {
           <Button
             variant="ghost"
             size="sm"
-            className="fixed top-4 right-4 z-50 text-xs text-muted-foreground hover:text-gold hover:bg-gold/5 tracking-widest font-medium gap-1"
+            className="fixed top-4 right-4 z-50 text-xs text-muted-foreground hover:text-primary hover:bg-primary/5 tracking-widest font-medium gap-1"
           >
             <Globe className="h-3.5 w-3.5" />
             {LANGUAGE_LABELS[language]}
@@ -72,7 +72,7 @@ export default function Auth() {
             <DropdownMenuItem
               key={lang}
               onClick={() => setLanguage(lang)}
-              className={language === lang ? 'bg-gold/10 text-gold font-medium' : ''}
+              className={language === lang ? 'bg-primary/10 text-primary font-medium' : ''}
             >
               {LANGUAGE_LABELS[lang]}
             </DropdownMenuItem>

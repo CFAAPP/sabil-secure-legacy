@@ -58,7 +58,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <div className="absolute inset-0 rounded-lg ring-1 ring-gold/30 group-hover:ring-gold/60 transition-all" />
               </div>
               <span
-                className="text-gold-gradient font-display text-xl font-bold tracking-[0.12em] uppercase"
+                className="text-foreground font-display text-xl font-bold tracking-[0.12em] uppercase"
               >
                 {language === 'ar' ? 'ميراث' : 'MIRATH'}
               </span>
@@ -71,7 +71,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-xs text-muted-foreground hover:text-gold hover:bg-gold/5 tracking-widest font-medium min-w-[40px] gap-1"
+                  className="text-xs text-muted-foreground hover:text-primary hover:bg-primary/5 tracking-widest font-medium min-w-[40px] gap-1"
                 >
                   <Globe className="h-3.5 w-3.5" />
                   {LANGUAGE_LABELS[language]}
@@ -82,7 +82,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <DropdownMenuItem
                     key={lang}
                     onClick={() => setLanguage(lang)}
-                    className={language === lang ? 'bg-gold/10 text-gold font-medium' : ''}
+                    className={language === lang ? 'bg-primary/10 text-primary font-medium' : ''}
                   >
                     {LANGUAGE_LABELS[lang]}
                   </DropdownMenuItem>
@@ -129,20 +129,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 onClick={() => setMenuOpen(false)}
                 className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                   isActive(item.path)
-                    ? 'bg-gold/10 text-gold border border-gold/20 shadow-gold/10 shadow-sm'
+                    ? 'bg-primary/10 text-primary border border-primary/20 shadow-gold/10 shadow-sm'
                     : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground border border-transparent'
                 }`}
               >
                 {isActive(item.path) ? (
                   <div className="flex items-center justify-center w-6 h-6">
-                    <item.icon className="h-4 w-4 text-gold" />
+                    <item.icon className="h-4 w-4 text-primary" />
                   </div>
                 ) : (
                   <item.icon className="h-4 w-4" />
                 )}
                 {item.label}
                 {isActive(item.path) && (
-                  <div className="ms-auto w-1.5 h-1.5 rounded-full bg-gold shadow-[0_0_6px_hsl(43_72%_58%/0.8)]" />
+                  <div className="ms-auto w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_hsl(43_72%_58%/0.8)]" />
                 )}
               </Link>
             ))}
@@ -154,7 +154,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               onClick={() => setMenuOpen(false)}
               className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-all border border-transparent"
             >
-              <Shield className="h-4 w-4 text-gold/60" />
+              <Shield className="h-4 w-4 text-primary/60" />
               {t('wakilMode')}
             </Link>
           </div>
@@ -178,12 +178,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {location.pathname !== '/dashboard' && (
         <Link
           to="/dashboard"
-          className={`lg:hidden fixed bottom-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-card border border-gold/30 shadow-lg shadow-black/30 hover:bg-gold/10 hover:border-gold/60 transition-all active:scale-95 ${
+          className={`lg:hidden fixed bottom-6 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-card border border-primary/30 shadow-lg shadow-black/30 hover:bg-primary/10 hover:border-primary/60 transition-all active:scale-95 ${
             isRTL(language) ? 'right-5' : 'left-5'
           }`}
           aria-label={t('dashboard')}
         >
-          <ArrowLeft className={`h-5 w-5 text-gold ${isRTL(language) ? 'rotate-180' : ''}`} />
+          <ArrowLeft className={`h-5 w-5 text-primary ${isRTL(language) ? 'rotate-180' : ''}`} />
         </Link>
       )}
     </div>

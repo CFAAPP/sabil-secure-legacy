@@ -42,14 +42,13 @@ export default function SharedWithMe() {
   return (
     <Layout>
       <div className="space-y-4 animate-fade-in pb-28">
-        <div className="relative overflow-hidden rounded-2xl border border-primary/20 px-5 pt-4 pb-4"
-          style={{ background: 'linear-gradient(135deg, hsl(155 28% 26%) 0%, hsl(155 22% 22%) 100%)' }}>
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-5 pt-4 pb-4">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gold/10 border border-gold/20">
-              <Inbox className="h-4 w-4 text-gold" />
+            <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-primary/15 border border-primary/20">
+              <Inbox className="h-4 w-4 text-primary" />
             </div>
-            <h1 className="font-display text-2xl font-bold text-gold-gradient uppercase tracking-wider">{T.title}</h1>
+            <h1 className="font-display text-2xl font-bold text-foreground uppercase tracking-wider">{T.title}</h1>
           </div>
         </div>
 
@@ -65,8 +64,8 @@ export default function SharedWithMe() {
               return (
                 <div key={m.id} className="rounded-2xl border border-border bg-card p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    {isContract ? <FileText className="h-4 w-4 text-gold" /> : <Coins className="h-4 w-4 text-gold" />}
-                    <span className="text-xs uppercase tracking-wide text-gold/80">{isContract ? T.contract : T.debt}</span>
+                    {isContract ? <FileText className="h-4 w-4 text-primary" /> : <Coins className="h-4 w-4 text-primary" />}
+                    <span className="text-xs uppercase tracking-wide text-primary/80">{isContract ? T.contract : T.debt}</span>
                     <span className="ms-auto text-[11px] text-muted-foreground flex items-center gap-1">
                       <AtSign className="h-3 w-3" />{m.mentioned_username}
                     </span>

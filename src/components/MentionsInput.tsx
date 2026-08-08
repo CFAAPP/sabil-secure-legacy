@@ -89,8 +89,8 @@ export default function MentionsInput({ value, onChange, language }: Props) {
   }
 
   return (
-    <div className="space-y-1.5 rounded-lg border border-gold/20 bg-gold/5 p-3">
-      <label className="flex items-center gap-1.5 text-xs font-medium text-gold uppercase tracking-wider">
+    <div className="space-y-1.5 rounded-lg border border-primary/20 bg-primary/5 p-3">
+      <label className="flex items-center gap-1.5 text-xs font-medium text-primary uppercase tracking-wider">
         <AtSign className="h-3.5 w-3.5" />{label}
       </label>
       <div className="relative">
@@ -108,7 +108,7 @@ export default function MentionsInput({ value, onChange, language }: Props) {
         {open && (
           <ul
             role="listbox"
-            className="absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-auto rounded-lg border border-gold/30 bg-popover shadow-lg"
+            className="absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-auto rounded-lg border border-primary/30 bg-popover shadow-lg"
           >
             {suggestions.map((c, i) => (
               <li
@@ -118,7 +118,7 @@ export default function MentionsInput({ value, onChange, language }: Props) {
                 onMouseDown={(e) => { e.preventDefault(); applySuggestion(c); }}
                 onMouseEnter={() => setActiveIdx(i)}
                 className={`cursor-pointer px-3 py-2 text-sm flex items-center gap-2 ${
-                  i === activeIdx ? 'bg-gold/15 text-gold' : 'hover:bg-muted/60'
+                  i === activeIdx ? 'bg-primary/15 text-primary' : 'hover:bg-muted/60'
                 }`}
               >
                 <AtSign className="h-3.5 w-3.5 opacity-60" />

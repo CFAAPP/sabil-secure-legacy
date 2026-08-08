@@ -71,15 +71,15 @@ export default function Contacts() {
     <Layout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-gold-gradient uppercase tracking-wider flex items-center gap-2">
+          <h1 className="text-2xl font-display font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
             <Users className="h-6 w-6" /> {L.title}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">{L.subtitle}</p>
         </div>
 
-        <form onSubmit={handleAdd} className="rounded-xl border border-gold/20 bg-card p-4 space-y-3">
+        <form onSubmit={handleAdd} className="rounded-xl border border-primary/20 bg-card p-4 space-y-3">
           <div className="flex items-center gap-2">
-            <AtSign className="h-4 w-4 text-gold" />
+            <AtSign className="h-4 w-4 text-primary" />
             <Input
               value={username}
               onChange={(e) => setUsername(e.target.value)}

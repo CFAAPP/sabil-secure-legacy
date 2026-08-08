@@ -194,17 +194,16 @@ export default function Contracts() {
   return (
     <Layout>
       <div className="space-y-4 animate-fade-in pb-28">
-        <div className="relative overflow-hidden rounded-2xl border border-primary/20 px-5 pt-4 pb-4"
-          style={{ background: 'linear-gradient(135deg, hsl(155 28% 26%) 0%, hsl(155 22% 22%) 100%)' }}>
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-5 pt-4 pb-4">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gold/10 border border-gold/20">
-                <FileText className="h-4 w-4 text-gold" />
+              <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-primary/15 border border-primary/20">
+                <FileText className="h-4 w-4 text-primary" />
               </div>
-              <h1 className="font-display text-2xl font-bold text-gold-gradient uppercase tracking-wider">{titleLabel}</h1>
+              <h1 className="font-display text-2xl font-bold text-foreground uppercase tracking-wider">{titleLabel}</h1>
             </div>
-            <Button size="sm" onClick={openCreate} className="bg-gold/15 hover:bg-gold/25 text-gold border border-gold/30">
+            <Button size="sm" onClick={openCreate} className="bg-primary/15 hover:bg-primary/25 text-primary border border-primary/30">
               <Plus className="h-4 w-4" />
             </Button>
           </div>
@@ -224,7 +223,7 @@ export default function Contracts() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gold/80 uppercase tracking-wide mb-1">{TYPE_LABELS[language][c.contract_type] || c.contract_type}</p>
+                    <p className="text-xs text-primary/80 uppercase tracking-wide mb-1">{TYPE_LABELS[language][c.contract_type] || c.contract_type}</p>
                     <h3 className="font-semibold text-foreground truncate">{c.title}</h3>
                     <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-muted-foreground">
                       {c.contract_date && <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{c.contract_date}</span>}
@@ -241,7 +240,7 @@ export default function Contracts() {
         <button
           onClick={openCreate}
           aria-label={language === 'fr' ? 'Ajouter un contrat' : 'Add contract'}
-          className="lg:hidden fixed bottom-6 right-5 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-gold text-background shadow-lg shadow-black/30 hover:bg-gold/90 active:scale-95 transition-all"
+          className="lg:hidden fixed bottom-6 right-5 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-primary text-background shadow-lg shadow-black/30 hover:bg-primary/90 active:scale-95 transition-all"
         >
           <Plus className="h-6 w-6" />
         </button>

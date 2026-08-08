@@ -72,7 +72,7 @@ export default function ZakatSettingsPanel({ settings, language, onSettingsChang
       <Card className="border-border">
         <CardHeader className="pb-2 pt-4 px-4">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Coins className="h-4 w-4 text-gold" /> {z('currency')} & {z('nisabMethod')}
+            <Coins className="h-4 w-4 text-primary" /> {z('currency')} & {z('nisabMethod')}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-4">
@@ -131,7 +131,7 @@ export default function ZakatSettingsPanel({ settings, language, onSettingsChang
                 className={cn(
                   'flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium transition-all',
                   isHijri
-                    ? 'border-gold bg-gold/10 text-gold'
+                    ? 'border-gold bg-primary/10 text-primary'
                     : 'border-border bg-card text-muted-foreground hover:bg-accent/50'
                 )}
               >
@@ -205,7 +205,7 @@ export default function ZakatSettingsPanel({ settings, language, onSettingsChang
         </CardContent>
       </Card>
 
-      <Button onClick={onSave} disabled={saving} className="w-full bg-gold hover:bg-gold-dim text-primary-foreground gap-1.5 h-11">
+      <Button onClick={onSave} disabled={saving} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 h-11">
         {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
         {z('saveData')}
       </Button>

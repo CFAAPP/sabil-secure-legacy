@@ -118,7 +118,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
           {/* Rate display row */}
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Badge variant="outline" className="text-[10px] gap-1 border-gold/30 text-gold">
+              <Badge variant="outline" className="text-[10px] gap-1 border-primary/30 text-primary">
                 <Coins className="h-3 w-3" />
                 {data.rates.source === 'api' ? z('apiMode') : z('manualMode')}
               </Badge>
@@ -134,10 +134,10 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               )}
-              <Button variant="ghost" size="sm" onClick={() => { setManualGold(data.rates.gold_price_per_gram.toString()); setManualSilver(data.rates.silver_price_per_gram.toString()); setEditingRates(!editingRates); }} className="h-7 text-xs text-muted-foreground hover:text-gold">
+              <Button variant="ghost" size="sm" onClick={() => { setManualGold(data.rates.gold_price_per_gram.toString()); setManualSilver(data.rates.silver_price_per_gram.toString()); setEditingRates(!editingRates); }} className="h-7 text-xs text-muted-foreground hover:text-primary">
                 <Edit3 className="h-3.5 w-3.5" />
               </Button>
-              <Button variant="ghost" size="sm" onClick={onRefreshRates} disabled={ratesFetching} className="h-7 text-xs text-muted-foreground hover:text-gold">
+              <Button variant="ghost" size="sm" onClick={onRefreshRates} disabled={ratesFetching} className="h-7 text-xs text-muted-foreground hover:text-primary">
                 {ratesFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
               </Button>
             </div>
@@ -192,7 +192,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
                     onManualRateChange(parseFloat(manualGold) || 0, parseFloat(manualSilver) || 0);
                     setEditingRates(false);
                   }}
-                  className="h-8 text-xs bg-gold hover:bg-gold-dim text-primary-foreground flex-1"
+                  className="h-8 text-xs bg-primary hover:bg-primary/90 text-primary-foreground flex-1"
                 >
                   {language === 'fr' ? 'Appliquer' : 'Apply'}
                 </Button>
@@ -200,7 +200,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
                   href="https://www.veracash.com/fr/cours-or"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-gold/30 text-xs text-gold hover:bg-gold/5 transition-colors flex-1 justify-center"
+                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-primary/30 text-xs text-primary hover:bg-primary/5 transition-colors flex-1 justify-center"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                   {language === 'fr' ? "Cours de l'or/argent en direct" : 'Live gold/silver prices'}
@@ -233,7 +233,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
               </div>
             </div>
             <div className="text-center">
-              <span className={`text-3xl font-bold ${isGold ? 'text-gold-gradient' : 'text-silver-gradient'}`} style={{ fontFamily: "'Amiri', serif" }}>
+              <span className={`text-3xl font-bold ${isGold ? 'text-foreground' : 'text-silver-gradient'}`} style={{ fontFamily: "'Amiri', serif" }}>
                 {daysInfo.daysLeft}
               </span>
               <span className="text-xs text-muted-foreground ml-2">{z('daysRemaining')}</span>
@@ -261,7 +261,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
       </div>
 
       {/* Nisab method reminder */}
-      <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs ${isGold ? 'bg-gold/5 border-gold/20 text-gold' : 'bg-silver/5 border-silver/20 text-silver'}`}>
+      <div className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs ${isGold ? 'bg-primary/5 border-primary/20 text-primary' : 'bg-silver/5 border-silver/20 text-silver'}`}>
         <Info className="h-3.5 w-3.5 shrink-0" />
         <span>
           {language === 'fr'
@@ -275,11 +275,11 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
         <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-${themeColor}/40 to-transparent`} />
         <CardContent className="pt-5 pb-4 text-center">
           <p className="text-xs text-muted-foreground mb-1">{z('zakatDue')}</p>
-          <p className={`text-4xl font-bold ${isGold ? 'text-gold-gradient' : 'text-silver-gradient'}`} style={{ fontFamily: "'Amiri', serif" }}>
+          <p className={`text-4xl font-bold ${isGold ? 'text-foreground' : 'text-silver-gradient'}`} style={{ fontFamily: "'Amiri', serif" }}>
             {formatMoney(calc.zakatDue, cur)}
           </p>
           {calc.isAboveNisab && (
-            <Badge className={`mt-2 text-[10px] ${isGold ? 'bg-gold/15 text-gold border-gold/30' : 'bg-silver/15 text-silver border-silver/30'}`}>{z('zakatIsDue')}</Badge>
+            <Badge className={`mt-2 text-[10px] ${isGold ? 'bg-primary/15 text-primary border-primary/30' : 'bg-silver/15 text-silver border-silver/30'}`}>{z('zakatIsDue')}</Badge>
           )}
         </CardContent>
       </Card>
@@ -290,7 +290,7 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted-foreground">{calc.nisabPercent >= 100 ? '100' : Math.round(calc.nisabPercent)}% {z('nisabReached')}</span>
             {calc.isAboveNisab ? (
-              <Badge className={`text-[10px] ${isGold ? 'bg-gold/15 text-gold border-gold/30' : 'bg-silver/15 text-silver border-silver/30'}`}>✓ {z('zakatIsDue')}</Badge>
+              <Badge className={`text-[10px] ${isGold ? 'bg-primary/15 text-primary border-primary/30' : 'bg-silver/15 text-silver border-silver/30'}`}>✓ {z('zakatIsDue')}</Badge>
             ) : (
               <Badge variant="outline" className="text-[10px] text-muted-foreground">{z('belowNisab')}</Badge>
             )}
@@ -360,15 +360,15 @@ export default function ZakatDashboard({ calc, data, language, ratesFetching, on
 
       {/* Quick Actions */}
       <div className="grid grid-cols-2 gap-2">
-        <Button variant="outline" size="sm" onClick={onGoToSimulator} className="h-10 text-xs border-border hover:border-gold/30 hover:text-gold gap-1.5">
+        <Button variant="outline" size="sm" onClick={onGoToSimulator} className="h-10 text-xs border-border hover:border-primary/30 hover:text-primary gap-1.5">
           <Calculator className="h-3.5 w-3.5" /> {z('editAssets')}
         </Button>
-        <Button variant="outline" size="sm" onClick={onGoToHistory} className="h-10 text-xs border-border hover:border-gold/30 hover:text-gold gap-1.5">
+        <Button variant="outline" size="sm" onClick={onGoToHistory} className="h-10 text-xs border-border hover:border-primary/30 hover:text-primary gap-1.5">
           <Clock className="h-3.5 w-3.5" /> {z('history')}
         </Button>
       </div>
       {calc.isAboveNisab && (
-        <Button onClick={onMarkPaid} className={`w-full h-11 text-primary-foreground gap-2 ${isGold ? 'bg-gold hover:bg-gold-dim' : 'bg-silver hover:bg-silver-dim'}`}>
+        <Button onClick={onMarkPaid} className={`w-full h-11 text-primary-foreground gap-2 ${isGold ? 'bg-primary hover:bg-primary/90' : 'bg-silver hover:bg-silver-dim'}`}>
           <CheckCircle2 className="h-4 w-4" /> {z('markAsPaid')}
         </Button>
       )}
@@ -384,7 +384,7 @@ function KPICard({ icon, label, value, color, highlight, highlightColor = 'gold'
           <span className={color}>{icon}</span>
           <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</span>
         </div>
-        <p className={`text-lg font-semibold ${highlight ? (highlightColor === 'gold' ? 'text-gold-gradient' : 'text-silver-gradient') : ''}`}>{value}</p>
+        <p className={`text-lg font-semibold ${highlight ? (highlightColor === 'gold' ? 'text-foreground' : 'text-silver-gradient') : ''}`}>{value}</p>
       </CardContent>
     </Card>
   );
