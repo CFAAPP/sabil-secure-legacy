@@ -49,7 +49,7 @@ export default function SharedWithMe() {
             <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gold/10 border border-gold/20">
               <Inbox className="h-4 w-4 text-gold" />
             </div>
-            <h1 className="font-serif text-2xl font-bold text-gold-gradient uppercase tracking-wider">{T.title}</h1>
+            <h1 className="font-display text-2xl font-bold text-gold-gradient uppercase tracking-wider">{T.title}</h1>
           </div>
         </div>
 

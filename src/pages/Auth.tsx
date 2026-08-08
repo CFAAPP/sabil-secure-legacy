@@ -84,13 +84,13 @@ export default function Auth() {
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center gap-3">
           <img src={mirathLogo} alt="Mirath" className="h-20 w-20 rounded-2xl object-cover shadow-lg" />
-          <h1 className="font-serif text-3xl font-bold text-foreground">{language === 'ar' ? 'ميراث' : 'Mirath'}</h1>
+          <h1 className="font-display text-3xl font-bold text-foreground">{language === 'ar' ? 'ميراث' : 'Mirath'}</h1>
           <p className="text-sm text-muted-foreground">{t('appTagline')}</p>
         </div>
 
         <Card className="border-border/50 shadow-xl">
           <CardHeader className="text-center">
-            <CardTitle className="font-serif text-xl">
+            <CardTitle className="font-display text-xl">
               {isLogin ? t('login') : t('signup')}
             </CardTitle>
             <CardDescription>

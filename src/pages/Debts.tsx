@@ -413,7 +413,7 @@ export default function Debts() {
               <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gold/10 border border-gold/20">
                 <Wallet className="h-4 w-4 text-gold" />
               </div>
-              <h1 className="font-serif text-2xl font-bold text-gold-gradient">{t('debtsTitle')}</h1>
+              <h1 className="font-display text-2xl font-bold text-gold-gradient">{t('debtsTitle')}</h1>
             </div>
             <div className="flex items-center gap-1">
               <Button
@@ -441,13 +441,13 @@ export default function Debts() {
             <TabsList className="w-full bg-black/20 border border-white/10 rounded-xl p-1 h-auto">
               <TabsTrigger
                 value="i_owe"
-                className="flex-1 rounded-lg data-[state=active]:bg-red-500/20 data-[state=active]:text-red-300 data-[state=active]:border data-[state=active]:border-red-500/30 text-white/60 text-sm transition-all"
+                className="flex-1 rounded-lg data-[state=active]:bg-red-500/20 data-[state=active]:text-red-300 data-[state=active]:border data-[state=active]:border-red-500/30 text-muted-foreground text-sm transition-all"
               >
                 {t('iOwe')}
               </TabsTrigger>
               <TabsTrigger
                 value="owed_to_me"
-                className="flex-1 rounded-lg data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-300 data-[state=active]:border data-[state=active]:border-emerald-500/30 text-white/60 text-sm transition-all"
+                className="flex-1 rounded-lg data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-300 data-[state=active]:border data-[state=active]:border-emerald-500/30 text-muted-foreground text-sm transition-all"
               >
                 {t('owedToMe')}
               </TabsTrigger>
@@ -464,8 +464,8 @@ export default function Debts() {
         {showBanner && (
           <div className="flex items-center gap-2 rounded-xl border border-gold/20 bg-gold/10 p-3 text-sm mt-4">
             <AlertTriangle className="h-4 w-4 text-gold shrink-0" />
-            <span className="text-white/80">{t('reminderBanner')}</span>
-            <Button variant="ghost" size="sm" className="ml-auto text-xs text-white/50 hover:text-white h-6 px-2" onClick={() => setShowBanner(false)}>✕</Button>
+            <span className="text-muted-foreground">{t('reminderBanner')}</span>
+            <Button variant="ghost" size="sm" className="ml-auto text-xs text-muted-foreground hover:text-primary-foreground h-6 px-2" onClick={() => setShowBanner(false)}>✕</Button>
           </div>
         )}
 
@@ -520,7 +520,7 @@ export default function Debts() {
         style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
         aria-label={t('addDebt')}
       >
-        <Plus className="h-5 w-5 text-white" />
+        <Plus className="h-5 w-5 text-primary-foreground" />
       </button>
     </Layout>
   );

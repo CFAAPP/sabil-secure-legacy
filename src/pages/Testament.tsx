@@ -398,7 +398,7 @@ export default function Testament() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <FileText className="h-5 w-5 text-gold" />
-            <h1 className="font-serif text-xl font-bold">{tx('Mon Testament', 'My Will', 'وصيتي')}</h1>
+            <h1 className="font-display text-xl font-bold">{tx('Mon Testament', 'My Will', 'وصيتي')}</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -417,7 +417,7 @@ export default function Testament() {
               style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
             >
               {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-              <span className="text-white text-xs font-medium">{saving ? t('saving') : t('save')}</span>
+              <span className="text-primary-foreground text-xs font-medium">{saving ? t('saving') : t('save')}</span>
             </Button>
           </div>
         </div>
@@ -705,7 +705,7 @@ export default function Testament() {
         style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
         aria-label={t('save')}
       >
-        {saving ? <Loader2 className="h-5 w-5 text-white animate-spin" /> : <Save className="h-5 w-5 text-white" />}
+        {saving ? <Loader2 className="h-5 w-5 text-primary-foreground animate-spin" /> : <Save className="h-5 w-5 text-primary-foreground" />}
       </button>
 
     </Layout>

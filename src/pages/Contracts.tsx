@@ -202,7 +202,7 @@ export default function Contracts() {
               <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gold/10 border border-gold/20">
                 <FileText className="h-4 w-4 text-gold" />
               </div>
-              <h1 className="font-serif text-2xl font-bold text-gold-gradient uppercase tracking-wider">{titleLabel}</h1>
+              <h1 className="font-display text-2xl font-bold text-gold-gradient uppercase tracking-wider">{titleLabel}</h1>
             </div>
             <Button size="sm" onClick={openCreate} className="bg-gold/15 hover:bg-gold/25 text-gold border border-gold/30">
               <Plus className="h-4 w-4" />

@@ -231,7 +231,7 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
             <UserCircle className="h-5 w-5 text-gold" />
           </div>
           <div>
-            <h2 className="font-serif text-lg font-bold text-foreground">{t.title}</h2>
+            <h2 className="font-display text-lg font-bold text-foreground">{t.title}</h2>
             <p className="text-xs text-muted-foreground">{t.subtitle}</p>
           </div>
         </div>
@@ -333,7 +333,7 @@ export default function OnboardingGate({ children }: { children: React.ReactNode
             style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            <span className="text-white text-sm font-medium">{saving ? t.saving : t.continue}</span>
+            <span className="text-primary-foreground text-sm font-medium">{saving ? t.saving : t.continue}</span>
           </Button>
 
           <p className="text-[11px] text-muted-foreground/70 text-center leading-relaxed pt-1">

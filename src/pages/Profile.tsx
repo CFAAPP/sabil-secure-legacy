@@ -629,8 +629,8 @@ export default function Profile() {
                 <Users className="h-4 w-4 text-gold" />
               </div>
               <div>
-                <h1 className="font-serif text-xl font-bold text-gold-gradient">{T.title}</h1>
-                <p className="text-xs text-white/50 mt-0.5">{T.subtitle}</p>
+                <h1 className="font-display text-xl font-bold text-gold-gradient">{T.title}</h1>
+                <p className="text-xs text-muted-foreground mt-0.5">{T.subtitle}</p>
               </div>
             </div>
             {!isReadOnly && (
@@ -649,15 +649,15 @@ export default function Profile() {
 
           {/* Summary strip */}
           {hasAnyData ? (
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/60">
-              <span>{T.summaryConjoint}: <span className="text-white/80">{spouse.enabled ? T.yes : T.no}</span></span>
-              <span>{T.summaryChildren}: <span className="text-white/80">{children.count} ({lang === 'fr' ? 'G' : 'B'}:{boys} / {lang === 'fr' ? 'F' : 'G'}:{girls})</span></span>
-              <span>{T.summaryParents}: <span className="text-white/80">{[parents.father_alive && (lang === 'fr' ? 'Père' : 'Father'), parents.mother_alive && (lang === 'fr' ? 'Mère' : 'Mother')].filter(Boolean).join(', ') || T.no}</span></span>
-              <span>{T.summaryBrothers}: <span className="text-white/80">{siblings.brothers_count}</span></span>
-              <span>{T.summarySisters}: <span className="text-white/80">{siblings.sisters_count}</span></span>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              <span>{T.summaryConjoint}: <span className="text-muted-foreground">{spouse.enabled ? T.yes : T.no}</span></span>
+              <span>{T.summaryChildren}: <span className="text-muted-foreground">{children.count} ({lang === 'fr' ? 'G' : 'B'}:{boys} / {lang === 'fr' ? 'F' : 'G'}:{girls})</span></span>
+              <span>{T.summaryParents}: <span className="text-muted-foreground">{[parents.father_alive && (lang === 'fr' ? 'Père' : 'Father'), parents.mother_alive && (lang === 'fr' ? 'Mère' : 'Mother')].filter(Boolean).join(', ') || T.no}</span></span>
+              <span>{T.summaryBrothers}: <span className="text-muted-foreground">{siblings.brothers_count}</span></span>
+              <span>{T.summarySisters}: <span className="text-muted-foreground">{siblings.sisters_count}</span></span>
             </div>
           ) : (
-            <p className="text-xs text-white/50 italic">{T.noInfo}</p>
+            <p className="text-xs text-muted-foreground italic">{T.noInfo}</p>
           )}
         </div>
 

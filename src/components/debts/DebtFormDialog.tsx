@@ -110,7 +110,7 @@ export default function DebtFormDialog({ open, onOpenChange, language, editingDe
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-serif">{editingDebt ? t('editDebt') : t('addDebt')}</DialogTitle>
+          <DialogTitle className="font-display">{editingDebt ? t('editDebt') : t('addDebt')}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           {/* Type */}

@@ -33,7 +33,7 @@ export default function ReminderSettingsDialog({ open, onOpenChange, language, s
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-serif">{t('reminderSettings')}</DialogTitle>
+          <DialogTitle className="font-display">{t('reminderSettings')}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-1.5">

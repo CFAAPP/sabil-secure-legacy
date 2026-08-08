@@ -171,7 +171,7 @@ export default function Zakat() {
               <BarChart3 className="h-4 w-4 text-gold" />
             </div>
             <div>
-              <h1 className="font-serif text-2xl font-bold text-gold-gradient">{z('zakatTitle')}</h1>
+              <h1 className="font-display text-2xl font-bold text-gold-gradient">{z('zakatTitle')}</h1>
               <p className="text-xs text-primary-foreground/60">{z('zakatSubtitle')}</p>
             </div>
           </div>

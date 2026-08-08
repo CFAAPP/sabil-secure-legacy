@@ -83,12 +83,12 @@ export default function ResetPassword() {
       <div className="w-full max-w-md animate-fade-in">
         <div className="mb-8 flex flex-col items-center gap-3">
           <img src={mirathLogo} alt="Mirath" className="h-20 w-20 rounded-2xl object-cover shadow-lg" />
-          <h1 className="font-serif text-3xl font-bold text-foreground">{language === 'ar' ? 'ميراث' : 'Mirath'}</h1>
+          <h1 className="font-display text-3xl font-bold text-foreground">{language === 'ar' ? 'ميراث' : 'Mirath'}</h1>
         </div>
 
         <Card className="border-border/50 shadow-xl">
           <CardHeader className="text-center">
-            <CardTitle className="font-serif text-xl">{t('resetPassword')}</CardTitle>
+            <CardTitle className="font-display text-xl">{t('resetPassword')}</CardTitle>
             <CardDescription>{t('newPassword')}</CardDescription>
           </CardHeader>
           <CardContent>

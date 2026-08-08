@@ -107,7 +107,7 @@ export default function Wakils() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Users className="h-6 w-6 text-primary" />
-            <h1 className="font-serif text-2xl font-bold">{t('wakilsTitle')}</h1>
+            <h1 className="font-display text-2xl font-bold">{t('wakilsTitle')}</h1>
           </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
@@ -115,7 +115,7 @@ export default function Wakils() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle className="font-serif">{t('addWakil')}</DialogTitle>
+                <DialogTitle className="font-display">{t('addWakil')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2">

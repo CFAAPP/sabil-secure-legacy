@@ -64,7 +64,7 @@ export default function ZakatHistory({ history, currency, language, onMarkPaid, 
           <Card key={entry.year_key} className="border-border">
             <CardContent className="pt-4 pb-3 px-4">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-serif text-lg font-bold">{entry.year_key}</h3>
+                <h3 className="font-display text-lg font-bold">{entry.year_key}</h3>
                 {entry.paid ? (
                   <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] gap-1">
                     <CheckCircle2 className="h-3 w-3" /> {z('paid')}

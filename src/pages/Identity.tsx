@@ -196,7 +196,7 @@ export default function Identity() {
             <UserCircle className="h-5 w-5 text-gold" />
           </div>
           <div>
-            <h1 className="font-serif text-2xl font-bold text-foreground uppercase tracking-wide">{t.title}</h1>
+            <h1 className="font-display text-2xl font-bold text-foreground uppercase tracking-wide">{t.title}</h1>
             <p className="text-xs text-muted-foreground mt-0.5">{t.subtitle}</p>
           </div>
         </div>
@@ -269,7 +269,7 @@ export default function Identity() {
 
             <div className="rounded-lg border border-gold/15 bg-muted/20 px-3 py-2.5">
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{t.preview}</p>
-              <p className="font-serif text-base text-gold mt-0.5">{preview}</p>
+              <p className="font-display text-base text-gold mt-0.5">{preview}</p>
             </div>
 
             <Button
@@ -279,7 +279,7 @@ export default function Identity() {
               style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              <span className="text-white text-sm font-medium">{saving ? t.saving : t.save}</span>
+              <span className="text-primary-foreground text-sm font-medium">{saving ? t.saving : t.save}</span>
             </Button>
           </form>
         )}
