@@ -47,7 +47,7 @@ export default function DebtCard({ debt, language, onDetails, onRemind, onShare 
     ? 'text-emerald-400'
     : progress?.overdue
     ? 'text-red-400'
-    : 'text-gold';
+    : 'text-primary';
 
   const statusLabel = isPaid
     ? (language === 'fr' ? 'Payée' : 'Paid')
@@ -140,7 +140,7 @@ export default function DebtCard({ debt, language, onDetails, onRemind, onShare 
           <Button
             variant="outline"
             size="sm"
-            className="flex-1 text-xs border-border/50 bg-muted/20 hover:bg-muted/50 hover:border-gold/30 hover:text-gold transition-all"
+            className="flex-1 text-xs border-border/50 bg-muted/20 hover:bg-muted/50 hover:border-primary/30 hover:text-primary transition-all"
             onClick={() => onDetails(debt)}
           >
             <Eye className="mr-1.5 h-3 w-3" />{t('details')}
@@ -148,7 +148,7 @@ export default function DebtCard({ debt, language, onDetails, onRemind, onShare 
           <Button
             variant="outline"
             size="sm"
-            className="flex-1 text-xs border-border/50 bg-muted/20 hover:bg-muted/50 hover:border-gold/30 hover:text-gold transition-all"
+            className="flex-1 text-xs border-border/50 bg-muted/20 hover:bg-muted/50 hover:border-primary/30 hover:text-primary transition-all"
             onClick={() => onRemind(debt)}
           >
             <Bell className="mr-1.5 h-3 w-3" />{t('remind')}
@@ -157,7 +157,7 @@ export default function DebtCard({ debt, language, onDetails, onRemind, onShare 
             <Button
               variant="outline"
               size="sm"
-              className="text-xs border-border/50 bg-muted/20 hover:bg-muted/50 hover:border-gold/30 hover:text-gold transition-all"
+              className="text-xs border-border/50 bg-muted/20 hover:bg-muted/50 hover:border-primary/30 hover:text-primary transition-all"
               onClick={() => onShare(debt)}
             >
               <Share2 className="h-3 w-3" />

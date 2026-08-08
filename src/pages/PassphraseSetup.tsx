@@ -65,7 +65,7 @@ export default function PassphraseSetup() {
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg">
             <Shield className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="font-serif text-2xl font-bold text-foreground">
+          <h1 className="font-display text-2xl font-bold text-foreground">
             {isSetup ? t('createPassphrase') : t('enterPassphrase')}
           </h1>
         </div>

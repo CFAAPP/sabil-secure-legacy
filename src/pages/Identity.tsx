@@ -190,23 +190,24 @@ export default function Identity() {
 
   return (
     <Layout>
-      <div className="max-w-xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gold/10 border border-gold/20">
-            <UserCircle className="h-5 w-5 text-gold" />
+      <div className="w-full min-w-0 space-y-4 animate-fade-in pb-28">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-5 py-4 flex items-center gap-3">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+          <div className="flex items-center justify-center w-9 h-9 shrink-0 rounded-2xl bg-primary/15 border border-primary/20">
+            <UserCircle className="h-4 w-4 text-primary" />
           </div>
-          <div>
-            <h1 className="font-serif text-2xl font-bold text-foreground uppercase tracking-wide">{t.title}</h1>
+          <div className="min-w-0">
+            <h1 className="font-display text-2xl font-bold text-foreground uppercase tracking-wide">{t.title}</h1>
             <p className="text-xs text-muted-foreground mt-0.5">{t.subtitle}</p>
           </div>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-6 w-6 animate-spin text-gold/60" />
+            <Loader2 className="h-6 w-6 animate-spin text-primary/60" />
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-gold/15 bg-card p-6 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-primary/15 bg-card p-6 shadow-sm">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t.firstName} *</label>
@@ -258,7 +259,7 @@ export default function Identity() {
                     type="button"
                     onClick={() => setGender(g)}
                     className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
-                      gender === g ? 'bg-gold/15 border-gold/40 text-gold' : 'border-border text-muted-foreground hover:border-gold/30'
+                      gender === g ? 'bg-primary/15 border-primary/40 text-primary' : 'border-border text-muted-foreground hover:border-primary/30'
                     }`}
                   >
                     {g === 'male' ? t.male : t.female}
@@ -267,19 +268,18 @@ export default function Identity() {
               </div>
             </div>
 
-            <div className="rounded-lg border border-gold/15 bg-muted/20 px-3 py-2.5">
+            <div className="rounded-lg border border-primary/15 bg-muted/20 px-3 py-2.5">
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{t.preview}</p>
-              <p className="font-serif text-base text-gold mt-0.5">{preview}</p>
+              <p className="font-display text-base text-primary mt-0.5">{preview}</p>
             </div>
 
             <Button
               type="submit"
               disabled={saving}
               className="w-full h-10 gap-2"
-              style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              <span className="text-white text-sm font-medium">{saving ? t.saving : t.save}</span>
+              <span className="text-primary-foreground text-sm font-medium">{saving ? t.saving : t.save}</span>
             </Button>
           </form>
         )}

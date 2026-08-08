@@ -64,26 +64,26 @@ export default function ZakatHistory({ history, currency, language, onMarkPaid, 
           <Card key={entry.year_key} className="border-border">
             <CardContent className="pt-4 pb-3 px-4">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-serif text-lg font-bold">{entry.year_key}</h3>
+                <h3 className="font-display text-lg font-bold">{entry.year_key}</h3>
                 {entry.paid ? (
                   <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] gap-1">
                     <CheckCircle2 className="h-3 w-3" /> {z('paid')}
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="text-[10px] text-gold border-gold/30">{z('unpaid')}</Badge>
+                  <Badge variant="outline" className="text-[10px] text-primary border-primary/30">{z('unpaid')}</Badge>
                 )}
               </div>
               <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
                 <div><span className="block text-[10px] uppercase tracking-wider">{z('netZakatable')}</span>{formatMoney(entry.net_zakatable, currency)}</div>
                 <div><span className="block text-[10px] uppercase tracking-wider">{z('nisab')}</span>{formatMoney(entry.nisab_used, currency)}</div>
-                <div><span className="block text-[10px] uppercase tracking-wider">{z('zakatDue')}</span><span className="text-gold font-semibold">{formatMoney(entry.zakat_due, currency)}</span></div>
+                <div><span className="block text-[10px] uppercase tracking-wider">{z('zakatDue')}</span><span className="text-primary font-semibold">{formatMoney(entry.zakat_due, currency)}</span></div>
                 <div><span className="block text-[10px] uppercase tracking-wider">{z('method')}</span>{entry.method === 'gold' ? z('goldPrice') : z('silverPrice')}</div>
               </div>
               {entry.payment_date && (
                 <p className="text-[10px] text-muted-foreground mt-1">{z('paymentDate')}: {entry.payment_date}</p>
               )}
               {!entry.paid && (
-                <Button variant="outline" size="sm" onClick={() => onMarkPaid(entry.year_key)} className="mt-2 w-full text-xs gap-1 border-gold/30 text-gold hover:bg-gold/5">
+                <Button variant="outline" size="sm" onClick={() => onMarkPaid(entry.year_key)} className="mt-2 w-full text-xs gap-1 border-primary/30 text-primary hover:bg-primary/5">
                   <CheckCircle2 className="h-3.5 w-3.5" /> {z('markAsPaid')}
                 </Button>
               )}
@@ -97,7 +97,7 @@ export default function ZakatHistory({ history, currency, language, onMarkPaid, 
         <Button variant="outline" size="sm" onClick={onDuplicatePrevious} className="text-xs gap-1.5">
           <Copy className="h-3.5 w-3.5" /> {z('duplicatePrevious')}
         </Button>
-        <Button onClick={onSave} disabled={saving} className="bg-gold hover:bg-gold-dim text-primary-foreground text-xs gap-1.5">
+        <Button onClick={onSave} disabled={saving} className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs gap-1.5">
           {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
           {z('saveData')}
         </Button>

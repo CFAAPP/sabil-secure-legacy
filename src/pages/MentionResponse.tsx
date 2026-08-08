@@ -24,7 +24,7 @@ export default function MentionResponse() {
       {error ? (
         <p className="text-destructive">{error}</p>
       ) : (
-        <Loader2 className="h-6 w-6 animate-spin text-gold" />
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       )}
     </div>
   );

@@ -82,7 +82,7 @@ export default function SendReminderDialog({ open, onOpenChange, language, debt 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-serif">{t('sendReminder')}</DialogTitle>
+          <DialogTitle className="font-display">{t('sendReminder')}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-2">

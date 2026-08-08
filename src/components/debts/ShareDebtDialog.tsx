@@ -80,7 +80,7 @@ export default function ShareDebtDialog({ open, onOpenChange, language, debt }: 
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) { setShareUrl(''); setEmail(''); } }}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-serif">
+          <DialogTitle className="font-display">
             {language === 'fr' ? 'Partager avec le débiteur' : 'Share with debtor'}
           </DialogTitle>
           <DialogDescription>

@@ -131,7 +131,7 @@ export default function DebtEdit() {
     <div className="min-h-screen bg-background p-4 flex items-center justify-center">
       <Card className="max-w-lg w-full">
         <CardHeader>
-          <CardTitle className="font-serif">Modifier la dette</CardTitle>
+          <CardTitle className="font-display">Modifier la dette</CardTitle>
           <p className="text-sm text-muted-foreground">
             Dette envers <strong>{shareLink!.debtor_visible_name}</strong>
           </p>

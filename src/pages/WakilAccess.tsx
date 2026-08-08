@@ -86,7 +86,7 @@ export default function WakilAccess() {
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent/20 shadow-lg">
             <Shield className="h-8 w-8 text-accent" />
           </div>
-          <h1 className="font-serif text-2xl font-bold">Mode Wakil</h1>
+          <h1 className="font-display text-2xl font-bold">Mode Wakil</h1>
           <p className="text-sm text-muted-foreground text-center">Accès en lecture seule aux données d'un proche</p>
         </div>
 
@@ -112,7 +112,7 @@ export default function WakilAccess() {
         {step === 'passphrase' && (
           <Card className="animate-fade-in">
             <CardHeader>
-              <CardTitle className="font-serif text-lg flex items-center gap-2">
+              <CardTitle className="font-display text-lg flex items-center gap-2">
                 <Lock className="h-5 w-5" />
                 Déchiffrement
               </CardTitle>

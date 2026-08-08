@@ -65,7 +65,7 @@ function Section({
         className="w-full flex items-center justify-between px-5 py-4 bg-card hover:bg-muted/30 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-gold/10 border border-gold/20">
+          <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 border border-primary/20">
             {icon}
           </div>
           <span className="font-semibold text-sm text-foreground">{title}</span>
@@ -80,7 +80,7 @@ function Section({
 function InfoBox({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex gap-2 rounded-lg bg-muted/40 border border-border/40 px-3 py-3 text-xs text-muted-foreground leading-relaxed">
-      <Info className="h-3.5 w-3.5 shrink-0 mt-0.5 text-gold/60" />
+      <Info className="h-3.5 w-3.5 shrink-0 mt-0.5 text-primary/60" />
       <div>{children}</div>
     </div>
   );
@@ -385,7 +385,7 @@ export default function Testament() {
     return (
       <Layout>
         <div className="flex items-center justify-center h-60">
-          <Loader2 className="h-7 w-7 animate-spin text-gold/60" />
+          <Loader2 className="h-7 w-7 animate-spin text-primary/60" />
         </div>
       </Layout>
     );
@@ -395,17 +395,20 @@ export default function Testament() {
     <Layout>
       <div className="space-y-4 animate-fade-in pb-24">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <FileText className="h-5 w-5 text-gold" />
-            <h1 className="font-serif text-xl font-bold">{tx('Mon Testament', 'My Will', 'وصيتي')}</h1>
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-5 py-4 flex items-center justify-between gap-3">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center justify-center w-9 h-9 shrink-0 rounded-2xl bg-primary/15 border border-primary/20">
+              <FileText className="h-4 w-4 text-primary" />
+            </div>
+            <h1 className="font-display text-xl font-bold text-foreground uppercase tracking-wide">{tx('Mon Testament', 'My Will', 'وصيتي')}</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button
               onClick={exportPDF}
               disabled={exporting || loading}
               variant="outline"
-              className="h-9 gap-2 border-gold/30 text-gold hover:bg-gold/5"
+              className="h-9 gap-2 border-primary/30 text-primary hover:bg-primary/5"
             >
               {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileDown className="h-3.5 w-3.5" />}
               <span className="text-xs font-medium">{exporting ? tx('Export…', 'Export…', 'تصدير…') : 'PDF'}</span>
@@ -414,10 +417,9 @@ export default function Testament() {
               onClick={handleSave}
               disabled={saving || wasiyyaExceeds}
               className="h-9 gap-2"
-              style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
             >
               {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-              <span className="text-white text-xs font-medium">{saving ? t('saving') : t('save')}</span>
+              <span className="text-primary-foreground text-xs font-medium">{saving ? t('saving') : t('save')}</span>
             </Button>
           </div>
         </div>
@@ -426,12 +428,12 @@ export default function Testament() {
         {/* ① Déclaration */}
         <Section
           title={tx('① الإعلان', '① Declaration', '① الإعلان').replace('① الإعلان', tx('① Déclaration', '① Declaration', '① الإعلان'))}
-          icon={<Lock className="h-3.5 w-3.5 text-gold" />}
+          icon={<Lock className="h-3.5 w-3.5 text-primary" />}
           defaultOpen={true}
         >
           <div className="p-5 space-y-3">
-            <p className="text-center text-lg font-arabic text-gold/80">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
-            <p className="text-sm text-muted-foreground leading-relaxed border-l-2 border-gold/30 pl-3 italic">
+            <p className="text-center text-lg font-arabic text-primary/80">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
+            <p className="text-sm text-muted-foreground leading-relaxed border-l-2 border-primary/30 pl-3 italic">
               {buildDeclaration()}
             </p>
             <div className="flex gap-4 text-xs text-muted-foreground">
@@ -450,7 +452,7 @@ export default function Testament() {
         {/* ② Souhaits funéraires */}
         <Section
           title={tx('② Souhaits funéraires', '② Funeral Wishes', '② رغبات الجنازة')}
-          icon={<FileText className="h-3.5 w-3.5 text-gold" />}
+          icon={<FileText className="h-3.5 w-3.5 text-primary" />}
         >
           <div className="p-5 space-y-4">
             <Textarea
@@ -492,7 +494,7 @@ export default function Testament() {
         {/* ③ Dettes & Obligations */}
         <Section
           title={tx('③ Dettes & Obligations', '③ Debts & Obligations', '③ الديون والالتزامات')}
-          icon={<AlertCircle className="h-3.5 w-3.5 text-gold" />}
+          icon={<AlertCircle className="h-3.5 w-3.5 text-primary" />}
         >
           <div className="p-5 space-y-4">
             <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2.5 text-xs text-amber-400">
@@ -504,7 +506,7 @@ export default function Testament() {
               )}</span>
             </div>
             <Link to="/debts">
-              <Button variant="outline" size="sm" className="gap-2 border-gold/30 text-gold hover:bg-gold/5">
+              <Button variant="outline" size="sm" className="gap-2 border-primary/30 text-primary hover:bg-primary/5">
                 <ExternalLink className="h-3.5 w-3.5" />
                 {tx('Voir mes dettes', 'View my debts', 'عرض ديوني')}
               </Button>
@@ -526,7 +528,7 @@ export default function Testament() {
         {/* ④ Wasiyya */}
         <Section
           title={tx('④ Wasiyya (max. 1/3)', '④ Wasiyya (max. 1/3)', '④ الوصية (الحد الأقصى ١/٣)')}
-          icon={<Users className="h-3.5 w-3.5 text-gold" />}
+          icon={<Users className="h-3.5 w-3.5 text-primary" />}
         >
           <div className="p-5 space-y-4">
             {/* Counter */}
@@ -585,7 +587,7 @@ export default function Testament() {
               ))}
             </div>
 
-            <Button variant="outline" size="sm" onClick={addBeneficiary} className="gap-2 border-dashed border-gold/40 text-gold hover:bg-gold/5">
+            <Button variant="outline" size="sm" onClick={addBeneficiary} className="gap-2 border-dashed border-primary/40 text-primary hover:bg-primary/5">
               <Plus className="h-3.5 w-3.5" />
               {tx('Ajouter un bénéficiaire', 'Add beneficiary', 'إضافة مستفيد')}
             </Button>
@@ -603,7 +605,7 @@ export default function Testament() {
         {/* ⑤ Messages personnalisés */}
         <Section
           title={tx('⑤ Messages personnalisés', '⑤ Personal Messages', '⑤ رسائل شخصية')}
-          icon={<MessageSquare className="h-3.5 w-3.5 text-gold" />}
+          icon={<MessageSquare className="h-3.5 w-3.5 text-primary" />}
           defaultOpen={false}
         >
           <div className="p-5 space-y-4">
@@ -646,7 +648,7 @@ export default function Testament() {
               ))}
             </div>
 
-            <Button variant="outline" size="sm" onClick={addMessage} className="gap-2 border-dashed border-gold/40 text-gold hover:bg-gold/5">
+            <Button variant="outline" size="sm" onClick={addMessage} className="gap-2 border-dashed border-primary/40 text-primary hover:bg-primary/5">
               <Plus className="h-3.5 w-3.5" />
               {tx('Ajouter un message', 'Add a message', 'إضافة رسالة')}
             </Button>
@@ -656,7 +658,7 @@ export default function Testament() {
         {/* ⑥ Récapitulatif héritage */}
         <Section
           title={tx('⑥ Récapitulatif héritage (lecture seule)', '⑥ Inheritance Summary (read only)', '⑥ ملخص الميراث (للقراءة فقط)')}
-          icon={<Users className="h-3.5 w-3.5 text-gold" />}
+          icon={<Users className="h-3.5 w-3.5 text-primary" />}
           defaultOpen={false}
         >
           <div className="p-5 space-y-4">
@@ -677,13 +679,13 @@ export default function Testament() {
                     <p className="text-xs font-medium">{heir.label}</p>
                     <p className="text-xs text-muted-foreground">{heir.note}</p>
                   </div>
-                  <span className="text-sm font-semibold text-gold">{heir.share}</span>
+                  <span className="text-sm font-semibold text-primary">{heir.share}</span>
                 </div>
               ))}
             </div>
 
             <Link to="/profile">
-              <Button variant="outline" size="sm" className="gap-2 border-gold/30 text-gold hover:bg-gold/5 w-full">
+              <Button variant="outline" size="sm" className="gap-2 border-primary/30 text-primary hover:bg-primary/5 w-full">
                 <ExternalLink className="h-3.5 w-3.5" />
                 {tx('Voir l\'onglet Héritage pour calcul détaillé', 'View Inheritance tab for detailed calculation', 'عرض تبويب الميراث للحساب التفصيلي')}
               </Button>
@@ -702,10 +704,9 @@ export default function Testament() {
         onClick={handleSave}
         disabled={saving || wasiyyaExceeds}
         className="md:hidden fixed bottom-6 right-5 z-50 flex items-center justify-center w-12 h-12 rounded-full shadow-lg shadow-black/30 transition-all active:scale-95 disabled:opacity-50"
-        style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
         aria-label={t('save')}
       >
-        {saving ? <Loader2 className="h-5 w-5 text-white animate-spin" /> : <Save className="h-5 w-5 text-white" />}
+        {saving ? <Loader2 className="h-5 w-5 text-primary-foreground animate-spin" /> : <Save className="h-5 w-5 text-primary-foreground" />}
       </button>
 
     </Layout>

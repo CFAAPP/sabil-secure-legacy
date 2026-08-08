@@ -61,7 +61,7 @@ export default function Auth() {
           <Button
             variant="ghost"
             size="sm"
-            className="fixed top-4 right-4 z-50 text-xs text-muted-foreground hover:text-gold hover:bg-gold/5 tracking-widest font-medium gap-1"
+            className="fixed top-4 right-4 z-50 text-xs text-muted-foreground hover:text-primary hover:bg-primary/5 tracking-widest font-medium gap-1"
           >
             <Globe className="h-3.5 w-3.5" />
             {LANGUAGE_LABELS[language]}
@@ -72,7 +72,7 @@ export default function Auth() {
             <DropdownMenuItem
               key={lang}
               onClick={() => setLanguage(lang)}
-              className={language === lang ? 'bg-gold/10 text-gold font-medium' : ''}
+              className={language === lang ? 'bg-primary/10 text-primary font-medium' : ''}
             >
               {LANGUAGE_LABELS[lang]}
             </DropdownMenuItem>
@@ -84,13 +84,13 @@ export default function Auth() {
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center gap-3">
           <img src={mirathLogo} alt="Mirath" className="h-20 w-20 rounded-2xl object-cover shadow-lg" />
-          <h1 className="font-serif text-3xl font-bold text-foreground">{language === 'ar' ? 'ميراث' : 'Mirath'}</h1>
+          <h1 className="font-display text-3xl font-bold text-foreground">{language === 'ar' ? 'ميراث' : 'Mirath'}</h1>
           <p className="text-sm text-muted-foreground">{t('appTagline')}</p>
         </div>
 
         <Card className="border-border/50 shadow-xl">
           <CardHeader className="text-center">
-            <CardTitle className="font-serif text-xl">
+            <CardTitle className="font-display text-xl">
               {isLogin ? t('login') : t('signup')}
             </CardTitle>
             <CardDescription>

@@ -155,11 +155,11 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  background: 'hsl(38 22% 92%)',
-                  border: '1px solid hsl(38 18% 80%)',
+                  background: 'hsl(150 5% 12%)',
+                  border: '1px solid hsl(150 5% 22%)',
                   borderRadius: '8px',
                   fontSize: '12px',
-                  color: 'hsl(155 20% 14%)',
+                  color: 'hsl(80 10% 96%)',
                 }}
                 formatter={(val: number) => [`${fmt(val)}`, '']}
               />
@@ -183,16 +183,16 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
           {barData.length > 0 ? (
             <ResponsiveContainer width="100%" height={120}>
               <BarChart data={barData} barSize={10} barCategoryGap="30%">
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(38 18% 82%)" vertical={false} />
-                <XAxis dataKey="currency" tick={{ fontSize: 10, fill: 'hsl(155 12% 42%)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: 'hsl(155 12% 42%)' }} axisLine={false} tickLine={false} width={30} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(150 5% 22%)" vertical={false} />
+                <XAxis dataKey="currency" tick={{ fontSize: 10, fill: 'hsl(140 4% 62%)' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: 'hsl(140 4% 62%)' }} axisLine={false} tickLine={false} width={30} />
                 <Tooltip
                   contentStyle={{
-                    background: 'hsl(38 22% 92%)',
-                    border: '1px solid hsl(38 18% 80%)',
+                    background: 'hsl(150 5% 12%)',
+                    border: '1px solid hsl(150 5% 22%)',
                     borderRadius: '8px',
                     fontSize: '11px',
-                    color: 'hsl(155 20% 14%)',
+                    color: 'hsl(80 10% 96%)',
                   }}
                 />
                 <Bar dataKey={isFr ? 'Je dois' : 'I owe'} fill={RED} opacity={0.8} radius={[4, 4, 0, 0]} />
@@ -216,7 +216,7 @@ export default function DebtStats({ debts, language }: DebtStatsProps) {
             <span className="ml-auto text-muted-foreground/50">{formatCurrencyMap(sumByCurrency(iOwePaid), locale)}</span>
           </div>
           <div className="flex-1 flex items-center gap-2 rounded-xl border border-border/30 bg-muted/10 px-3 py-2">
-            <div className="w-2 h-2 rounded-full bg-gold/60" />
+            <div className="w-2 h-2 rounded-full bg-primary/60" />
             <span>{isFr ? `${owedPaid.length} créance${owedPaid.length > 1 ? 's' : ''} soldée${owedPaid.length > 1 ? 's' : ''}` : `${owedPaid.length} collected`}</span>
             <span className="ml-auto text-muted-foreground/50">{formatCurrencyMap(sumByCurrency(owedPaid), locale)}</span>
           </div>

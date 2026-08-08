@@ -149,7 +149,7 @@ export default function PaymentsSection({ debtId, totalAmount, currency, dueDate
               {t('Payé', 'Paid')}: <span className="font-semibold text-foreground">{fmt(totalPaid)} {currency}</span> ({paidPct.toFixed(0)}%)
             </span>
             <span className="text-muted-foreground">
-              {t('Restant', 'Remaining')}: <span className="font-semibold text-gold">{fmt(remaining)} {currency}</span>
+              {t('Restant', 'Remaining')}: <span className="font-semibold text-primary">{fmt(remaining)} {currency}</span>
             </span>
           </div>
           <div className="h-1.5 w-full rounded-full bg-muted/60 overflow-hidden">
