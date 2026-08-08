@@ -29,8 +29,8 @@ interface Props {
 }
 
 const CHART_COLORS = [
-  'hsl(155 28% 36%)', // sage
-  'hsl(43 62% 52%)',  // gold
+  'hsl(150 5% 35%)', // grey
+  'hsl(78 92% 60%)',  // lime
   'hsl(200 50% 45%)', // blue
   'hsl(280 40% 50%)', // purple
   'hsl(340 50% 50%)', // pink

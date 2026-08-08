@@ -277,7 +277,6 @@ export default function Identity() {
               type="submit"
               disabled={saving}
               className="w-full h-10 gap-2"
-              style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               <span className="text-primary-foreground text-sm font-medium">{saving ? t.saving : t.save}</span>

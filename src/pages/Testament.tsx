@@ -417,7 +417,6 @@ export default function Testament() {
               onClick={handleSave}
               disabled={saving || wasiyyaExceeds}
               className="h-9 gap-2"
-              style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
             >
               {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
               <span className="text-primary-foreground text-xs font-medium">{saving ? t('saving') : t('save')}</span>
@@ -705,7 +704,6 @@ export default function Testament() {
         onClick={handleSave}
         disabled={saving || wasiyyaExceeds}
         className="md:hidden fixed bottom-6 right-5 z-50 flex items-center justify-center w-12 h-12 rounded-full shadow-lg shadow-black/30 transition-all active:scale-95 disabled:opacity-50"
-        style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
         aria-label={t('save')}
       >
         {saving ? <Loader2 className="h-5 w-5 text-primary-foreground animate-spin" /> : <Save className="h-5 w-5 text-primary-foreground" />}

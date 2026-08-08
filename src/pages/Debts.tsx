@@ -516,7 +516,6 @@ export default function Debts() {
       <button
         onClick={() => { setEditingDebt(null); setEditingMentions(''); setFormOpen(true); }}
         className="lg:hidden fixed bottom-6 right-5 z-50 flex items-center justify-center w-12 h-12 rounded-full shadow-lg shadow-black/30 transition-all active:scale-95"
-        style={{ background: 'linear-gradient(135deg, hsl(43 62% 46%) 0%, hsl(38 70% 56%) 100%)' }}
         aria-label={t('addDebt')}
       >
         <Plus className="h-5 w-5 text-primary-foreground" />
