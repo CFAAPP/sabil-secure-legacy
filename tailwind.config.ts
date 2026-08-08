@@ -12,10 +12,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Space Grotesk', 'Inter', 'sans-serif'],
-        serif: ['Cocogoose', 'Syne', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'Space Grotesk', 'sans-serif'],
+        serif: ['Cocogoose', 'Plus Jakarta Sans', 'sans-serif'],
         arabic: ['Amiri', 'serif'],
-        display: ['Syne', 'sans-serif'],
+        display: ['Cocogoose', 'Plus Jakarta Sans', 'sans-serif'],
         milker: ['Milker', 'sans-serif'],
       },
       colors: {
