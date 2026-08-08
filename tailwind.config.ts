@@ -17,7 +17,7 @@ export default {
         arabic: ['Amiri', 'serif'],
         display: ['Cocogoose', 'Outfit', 'sans-serif'],
         milker: ['Milker', 'sans-serif'],
-      }
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
