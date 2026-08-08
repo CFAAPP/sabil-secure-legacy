@@ -166,8 +166,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* Main content */}
-        <main className="flex-1 px-4 py-6 md:px-8">
-          <div className="mx-auto max-w-3xl">
+        <main className="flex-1 min-w-0 w-full max-w-full overflow-x-hidden px-4 py-6 md:px-8">
+          <div className="mx-auto w-full max-w-3xl min-w-0">
             <OnboardingGate>{children}</OnboardingGate>
           </div>
         </main>
