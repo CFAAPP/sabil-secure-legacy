@@ -30,7 +30,7 @@ interface Props {
 
 const CHART_COLORS = [
   'hsl(150 5% 35%)', // grey
-  'hsl(78 92% 60%)',  // lime
+  'hsl(42 62% 62%)',  // or
   'hsl(200 50% 45%)', // blue
   'hsl(280 40% 50%)', // purple
   'hsl(340 50% 50%)', // pink

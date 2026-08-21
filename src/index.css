@@ -22,74 +22,75 @@
 
 @layer base {
   :root {
-    /* Dark charcoal + lime neon */
-    --background: 150 6% 8%;
-    --foreground: 80 10% 96%;
+    /* Charbon chaud + or beige luxe */
+    --background: 30 8% 7%;
+    --foreground: 40 25% 94%;
 
-    --card: 150 5% 12%;
-    --card-foreground: 80 10% 96%;
+    --card: 30 7% 11%;
+    --card-foreground: 40 25% 94%;
 
-    --popover: 150 6% 11%;
-    --popover-foreground: 80 10% 96%;
+    --popover: 30 8% 10%;
+    --popover-foreground: 40 25% 94%;
 
-    /* Lime neon primary */
-    --primary: 78 92% 60%;
-    --primary-foreground: 150 10% 8%;
+    /* Or beige */
+    --primary: 42 62% 62%;
+    --primary-foreground: 30 12% 8%;
 
-    --secondary: 150 5% 17%;
-    --secondary-foreground: 80 10% 94%;
+    --secondary: 30 6% 16%;
+    --secondary-foreground: 40 22% 92%;
 
-    --muted: 150 5% 16%;
-    --muted-foreground: 140 4% 62%;
+    --muted: 30 6% 15%;
+    --muted-foreground: 38 10% 64%;
 
-    --accent: 78 92% 60%;
-    --accent-foreground: 150 10% 8%;
+    --accent: 42 62% 62%;
+    --accent-foreground: 30 12% 8%;
 
-    --destructive: 4 78% 58%;
-    --destructive-foreground: 80 10% 96%;
+    --destructive: 4 70% 54%;
+    --destructive-foreground: 40 25% 96%;
 
-    --border: 150 5% 20%;
-    --input: 150 5% 20%;
-    --ring: 78 92% 60%;
+    --border: 36 10% 19%;
+    --input: 36 10% 19%;
+    --ring: 42 62% 62%;
 
     --radius: 1.25rem;
 
-    /* Brand tokens (lime replaces gold) */
-    --gold: 78 92% 60%;
-    --gold-light: 78 95% 72%;
-    --gold-dim: 78 60% 42%;
-    --navy: 150 5% 14%;
-    --navy-deep: 150 6% 8%;
-    --navy-light: 150 5% 22%;
-    --blue-glow: 78 92% 60%;
+    /* Brand tokens */
+    --gold: 42 62% 62%;
+    --gold-light: 44 70% 78%;
+    --gold-dim: 40 45% 44%;
+    --navy: 30 7% 13%;
+    --navy-deep: 30 8% 7%;
+    --navy-light: 30 6% 21%;
+    --blue-glow: 42 62% 62%;
 
     /* Gradient helpers */
-    --gradient-header: linear-gradient(140deg, hsl(150 5% 14%) 0%, hsl(150 6% 10%) 100%);
-    --gradient-card: linear-gradient(160deg, hsl(150 5% 14%) 0%, hsl(150 6% 11%) 100%);
-    --gradient-gold: linear-gradient(120deg, hsl(78 92% 62%) 0%, hsl(88 80% 55%) 100%);
-    --gradient-glow: radial-gradient(ellipse 80% 50% at 50% 0%, hsl(78 92% 60% / 0.14) 0%, transparent 70%);
+    --gradient-header: linear-gradient(140deg, hsl(32 8% 14%) 0%, hsl(30 8% 9%) 100%);
+    --gradient-card: linear-gradient(160deg, hsl(32 8% 13%) 0%, hsl(30 8% 10%) 100%);
+    --gradient-gold: linear-gradient(120deg, hsl(44 72% 76%) 0%, hsl(38 58% 55%) 100%);
+    --gradient-glow: radial-gradient(ellipse 80% 50% at 50% 0%, hsl(42 62% 62% / 0.12) 0%, transparent 70%);
 
-    --shadow-gold: 0 0 24px hsl(78 92% 60% / 0.28), 0 6px 20px hsl(150 10% 2% / 0.5);
-    --shadow-card: 0 8px 28px hsl(150 10% 2% / 0.45), 0 1px 2px hsl(150 10% 2% / 0.4);
+    --shadow-gold: 0 0 24px hsl(42 62% 62% / 0.22), 0 6px 20px hsl(30 12% 2% / 0.5);
+    --shadow-card: 0 8px 28px hsl(30 12% 2% / 0.45), 0 1px 2px hsl(30 12% 2% / 0.4);
 
-    --sabeel-gold: 78 92% 60%;
-    --sabeel-sage: 150 5% 16%;
-    --sabeel-cream: 80 10% 96%;
-    --sabeel-warm: 150 5% 20%;
-    --mirath-gold: 78 92% 60%;
-    --silver: 140 4% 62%;
-    --silver-light: 140 6% 78%;
-    --silver-dim: 140 4% 46%;
+    --sabeel-gold: 42 62% 62%;
+    --sabeel-sage: 30 6% 15%;
+    --sabeel-cream: 40 30% 92%;
+    --sabeel-warm: 36 10% 20%;
+    --mirath-gold: 42 62% 62%;
+    --silver: 38 10% 64%;
+    --silver-light: 38 14% 80%;
+    --silver-dim: 38 8% 48%;
 
-    --sidebar-background: 150 5% 11%;
-    --sidebar-foreground: 80 10% 94%;
-    --sidebar-primary: 78 92% 60%;
-    --sidebar-primary-foreground: 150 10% 8%;
-    --sidebar-accent: 150 5% 17%;
-    --sidebar-accent-foreground: 80 10% 94%;
-    --sidebar-border: 150 5% 19%;
-    --sidebar-ring: 78 92% 60%;
+    --sidebar-background: 30 8% 10%;
+    --sidebar-foreground: 40 22% 92%;
+    --sidebar-primary: 42 62% 62%;
+    --sidebar-primary-foreground: 30 12% 8%;
+    --sidebar-accent: 30 6% 16%;
+    --sidebar-accent-foreground: 40 22% 92%;
+    --sidebar-border: 36 10% 18%;
+    --sidebar-ring: 42 62% 62%;
   }
+
 }
 
 @layer base {
@@ -133,11 +134,16 @@
 @layer utilities {
   .islamic-pattern {
     background-image:
-      url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c3f53c' stroke-opacity='0.04' stroke-width='1'%3E%3Cpolygon points='40,4 76,22 76,58 40,76 4,58 4,22'/%3E%3Cpolygon points='40,14 66,28 66,52 40,66 14,52 14,28'/%3E%3C/g%3E%3C/svg%3E"),
-      linear-gradient(160deg, hsl(150 6% 9%) 0%, hsl(150 6% 8%) 60%, hsl(150 7% 7%) 100%);
+      /* Étoile à 8 branches (mashrabiya) — trait or très fin */
+      url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d9b571' stroke-opacity='0.05' stroke-width='0.9'%3E%3Cpath d='M60 8 L77 26 L102 26 L102 51 L120 60 L102 69 L102 94 L77 94 L60 112 L43 94 L18 94 L18 69 L0 60 L18 51 L18 26 L43 26 Z'/%3E%3Cpath d='M60 30 L74 44 L90 44 L90 60 L74 76 L60 90 L46 76 L30 60 L30 44 L46 44 Z'/%3E%3Ccircle cx='60' cy='60' r='6'/%3E%3C/g%3E%3C/svg%3E"),
+      /* Halo doré diffus */
+      radial-gradient(ellipse 70% 45% at 50% 0%, hsl(42 62% 62% / 0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(38 55% 50% / 0.06) 0%, transparent 70%),
+      linear-gradient(165deg, hsl(32 9% 9%) 0%, hsl(30 8% 7%) 55%, hsl(28 10% 6%) 100%);
+    background-size: 120px 120px, auto, auto, auto;
   }
 
-  /* Lime text */
+  /* Or dégradé */
   .text-gold-gradient {
     background: var(--gradient-gold);
     -webkit-background-clip: text;
@@ -146,7 +152,7 @@
   }
 
   .text-silver-gradient {
-    background: linear-gradient(135deg, hsl(140 6% 70%) 0%, hsl(140 8% 88%) 100%);
+    background: linear-gradient(135deg, hsl(40 18% 74%) 0%, hsl(42 30% 90%) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -154,16 +160,17 @@
 
   /* Glass card */
   .glass-card {
-    background: hsl(150 5% 12% / 0.85);
+    background: hsl(30 7% 11% / 0.85);
     backdrop-filter: blur(14px);
-    border: 1px solid hsl(78 92% 60% / 0.12);
+    border: 1px solid hsl(42 62% 62% / 0.14);
     box-shadow: var(--shadow-card);
   }
 
   .border-gold-glow {
-    border-top: 1px solid hsl(78 92% 60% / 0.4);
-    box-shadow: 0 -1px 0 hsl(78 92% 60% / 0.15);
+    border-top: 1px solid hsl(42 62% 62% / 0.35);
+    box-shadow: 0 -1px 0 hsl(42 62% 62% / 0.14);
   }
+
 
   .dot-gold {
     width: 6px; height: 6px;
