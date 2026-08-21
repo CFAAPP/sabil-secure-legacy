@@ -9,7 +9,9 @@ export default function Dashboard() {
   const { user, profile, language } = useAuth();
   const t = useTranslation(language);
   const rtl = isRTL(language);
-  const { formalName } = useIdentity();
+  const { formalName, isComplete } = useIdentity();
+
+  const isSecure = Boolean(user && profile?.encryption_salt && isComplete);
 
   const cards = [
     { title: t('testament'), description: t('writeWill'), icon: FileText, path: '/testament' },
@@ -38,14 +40,23 @@ export default function Dashboard() {
 
         {/* Security status */}
         <div className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/15">
-            <Lock className="h-4 w-4 text-primary" />
+          <div className={`flex h-9 w-9 items-center justify-center rounded-full ${isSecure ? 'bg-emerald-500/15' : 'bg-red-500/15'}`}>
+            <Lock className={`h-4 w-4 ${isSecure ? 'text-emerald-500' : 'text-red-500'}`} />
           </div>
           <div className="flex-1">
             <p className="text-sm font-semibold text-foreground">{t('securityStatus')}</p>
-            <p className="text-[11px] text-muted-foreground">AES-256-GCM · {t('encrypted')} · E2E</p>
+            <p className="text-[11px] text-muted-foreground">
+              {isSecure ? t('securitySecure') : t('securityAtRisk')} · AES-256-GCM · {t('encrypted')} · E2E
+            </p>
           </div>
-          <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_hsl(var(--primary)/0.9)] animate-pulse" />
+          <div
+            className={`w-2.5 h-2.5 rounded-full animate-pulse ${
+              isSecure
+                ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.85)]'
+                : 'bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.85)]'
+            }`}
+            aria-label={isSecure ? t('securitySecure') : t('securityAtRisk')}
+          />
         </div>
 
         {/* Feature grid */}
