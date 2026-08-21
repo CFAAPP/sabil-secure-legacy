@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation, isRTL } from '@/lib/i18n';
-import { FileText, Wallet, Users, Lock, UserCircle, Calculator, ScrollText } from 'lucide-react';
+import { FileText, Wallet, Users, Lock, UserCircle, Calculator, ScrollText, ArrowRight, RotateCcw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useIdentity } from '@/hooks/useIdentity';
@@ -10,6 +11,41 @@ export default function Dashboard() {
   const t = useTranslation(language);
   const rtl = isRTL(language);
   const { formalName, isComplete } = useIdentity();
+
+  const [flipped, setFlipped] = useState<string | null>(null);
+
+  const hints: Record<string, { fr: string; en: string; ar: string }> = {
+    '/testament': {
+      fr: 'Rédigez et sécurisez votre testament, chiffré de bout en bout.',
+      en: 'Write and secure your will, encrypted end-to-end.',
+      ar: 'اكتب وصيتك واحفظها مشفّرة بالكامل.',
+    },
+    '/debts': {
+      fr: 'Suivez vos dettes, remboursements partiels et échéances.',
+      en: 'Track your debts, partial repayments and due dates.',
+      ar: 'تابع ديونك والسدادات الجزئية والمواعيد.',
+    },
+    '/contracts': {
+      fr: 'Créez vos contrats, parties, clauses et pièces jointes.',
+      en: 'Create contracts with parties, clauses and attachments.',
+      ar: 'أنشئ عقودك مع الأطراف والشروط والمرفقات.',
+    },
+    '/zakat': {
+      fr: 'Calculez votre Zakât al-Mâl selon le nisab actuel.',
+      en: 'Calculate your Zakat al-Mal based on the current nisab.',
+      ar: 'احسب زكاة مالك حسب النصاب الحالي.',
+    },
+    '/wakils': {
+      fr: 'Désignez des personnes de confiance en lecture seule.',
+      en: 'Appoint trusted proxies with read-only access.',
+      ar: 'عيّن وكلاء موثوقين بصلاحية القراءة فقط.',
+    },
+    '/profile': {
+      fr: 'Renseignez votre identité et vos héritiers.',
+      en: 'Fill in your identity and your heirs.',
+      ar: 'أدخل هويتك ووارثيك.',
+    },
+  };
 
   const isSecure = Boolean(user && profile?.encryption_salt && isComplete);
 
@@ -64,72 +100,120 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 gap-3">
           {cards.map((card, i) => {
             const highlight = i === 0;
+            const isFlipped = flipped === card.path;
+            const hint = hints[card.path]?.[language as 'fr' | 'en' | 'ar'] ?? card.description;
             return (
-              <Link
-                key={card.path}
-                to={card.path}
-                className={`group relative block overflow-hidden rounded-[26px] border no-underline transition-all duration-300 active:scale-[0.98] ${
-                  highlight
-                    ? 'border-primary bg-gradient-gold shadow-gold'
-                    : 'border-primary/25 bg-gradient-card hover:border-primary/60'
-                }`}
-              >
-                {/* Fine mesh texture */}
-                <div className={`pointer-events-none absolute inset-0 mihrab-mesh ${highlight ? 'opacity-30' : 'opacity-60'}`} />
-                {/* Skyline silhouette */}
-                <div className={`pointer-events-none absolute inset-x-0 bottom-0 h-20 mihrab-skyline ${highlight ? 'opacity-40' : 'opacity-70'}`} />
-                {/* Arch frame */}
-                <div
-                  className={`pointer-events-none absolute inset-x-3 top-3 bottom-10 mihrab-arch border ${
-                    highlight ? 'border-primary-foreground/25' : 'border-primary/35'
-                  }`}
-                />
-
-                <div className="relative flex flex-col items-center px-4 pt-5 pb-5 text-center">
-                  <div
-                    className={`flex h-11 w-11 items-center justify-center rounded-[14px] border ${
+              <div key={card.path} className="flip-perspective h-[236px]">
+                <div className={`flip-inner relative h-full w-full ${isFlipped ? 'is-flipped' : ''}`}>
+                  {/* Front */}
+                  <button
+                    type="button"
+                    onClick={() => setFlipped(card.path)}
+                    aria-label={card.title}
+                    className={`flip-face absolute inset-0 flex flex-col items-center justify-between overflow-hidden rounded-[26px] border text-center transition-colors duration-300 active:scale-[0.99] ${
                       highlight
-                        ? 'border-primary-foreground/25 bg-primary-foreground/10'
-                        : 'border-primary/35 bg-primary/10'
+                        ? 'border-primary bg-gradient-gold shadow-gold'
+                        : 'border-primary/25 bg-gradient-card hover:border-primary/60'
                     }`}
                   >
-                    <card.icon
-                      className={`h-5 w-5 ${highlight ? 'text-primary-foreground' : 'text-primary'}`}
-                      strokeWidth={1.5}
+                    <div className={`pointer-events-none absolute inset-0 mihrab-mesh ${highlight ? 'opacity-30' : 'opacity-60'}`} />
+                    <div className={`pointer-events-none absolute inset-x-0 bottom-0 h-16 mihrab-skyline ${highlight ? 'opacity-40' : 'opacity-70'}`} />
+                    <div
+                      className={`pointer-events-none absolute inset-x-2.5 top-2.5 bottom-2.5 mihrab-arch border ${
+                        highlight ? 'border-primary-foreground/25' : 'border-primary/35'
+                      }`}
                     />
+
+                    <div className="relative flex w-full flex-1 flex-col items-center justify-center gap-3 px-5 py-5">
+                      <div
+                        className={`flex h-10 w-10 items-center justify-center rounded-[13px] border ${
+                          highlight
+                            ? 'border-primary-foreground/25 bg-primary-foreground/10'
+                            : 'border-primary/35 bg-primary/10'
+                        }`}
+                      >
+                        <card.icon
+                          className={`h-5 w-5 ${highlight ? 'text-primary-foreground' : 'text-primary'}`}
+                          strokeWidth={1.5}
+                        />
+                      </div>
+
+                      <p
+                        className={`font-arabic text-xl leading-none ${
+                          highlight ? 'text-primary-foreground' : 'text-gold-gradient'
+                        }`}
+                        dir="rtl"
+                      >
+                        {card.arabic}
+                      </p>
+
+                      <div className="flex items-center gap-2">
+                        <span className={`h-px w-5 ${highlight ? 'bg-primary-foreground/30' : 'bg-primary/30'}`} />
+                        <span className={`text-[9px] ${highlight ? 'text-primary-foreground/50' : 'text-primary/50'}`}>✦</span>
+                        <span className={`h-px w-5 ${highlight ? 'bg-primary-foreground/30' : 'bg-primary/30'}`} />
+                      </div>
+
+                      <h3
+                        className={`font-display px-1 text-[12px] leading-tight tracking-[0.05em] ${
+                          highlight ? 'text-primary-foreground' : 'text-foreground'
+                        }`}
+                      >
+                        {card.title}
+                      </h3>
+                    </div>
+                  </button>
+
+                  {/* Back */}
+                  <div
+                    className={`flip-face flip-back absolute inset-0 flex flex-col justify-between overflow-hidden rounded-[26px] border px-4 py-4 ${
+                      highlight ? 'border-primary bg-gradient-gold' : 'border-primary/40 bg-gradient-card'
+                    }`}
+                  >
+                    <div className="pointer-events-none absolute inset-0 mihrab-mesh opacity-25" />
+                    <div className="relative">
+                      <p
+                        className={`font-display text-[11px] uppercase tracking-[0.14em] ${
+                          highlight ? 'text-primary-foreground/80' : 'text-primary'
+                        }`}
+                      >
+                        {card.title}
+                      </p>
+                      <p
+                        className={`mt-2 text-[11px] leading-relaxed ${
+                          highlight ? 'text-primary-foreground/85' : 'text-muted-foreground'
+                        }`}
+                      >
+                        {hint}
+                      </p>
+                    </div>
+                    <div className="relative mt-3 flex items-center gap-2">
+                      <Link
+                        to={card.path}
+                        className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-[11px] no-underline ${
+                          highlight
+                            ? 'border-primary-foreground/30 text-primary-foreground'
+                            : 'border-primary/40 text-primary hover:bg-primary/10'
+                        }`}
+                      >
+                        {language === 'ar' ? 'افتح' : language === 'en' ? 'Open' : 'Ouvrir'}
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => setFlipped(null)}
+                        aria-label="retour"
+                        className={`flex h-8 w-8 items-center justify-center rounded-xl border ${
+                          highlight
+                            ? 'border-primary-foreground/30 text-primary-foreground'
+                            : 'border-primary/40 text-primary hover:bg-primary/10'
+                        }`}
+                      >
+                        <RotateCcw className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
-
-                  <p
-                    className={`font-arabic mt-4 text-2xl leading-none ${
-                      highlight ? 'text-primary-foreground' : 'text-gold-gradient'
-                    }`}
-                    dir="rtl"
-                  >
-                    {card.arabic}
-                  </p>
-
-                  <div className="mt-3 flex items-center gap-2">
-                    <span className={`h-px w-6 ${highlight ? 'bg-primary-foreground/30' : 'bg-primary/30'}`} />
-                    <span className={`text-[9px] ${highlight ? 'text-primary-foreground/50' : 'text-primary/50'}`}>✦</span>
-                    <span className={`h-px w-6 ${highlight ? 'bg-primary-foreground/30' : 'bg-primary/30'}`} />
-                  </div>
-
-                  <h3
-                    className={`font-display mt-3 text-[13px] leading-tight tracking-[0.06em] ${
-                      highlight ? 'text-primary-foreground' : 'text-foreground'
-                    }`}
-                  >
-                    {card.title}
-                  </h3>
-                  <p
-                    className={`mt-1 text-[10px] leading-snug line-clamp-2 ${
-                      highlight ? 'text-primary-foreground/70' : 'text-muted-foreground'
-                    }`}
-                  >
-                    {card.description}
-                  </p>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>
