@@ -9,7 +9,9 @@ export default function Dashboard() {
   const { user, profile, language } = useAuth();
   const t = useTranslation(language);
   const rtl = isRTL(language);
-  const { formalName } = useIdentity();
+  const { formalName, isComplete } = useIdentity();
+
+  const isSecure = Boolean(user && profile?.encryption_salt && isComplete);
 
   const cards = [
     { title: t('testament'), description: t('writeWill'), icon: FileText, path: '/testament' },
