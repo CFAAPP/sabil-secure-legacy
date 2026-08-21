@@ -178,7 +178,25 @@
     background: hsl(var(--gold));
     box-shadow: 0 0 8px hsl(var(--gold) / 0.8);
   }
+
+  /* ── Mihrab (arch) card ── */
+  .mihrab-arch {
+    border-radius: 48% 48% 14px 14px / 34% 34% 14px 14px;
+  }
+
+  .mihrab-mesh {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d9b571' stroke-opacity='0.16' stroke-width='0.6'%3E%3Cpath d='M30 2 L44 16 L58 30 L44 44 L30 58 L16 44 L2 30 L16 16 Z'/%3E%3Cpath d='M30 14 L38 22 L46 30 L38 38 L30 46 L22 38 L14 30 L22 22 Z'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 42px 42px;
+  }
+
+  .mihrab-skyline {
+    background-image: url("data:image/svg+xml,%3Csvg width='240' height='80' viewBox='0 0 240 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23c79a4e' fill-opacity='0.22'%3E%3Cpath d='M0 80 L0 56 Q6 40 12 56 L12 80 Z'/%3E%3Cpath d='M28 80 L28 46 Q40 24 52 46 L52 80 Z'/%3E%3Cpath d='M66 80 L66 60 Q72 46 78 60 L78 80 Z'/%3E%3Cpath d='M96 80 L96 40 Q120 8 144 40 L144 80 Z'/%3E%3Cpath d='M160 80 L160 58 Q166 44 172 58 L172 80 Z'/%3E%3Cpath d='M188 80 L188 44 Q202 22 216 44 L216 80 Z'/%3E%3Cpath d='M228 80 L228 56 Q234 42 240 56 L240 80 Z'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    background-size: 130% auto;
+  }
 }
+
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }

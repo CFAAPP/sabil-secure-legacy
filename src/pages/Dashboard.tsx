@@ -14,13 +14,14 @@ export default function Dashboard() {
   const isSecure = Boolean(user && profile?.encryption_salt && isComplete);
 
   const cards = [
-    { title: t('testament'), description: t('writeWill'), icon: FileText, path: '/testament' },
-    { title: t('debts'), description: t('manageDebts'), icon: Wallet, path: '/debts' },
-    { title: t('contracts'), description: t('manageContracts'), icon: ScrollText, path: '/contracts' },
-    { title: 'Zakât al-Mâl', description: t('zakatCalc'), icon: Calculator, path: '/zakat' },
-    { title: t('wakils'), description: t('designateTrusted'), icon: Users, path: '/wakils' },
-    { title: t('profileHeirs'), description: t('prepareWill'), icon: UserCircle, path: '/profile' },
+    { title: t('testament'), arabic: 'وَصِيَّتِي', description: t('writeWill'), icon: FileText, path: '/testament' },
+    { title: t('debts'), arabic: 'دُيُونِي', description: t('manageDebts'), icon: Wallet, path: '/debts' },
+    { title: t('contracts'), arabic: 'عُقُودِي', description: t('manageContracts'), icon: ScrollText, path: '/contracts' },
+    { title: 'Zakât al-Mâl', arabic: 'زَكَاةُ المَال', description: t('zakatCalc'), icon: Calculator, path: '/zakat' },
+    { title: t('wakils'), arabic: 'وُكَلَائِي', description: t('designateTrusted'), icon: Users, path: '/wakils' },
+    { title: t('profileHeirs'), arabic: 'مَعْلُومَاتِي', description: t('prepareWill'), icon: UserCircle, path: '/profile' },
   ];
+
 
   return (
     <Layout>
@@ -67,32 +68,61 @@ export default function Dashboard() {
               <Link
                 key={card.path}
                 to={card.path}
-                className={`group relative flex flex-col items-center justify-center gap-4 overflow-hidden rounded-3xl border p-5 text-center no-underline transition-all duration-300 active:scale-[0.98] ${
+                className={`group relative block overflow-hidden rounded-[26px] border no-underline transition-all duration-300 active:scale-[0.98] ${
                   highlight
-                    ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-border bg-card hover:border-primary/50'
+                    ? 'border-primary bg-gradient-gold shadow-gold'
+                    : 'border-primary/25 bg-gradient-card hover:border-primary/60'
                 }`}
               >
+                {/* Fine mesh texture */}
+                <div className={`pointer-events-none absolute inset-0 mihrab-mesh ${highlight ? 'opacity-30' : 'opacity-60'}`} />
+                {/* Skyline silhouette */}
+                <div className={`pointer-events-none absolute inset-x-0 bottom-0 h-20 mihrab-skyline ${highlight ? 'opacity-40' : 'opacity-70'}`} />
+                {/* Arch frame */}
                 <div
-                  className={`flex h-[72px] w-[72px] items-center justify-center rounded-[22px] ${
-                    highlight ? 'bg-primary-foreground/10' : 'bg-primary/12'
+                  className={`pointer-events-none absolute inset-x-3 top-3 bottom-10 mihrab-arch border ${
+                    highlight ? 'border-primary-foreground/25' : 'border-primary/35'
                   }`}
-                >
-                  <card.icon
-                    className={`h-8 w-8 ${highlight ? 'text-primary-foreground' : 'text-primary'}`}
-                    strokeWidth={1.6}
-                  />
-                </div>
-                <div className="space-y-1.5">
+                />
+
+                <div className="relative flex flex-col items-center px-4 pt-5 pb-5 text-center">
+                  <div
+                    className={`flex h-11 w-11 items-center justify-center rounded-[14px] border ${
+                      highlight
+                        ? 'border-primary-foreground/25 bg-primary-foreground/10'
+                        : 'border-primary/35 bg-primary/10'
+                    }`}
+                  >
+                    <card.icon
+                      className={`h-5 w-5 ${highlight ? 'text-primary-foreground' : 'text-primary'}`}
+                      strokeWidth={1.5}
+                    />
+                  </div>
+
+                  <p
+                    className={`font-arabic mt-4 text-2xl leading-none ${
+                      highlight ? 'text-primary-foreground' : 'text-gold-gradient'
+                    }`}
+                    dir="rtl"
+                  >
+                    {card.arabic}
+                  </p>
+
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className={`h-px w-6 ${highlight ? 'bg-primary-foreground/30' : 'bg-primary/30'}`} />
+                    <span className={`text-[9px] ${highlight ? 'text-primary-foreground/50' : 'text-primary/50'}`}>✦</span>
+                    <span className={`h-px w-6 ${highlight ? 'bg-primary-foreground/30' : 'bg-primary/30'}`} />
+                  </div>
+
                   <h3
-                    className={`font-display text-base leading-tight ${
+                    className={`font-display mt-3 text-[13px] leading-tight tracking-[0.06em] ${
                       highlight ? 'text-primary-foreground' : 'text-foreground'
                     }`}
                   >
                     {card.title}
                   </h3>
                   <p
-                    className={`text-[11px] leading-snug line-clamp-2 ${
+                    className={`mt-1 text-[10px] leading-snug line-clamp-2 ${
                       highlight ? 'text-primary-foreground/70' : 'text-muted-foreground'
                     }`}
                   >
@@ -103,6 +133,7 @@ export default function Dashboard() {
             );
           })}
         </div>
+
 
         {/* User ID */}
         <div className="rounded-2xl border border-border bg-card/60 p-4">
