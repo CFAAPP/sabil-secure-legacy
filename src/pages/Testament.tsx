@@ -395,31 +395,35 @@ export default function Testament() {
     <Layout>
       <div className="space-y-4 animate-fade-in pb-24">
         {/* Header */}
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-5 py-4 flex items-center justify-between gap-3">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card px-4 py-4 flex items-center justify-between gap-3">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             <div className="flex items-center justify-center w-9 h-9 shrink-0 rounded-2xl bg-primary/15 border border-primary/20">
               <FileText className="h-4 w-4 text-primary" />
             </div>
-            <h1 className="font-display text-xl font-bold text-foreground uppercase tracking-wide">{tx('Mon Testament', 'My Will', 'وصيتي')}</h1>
+            <h1 className="font-display text-base sm:text-lg md:text-xl font-bold text-foreground uppercase tracking-wide whitespace-nowrap truncate">
+              {tx('Mon Testament', 'My Will', 'وصيتي')}
+            </h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <Button
               onClick={exportPDF}
               disabled={exporting || loading}
               variant="outline"
-              className="h-9 gap-2 border-primary/30 text-primary hover:bg-primary/5"
+              className="h-9 w-9 sm:w-auto sm:gap-2 border-primary/30 text-primary hover:bg-primary/5 px-0 sm:px-3"
+              aria-label={tx('Exporter PDF', 'Export PDF', 'تصدير PDF')}
             >
               {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileDown className="h-3.5 w-3.5" />}
-              <span className="text-xs font-medium">{exporting ? tx('Export…', 'Export…', 'تصدير…') : 'PDF'}</span>
+              <span className="hidden sm:inline text-xs font-medium">{exporting ? tx('Export…', 'Export…', 'تصدير…') : 'PDF'}</span>
             </Button>
             <Button
               onClick={handleSave}
               disabled={saving || wasiyyaExceeds}
-              className="h-9 gap-2"
+              className="h-9 w-9 sm:w-auto sm:gap-2 px-0 sm:px-3"
+              aria-label={saving ? t('saving') : t('save')}
             >
               {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-              <span className="text-primary-foreground text-xs font-medium">{saving ? t('saving') : t('save')}</span>
+              <span className="hidden sm:inline text-primary-foreground text-xs font-medium">{saving ? t('saving') : t('save')}</span>
             </Button>
           </div>
         </div>
