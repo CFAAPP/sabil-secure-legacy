@@ -240,6 +240,8 @@ const translations = {
     
     welcomeBack: 'Welcome back',
     securityStatus: 'Security status',
+    securitySecure: 'Secure',
+    securityAtRisk: 'At risk',
     encrypted: 'Encrypted',
     lastAccess: 'Last access',
     yourId: 'Your ID (share with your Wakils)',
@@ -405,6 +407,8 @@ const translations = {
     
     welcomeBack: 'مرحباً بعودتك',
     securityStatus: 'حالة الأمان',
+    securitySecure: 'آمن',
+    securityAtRisk: 'غير آمن',
     encrypted: 'مشفّر',
     lastAccess: 'آخر دخول',
     yourId: 'معرّفك (شاركه مع وكلائك)',
