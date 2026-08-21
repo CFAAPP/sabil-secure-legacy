@@ -63,6 +63,8 @@ const translations = {
     // Dashboard
     welcomeBack: 'Bienvenue',
     securityStatus: 'Statut de sécurité',
+    securitySecure: 'Sécurisé',
+    securityAtRisk: 'À sécuriser',
     encrypted: 'Chiffré',
     lastAccess: 'Dernier accès',
     yourId: 'Votre ID (à partager avec vos Wakils)',
