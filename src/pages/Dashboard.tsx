@@ -14,13 +14,14 @@ export default function Dashboard() {
   const isSecure = Boolean(user && profile?.encryption_salt && isComplete);
 
   const cards = [
-    { title: t('testament'), description: t('writeWill'), icon: FileText, path: '/testament' },
-    { title: t('debts'), description: t('manageDebts'), icon: Wallet, path: '/debts' },
-    { title: t('contracts'), description: t('manageContracts'), icon: ScrollText, path: '/contracts' },
-    { title: 'Zakât al-Mâl', description: t('zakatCalc'), icon: Calculator, path: '/zakat' },
-    { title: t('wakils'), description: t('designateTrusted'), icon: Users, path: '/wakils' },
-    { title: t('profileHeirs'), description: t('prepareWill'), icon: UserCircle, path: '/profile' },
+    { title: t('testament'), arabic: 'وَصِيَّتِي', description: t('writeWill'), icon: FileText, path: '/testament' },
+    { title: t('debts'), arabic: 'دُيُونِي', description: t('manageDebts'), icon: Wallet, path: '/debts' },
+    { title: t('contracts'), arabic: 'عُقُودِي', description: t('manageContracts'), icon: ScrollText, path: '/contracts' },
+    { title: 'Zakât al-Mâl', arabic: 'زَكَاةُ المَال', description: t('zakatCalc'), icon: Calculator, path: '/zakat' },
+    { title: t('wakils'), arabic: 'وُكَلَائِي', description: t('designateTrusted'), icon: Users, path: '/wakils' },
+    { title: t('profileHeirs'), arabic: 'مَعْلُومَاتِي', description: t('prepareWill'), icon: UserCircle, path: '/profile' },
   ];
+
 
   return (
     <Layout>
