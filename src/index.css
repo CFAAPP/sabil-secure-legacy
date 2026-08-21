@@ -32,8 +32,8 @@
     --popover: 30 8% 10%;
     --popover-foreground: 40 25% 94%;
 
-    /* Or beige */
-    --primary: 42 62% 62%;
+    /* Or doré chaud */
+    --primary: 45 72% 58%;
     --primary-foreground: 30 12% 8%;
 
     --secondary: 30 6% 16%;
@@ -42,7 +42,7 @@
     --muted: 30 6% 15%;
     --muted-foreground: 38 10% 64%;
 
-    --accent: 42 62% 62%;
+    --accent: 45 72% 58%;
     --accent-foreground: 30 12% 8%;
 
     --destructive: 4 70% 54%;
@@ -50,33 +50,33 @@
 
     --border: 36 10% 19%;
     --input: 36 10% 19%;
-    --ring: 42 62% 62%;
+    --ring: 45 72% 58%;
 
     --radius: 1.25rem;
 
     /* Brand tokens */
-    --gold: 42 62% 62%;
-    --gold-light: 44 70% 78%;
-    --gold-dim: 40 45% 44%;
+    --gold: 45 72% 58%;
+    --gold-light: 48 78% 76%;
+    --gold-dim: 42 50% 42%;
     --navy: 30 7% 13%;
     --navy-deep: 30 8% 7%;
     --navy-light: 30 6% 21%;
-    --blue-glow: 42 62% 62%;
+    --blue-glow: 45 72% 58%;
 
     /* Gradient helpers */
     --gradient-header: linear-gradient(140deg, hsl(32 8% 14%) 0%, hsl(30 8% 9%) 100%);
     --gradient-card: linear-gradient(160deg, hsl(32 8% 13%) 0%, hsl(30 8% 10%) 100%);
-    --gradient-gold: linear-gradient(120deg, hsl(44 72% 76%) 0%, hsl(38 58% 55%) 100%);
-    --gradient-glow: radial-gradient(ellipse 80% 50% at 50% 0%, hsl(42 62% 62% / 0.12) 0%, transparent 70%);
+    --gradient-gold: linear-gradient(120deg, hsl(48 78% 76%) 0%, hsl(42 58% 52%) 100%);
+    --gradient-glow: radial-gradient(ellipse 80% 50% at 50% 0%, hsl(45 72% 58% / 0.12) 0%, transparent 70%);
 
-    --shadow-gold: 0 0 24px hsl(42 62% 62% / 0.22), 0 6px 20px hsl(30 12% 2% / 0.5);
+    --shadow-gold: 0 0 24px hsl(45 72% 58% / 0.22), 0 6px 20px hsl(30 12% 2% / 0.5);
     --shadow-card: 0 8px 28px hsl(30 12% 2% / 0.45), 0 1px 2px hsl(30 12% 2% / 0.4);
 
-    --sabeel-gold: 42 62% 62%;
+    --sabeel-gold: 45 72% 58%;
     --sabeel-sage: 30 6% 15%;
     --sabeel-cream: 40 30% 92%;
     --sabeel-warm: 36 10% 20%;
-    --mirath-gold: 42 62% 62%;
+    --mirath-gold: 45 72% 58%;
     --silver: 38 10% 64%;
     --silver-light: 38 14% 80%;
     --silver-dim: 38 8% 48%;
