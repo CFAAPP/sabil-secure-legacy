@@ -164,8 +164,9 @@ export default function Dashboard() {
                   </button>
 
                   {/* Back */}
-                  <div
-                    className={`flip-face flip-back absolute inset-0 flex flex-col justify-between overflow-hidden rounded-[26px] border px-4 py-4 ${
+                  <Link
+                    to={card.path}
+                    className={`flip-face flip-back absolute inset-0 flex flex-col justify-between overflow-hidden rounded-[26px] border px-4 py-4 no-underline ${
                       highlight ? 'border-primary bg-gradient-gold' : 'border-primary/40 bg-gradient-card'
                     }`}
                   >
@@ -186,21 +187,14 @@ export default function Dashboard() {
                         {hint}
                       </p>
                     </div>
-                    <div className="relative mt-3 flex items-center gap-2">
-                      <Link
-                        to={card.path}
-                        className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-[11px] no-underline ${
-                          highlight
-                            ? 'border-primary-foreground/30 text-primary-foreground'
-                            : 'border-primary/40 text-primary hover:bg-primary/10'
-                        }`}
-                      >
-                        {language === 'ar' ? 'افتح' : language === 'en' ? 'Open' : 'Ouvrir'}
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Link>
+                    <div className="relative mt-3 flex items-center justify-end">
                       <button
                         type="button"
-                        onClick={() => setFlipped(null)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setFlipped(null);
+                        }}
                         aria-label="retour"
                         className={`flex h-8 w-8 items-center justify-center rounded-xl border ${
                           highlight
@@ -211,7 +205,7 @@ export default function Dashboard() {
                         <RotateCcw className="h-3.5 w-3.5" />
                       </button>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </div>
             );
