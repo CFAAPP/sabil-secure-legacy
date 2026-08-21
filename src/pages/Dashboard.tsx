@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation, isRTL } from '@/lib/i18n';
-import { FilePen, Wallet, Users, Lock, User, Calculator, ClipboardCheck, ArrowRight, RotateCcw } from 'lucide-react';
+import { FilePen, Wallet, Users, Lock, User, Calculator, ClipboardCheck, RotateCcw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useIdentity } from '@/hooks/useIdentity';
