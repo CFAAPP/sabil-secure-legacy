@@ -195,7 +195,7 @@ export default function Dashboard() {
                             : 'border-primary/40 text-primary hover:bg-primary/10'
                         }`}
                       >
-                        {t('open') ?? 'Ouvrir'}
+                        {language === 'ar' ? 'افتح' : language === 'en' ? 'Open' : 'Ouvrir'}
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Link>
                       <button
