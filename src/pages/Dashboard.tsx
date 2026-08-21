@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation, isRTL } from '@/lib/i18n';
-import { FileText, Wallet, Users, Lock, UserCircle, Calculator, ScrollText, ArrowRight, RotateCcw } from 'lucide-react';
+import { FilePen, Wallet, Users, Lock, User, Calculator, ClipboardCheck, ArrowRight, RotateCcw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useIdentity } from '@/hooks/useIdentity';
@@ -50,12 +50,12 @@ export default function Dashboard() {
   const isSecure = Boolean(user && profile?.encryption_salt && isComplete);
 
   const cards = [
-    { title: t('testament'), arabic: 'وَصِيَّتِي', description: t('writeWill'), icon: FileText, path: '/testament' },
+    { title: t('testament'), arabic: 'وَصِيَّتِي', description: t('writeWill'), icon: FilePen, path: '/testament' },
     { title: t('debts'), arabic: 'دُيُونِي', description: t('manageDebts'), icon: Wallet, path: '/debts' },
-    { title: t('contracts'), arabic: 'عُقُودِي', description: t('manageContracts'), icon: ScrollText, path: '/contracts' },
+    { title: t('contracts'), arabic: 'عُقُودِي', description: t('manageContracts'), icon: ClipboardCheck, path: '/contracts' },
     { title: 'Zakât al-Mâl', arabic: 'زَكَاةُ المَال', description: t('zakatCalc'), icon: Calculator, path: '/zakat' },
     { title: t('wakils'), arabic: 'وُكَلَائِي', description: t('designateTrusted'), icon: Users, path: '/wakils' },
-    { title: t('profileHeirs'), arabic: 'مَعْلُومَاتِي', description: t('prepareWill'), icon: UserCircle, path: '/profile' },
+    { title: t('profileHeirs'), arabic: 'مَعْلُومَاتِي', description: t('prepareWill'), icon: User, path: '/profile' },
   ];
 
 
@@ -154,7 +154,7 @@ export default function Dashboard() {
                       </div>
 
                       <h3
-                        className={`font-display px-1 text-[12px] leading-tight tracking-[0.05em] ${
+                        className={`font-display px-0.5 text-[15px] leading-[1.15] tracking-[0.04em] ${
                           highlight ? 'text-primary-foreground' : 'text-foreground'
                         }`}
                       >
@@ -172,14 +172,14 @@ export default function Dashboard() {
                     <div className="pointer-events-none absolute inset-0 mihrab-mesh opacity-25" />
                     <div className="relative">
                       <p
-                        className={`font-display text-[11px] uppercase tracking-[0.14em] ${
+                        className={`font-display text-[15px] leading-[1.15] uppercase tracking-[0.04em] ${
                           highlight ? 'text-primary-foreground/80' : 'text-primary'
                         }`}
                       >
                         {card.title}
                       </p>
                       <p
-                        className={`mt-2 text-[11px] leading-relaxed ${
+                        className={`mt-2.5 text-[11.5px] leading-relaxed ${
                           highlight ? 'text-primary-foreground/85' : 'text-muted-foreground'
                         }`}
                       >
