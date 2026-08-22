@@ -366,13 +366,31 @@ export default function Testament() {
       const fullName = `${identity.first_name} ${identity.last_name}`.trim() || profile?.display_name || '—';
       const declaration = buildDeclaration();
 
+      const heirTag = tx('Héritier légal — sous condition de consentement unanime des autres héritiers', 'Legal heir — subject to unanimous consent of the other heirs', 'وارث شرعي — مشروط بموافقة باقي الورثة بالإجماع');
       const wasiyyaRows = data.wasiyya.length
         ? data.wasiyya.map(b => `<tr>
-            <td style="padding:8px;border:1px solid #e5e5e5">${esc(b.beneficiary) || '—'}</td>
-            <td style="padding:8px;border:1px solid #e5e5e5;text-align:center">${b.type === 'percentage' ? `${b.value}%` : b.value}</td>
+            <td style="padding:8px;border:1px solid #e5e5e5">${esc(b.beneficiary) || '—'}${b.category === 'legal_heir' ? `<div style="font-size:10px;color:#a06a1b;margin-top:3px">⚠ ${heirTag}</div>` : ''}</td>
+            <td style="padding:8px;border:1px solid #e5e5e5;text-align:center" dir="ltr">${b.type === 'percentage' ? `${b.value}%` : b.value}</td>
             <td style="padding:8px;border:1px solid #e5e5e5">${esc(b.notes)}</td>
           </tr>`).join('')
         : `<tr><td colspan="3" style="padding:12px;border:1px solid #e5e5e5;text-align:center;color:#888">${tx('Aucun bénéficiaire', 'No beneficiaries', 'لا يوجد مستفيدون')}</td></tr>`;
+
+      const witnessesHtml = data.witnesses.length
+        ? `<div>${tx('Témoins', 'Witnesses', 'الشهود')} : ${data.witnesses.map(w => esc(w.name) || '—').join(', ')}</div>
+           <table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:10px">
+            <thead><tr style="background:#f5f0e6">
+              <th style="padding:8px;border:1px solid #e5e5e5;text-align:${isAr ? 'right' : 'left'}">${tx('Nom', 'Name', 'الاسم')}</th>
+              <th style="padding:8px;border:1px solid #e5e5e5;text-align:${isAr ? 'right' : 'left'}">Email</th>
+              <th style="padding:8px;border:1px solid #e5e5e5;text-align:${isAr ? 'right' : 'left'}">${tx('Téléphone', 'Phone', 'الهاتف')}</th>
+            </tr></thead>
+            <tbody>${data.witnesses.map(w => `<tr>
+              <td style="padding:8px;border:1px solid #e5e5e5">${esc(w.name) || '—'}</td>
+              <td style="padding:8px;border:1px solid #e5e5e5" dir="ltr">${esc(w.email) || '—'}</td>
+              <td style="padding:8px;border:1px solid #e5e5e5" dir="ltr">${esc(w.phone) || '—'}</td>
+            </tr>`).join('')}</tbody>
+           </table>`
+        : `<p style="color:#888;font-style:italic">${tx('Aucun témoin désigné', 'No witnesses appointed', 'لم يتم تعيين شهود')}</p>`;
+
 
       const messagesHtml = data.personal_messages.length
         ? data.personal_messages.map(m => `<div style="margin:12px 0;padding:12px;border:1px solid #e5e5e5;border-radius:6px;background:#fafafa">
