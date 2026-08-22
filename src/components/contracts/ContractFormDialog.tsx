@@ -118,6 +118,8 @@ export default function ContractFormDialog({
         mentions: initial?.mentions || '',
       });
       setNewFiles([]);
+      setShowDeleteConfirm(false);
+      setDeleteInput('');
     }
   }, [open, initial]);
 
