@@ -770,12 +770,106 @@ export default function Testament() {
           </div>
         </Section>
 
-        {/* ⑤ Messages personnalisés */}
+        {/* ⑤ Témoins */}
         <Section
-          title={tx('⑤ Messages personnalisés', '⑤ Personal Messages', '⑤ رسائل شخصية')}
+          title={tx('⑤ Témoins du testament', '⑤ Will Witnesses', '⑤ شهود الوصية')}
+          icon={<ShieldCheck className="h-3.5 w-3.5 text-primary" />}
+          defaultOpen={false}
+        >
+          <div className="p-5 space-y-4">
+            <InfoBox>
+              <p className="font-arabic text-sm text-primary/80 mb-1" dir="rtl">وَاسْتَشْهِدُوا شَهِيدَيْنِ مِن رِّجَالِكُمْ</p>
+              {tx(
+                "À l'image du verset 2:282 (Al-Baqara) qui impose l'écrit et les témoins pour les dettes, désignez jusqu'à 2 témoins de votre testament. Leurs coordonnées sont chiffrées ; l'email de notification ne révèle aucun contenu patrimonial.",
+                'Following verse 2:282 (Al-Baqara), which requires writing and witnesses for debts, appoint up to 2 witnesses for your will. Their details are encrypted; the notification email reveals no asset content.',
+                'اقتداءً بالآية ٢٨٢ من سورة البقرة التي توجب الكتابة والإشهاد في الديون، عيّن حتى شاهدين لوصيتك. بياناتهم مشفّرة، ولا يكشف بريد الإشعار أي تفاصيل مالية.'
+              )}
+            </InfoBox>
+
+            <div className="space-y-3">
+              {data.witnesses.map((w) => {
+                const conflict = isWitnessAlsoBeneficiary(w.name);
+                return (
+                  <div key={w.id} className="rounded-xl border border-border/50 bg-muted/20 p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={w.name}
+                        onChange={(e) => updateWitness(w.id, 'name', e.target.value)}
+                        placeholder={tx('Nom du témoin', 'Witness name', 'اسم الشاهد')}
+                        className="flex-1 h-8 text-sm bg-background/60 border-border/50"
+                      />
+                      <button onClick={() => removeWitness(w.id)} className="text-muted-foreground hover:text-destructive transition-colors" aria-label={tx('Supprimer', 'Delete', 'حذف')}>
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Input
+                        type="email"
+                        dir="ltr"
+                        value={w.email}
+                        onChange={(e) => updateWitness(w.id, 'email', e.target.value)}
+                        placeholder="email@exemple.com"
+                        className="flex-1 h-8 text-sm bg-background/60 border-border/50"
+                      />
+                      <Input
+                        type="tel"
+                        dir="ltr"
+                        value={w.phone}
+                        onChange={(e) => updateWitness(w.id, 'phone', e.target.value)}
+                        placeholder={tx('Téléphone', 'Phone', 'الهاتف')}
+                        className="flex-1 h-8 text-sm bg-background/60 border-border/50"
+                      />
+                    </div>
+
+                    {conflict && (
+                      <div className="flex gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-[11.5px] leading-relaxed text-amber-300">
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                        {tx(
+                          "Un témoin ne devrait pas être bénéficiaire du legs pour préserver la fiabilité du témoignage.",
+                          'A witness should not be a beneficiary of the bequest, to preserve the reliability of the testimony.',
+                          'لا ينبغي أن يكون الشاهد مستفيداً من الوصية حفاظاً على موثوقية الشهادة.'
+                        )}
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] text-muted-foreground">
+                        {w.notified_at
+                          ? `${tx('Notifié le', 'Notified on', 'أُشعر في')} ${new Date(w.notified_at).toLocaleDateString(dateFmt)}`
+                          : tx('Non notifié', 'Not notified', 'لم يُشعر')}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={!w.email.trim() || notifying === w.id}
+                        onClick={() => notifyWitness(w)}
+                        className="gap-2 border-primary/30 text-primary hover:bg-primary/5"
+                      >
+                        {notifying === w.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Mail className="h-3.5 w-3.5" />}
+                        {tx('Notifier', 'Notify', 'إشعار')}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {data.witnesses.length < 2 && (
+              <Button variant="outline" size="sm" onClick={addWitness} className="gap-2 border-dashed border-primary/40 text-primary hover:bg-primary/5">
+                <Plus className="h-3.5 w-3.5" />
+                {tx('Ajouter un témoin', 'Add witness', 'إضافة شاهد')}
+              </Button>
+            )}
+          </div>
+        </Section>
+
+        {/* ⑥ Messages personnalisés */}
+        <Section
+          title={tx('⑥ Messages personnalisés', '⑥ Personal Messages', '⑥ رسائل شخصية')}
           icon={<MessageSquare className="h-3.5 w-3.5 text-primary" />}
           defaultOpen={false}
         >
+
           <div className="p-5 space-y-4">
             <div className="space-y-3">
               {data.personal_messages.map((msg) => (
