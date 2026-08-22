@@ -123,6 +123,8 @@ export default function ContractFormDialog({
     execution_delay: '',
     clauses: '',
     penalties: '',
+    penalty_destination: 'none',
+    penalty_beneficiary: '',
     witnesses: [],
     notes: '',
     mentions: '',
@@ -131,6 +133,7 @@ export default function ContractFormDialog({
 
   useEffect(() => {
     if (open) {
+      const decoded = decodePenalties(initial?.penalties || '');
       setForm({
         contract_type: (initial?.contract_type as ContractType) || 'commercial',
         title: initial?.title || '',
@@ -138,7 +141,9 @@ export default function ContractFormDialog({
         parties: initial?.parties?.length ? initial.parties : [{ name: '', role: '' }],
         execution_delay: initial?.execution_delay || '',
         clauses: initial?.clauses || '',
-        penalties: initial?.penalties || '',
+        penalties: decoded.text,
+        penalty_destination: initial?.penalty_destination ?? decoded.dest,
+        penalty_beneficiary: initial?.penalty_beneficiary ?? decoded.beneficiary,
         witnesses: initial?.witnesses || [],
         notes: initial?.notes || '',
         mentions: initial?.mentions || '',
@@ -146,6 +151,7 @@ export default function ContractFormDialog({
       setNewFiles([]);
     }
   }, [open, initial]);
+
 
   const L = {
     title: language === 'fr' ? 'Objet du contrat' : language === 'ar' ? 'موضوع العقد' : 'Contract subject',
