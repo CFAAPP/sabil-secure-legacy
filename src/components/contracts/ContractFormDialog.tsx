@@ -101,6 +101,8 @@ export default function ContractFormDialog({
     mentions: '',
   });
   const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteInput, setDeleteInput] = useState('');
 
   useEffect(() => {
     if (open) {
