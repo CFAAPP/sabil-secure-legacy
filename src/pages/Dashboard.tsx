@@ -96,8 +96,31 @@ export default function Dashboard() {
           />
         </div>
 
+        {/* Rappel prophétique sur la promptitude du testament */}
+        <div className="relative overflow-hidden rounded-2xl border border-primary/25 bg-card/70 px-4 py-3.5">
+          <div className="pointer-events-none absolute inset-0 mihrab-mesh opacity-30" />
+          <div className="relative flex gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10">
+              <ScrollText className="h-4 w-4 text-primary" strokeWidth={1.5} />
+            </div>
+            <div>
+              <p className="font-quran text-[15px] leading-loose text-primary/90" dir="rtl">
+                مَا حَقُّ امْرِئٍ مُسْلِمٍ لَهُ شَيْءٌ يُوصِي فِيهِ يَبِيتُ لَيْلَتَيْنِ إِلَّا وَوَصِيَّتُهُ مَكْتُوبَةٌ عِنْدَهُ
+              </p>
+              <p className="mt-1.5 text-[11.5px] leading-relaxed text-muted-foreground">
+                {language === 'ar'
+                  ? 'رواه البخاري ومسلم.'
+                  : language === 'en'
+                  ? '"It is not right for a Muslim who has something to bequeath to spend two nights without having his will written with him." — Bukhari & Muslim.'
+                  : "« Il n'est pas convenable qu'un musulman ayant quelque chose à léguer passe deux nuits sans que son testament ne soit écrit auprès de lui. » — Boukhari et Muslim."}
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Feature grid */}
         <div className="grid grid-cols-2 gap-3">
+
           {cards.map((card, i) => {
             const highlight = i === 0;
             const isFlipped = flipped === card.path;
