@@ -19,12 +19,23 @@ export interface ZakatCalcResult {
   };
 }
 
+/** Taux de zakât : 2,5 % sur une année lunaire (hawl = 354 j).
+ *  Sur une année solaire (365 j), le taux équivalent est 2,5 % × 365/354 ≈ 2,577 %. */
+export const ZAKAT_RATE_LUNAR = 0.025;
+export const ZAKAT_RATE_SOLAR = 0.025 * (365 / 354);
+
+export function getZakatRate(calendarType: 'gregorian' | 'hijri'): number {
+  return calendarType === 'gregorian' ? ZAKAT_RATE_SOLAR : ZAKAT_RATE_LUNAR;
+}
+
 export function calculateZakat(
   inputs: ZakatInputs,
   goldPricePerGram: number,
   silverPricePerGram: number,
-  nisabMethod: 'gold' | 'silver'
+  nisabMethod: 'gold' | 'silver',
+  calendarType: 'gregorian' | 'hijri' = 'hijri'
 ): ZakatCalcResult {
+
   const goldValue = inputs.gold_grams * goldPricePerGram;
   const silverValue = inputs.silver_grams * silverPricePerGram;
 
