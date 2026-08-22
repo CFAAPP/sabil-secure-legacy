@@ -723,7 +723,7 @@ export default function Testament() {
                       <div className="flex gap-2">
                         <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-arabic text-sm text-amber-200" dir="rtl">لا وصية لوارث</p>
+                          <p className="font-quran text-base text-amber-200" dir="rtl">لا وصية لوارث</p>
                           <p className="mt-1">
                             {tx(
                               "« Il n'y a pas de legs (wasiyya) en faveur d'un héritier » — hadith rapporté par Abu Dawud et At-Tirmidhi. Un tel legs n'est valide qu'avec le consentement unanime des autres héritiers après le décès.",
@@ -778,7 +778,7 @@ export default function Testament() {
         >
           <div className="p-5 space-y-4">
             <InfoBox>
-              <p className="font-arabic text-sm text-primary/80 mb-1" dir="rtl">وَاسْتَشْهِدُوا شَهِيدَيْنِ مِن رِّجَالِكُمْ</p>
+              <p className="font-quran text-base text-primary/80 mb-1" dir="rtl">وَاسْتَشْهِدُوا شَهِيدَيْنِ مِن رِّجَالِكُمْ</p>
               {tx(
                 "À l'image du verset 2:282 (Al-Baqara) qui impose l'écrit et les témoins pour les dettes, désignez jusqu'à 2 témoins de votre testament. Leurs coordonnées sont chiffrées ; l'email de notification ne révèle aucun contenu patrimonial.",
                 'Following verse 2:282 (Al-Baqara), which requires writing and witnesses for debts, appoint up to 2 witnesses for your will. Their details are encrypted; the notification email reveals no asset content.',
