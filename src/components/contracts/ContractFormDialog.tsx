@@ -15,6 +15,30 @@ export type ContractType = 'commercial' | 'marriage' | 'engagement' | 'rental' |
 export interface Party { name: string; role: string }
 export interface Witness { name: string; contact: string }
 
+export type PenaltyDestination = 'none' | 'charity' | 'compensation';
+
+const PENALTY_TAG = '@@PENALTY_DEST@@';
+
+/** Encode la destination des pénalités dans le champ chiffré existant (pas de migration). */
+export function encodePenalties(text: string, dest: PenaltyDestination, beneficiary: string) {
+  const base = (text || '').trim();
+  if (dest === 'none') return base;
+  return `${base}\n${PENALTY_TAG}${dest}|${(beneficiary || '').replace(/[\n|]/g, ' ').trim()}`;
+}
+
+export function decodePenalties(raw: string): { text: string; dest: PenaltyDestination; beneficiary: string } {
+  const value = raw || '';
+  const idx = value.indexOf(PENALTY_TAG);
+  if (idx === -1) return { text: value, dest: 'none', beneficiary: '' };
+  const meta = value.slice(idx + PENALTY_TAG.length).split('\n')[0];
+  const [dest, beneficiary = ''] = meta.split('|');
+  return {
+    text: value.slice(0, idx).trim(),
+    dest: (dest === 'charity' || dest === 'compensation' ? dest : 'none') as PenaltyDestination,
+    beneficiary,
+  };
+}
+
 export interface ContractFormData {
   contract_type: ContractType;
   title: string;
@@ -23,10 +47,13 @@ export interface ContractFormData {
   execution_delay: string;
   clauses: string;
   penalties: string;
+  penalty_destination: PenaltyDestination;
+  penalty_beneficiary: string;
   witnesses: Witness[];
   notes: string;
   mentions: string;
 }
+
 
 export interface Attachment {
   id: string;
