@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -100,6 +101,8 @@ export default function ContractFormDialog({
     mentions: '',
   });
   const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteInput, setDeleteInput] = useState('');
 
   useEffect(() => {
     if (open) {
@@ -115,6 +118,8 @@ export default function ContractFormDialog({
         mentions: initial?.mentions || '',
       });
       setNewFiles([]);
+      setShowDeleteConfirm(false);
+      setDeleteInput('');
     }
   }, [open, initial]);
 
@@ -138,6 +143,10 @@ export default function ContractFormDialog({
     edit: language === 'fr' ? 'Modifier le contrat' : language === 'ar' ? 'تعديل العقد' : 'Edit contract',
     add: language === 'fr' ? 'Ajouter un contrat' : language === 'ar' ? 'إضافة عقد' : 'Add contract',
     deleteConfirm: language === 'fr' ? 'Supprimer ce contrat ?' : language === 'ar' ? 'حذف هذا العقد؟' : 'Delete this contract?',
+    deletePrompt: language === 'fr' ? 'Cette action est irréversible. Tapez le mot ci-dessous pour confirmer.' : language === 'ar' ? 'هذا الإجراء نهائي. اكتب الكلمة أدناه للتأكيد.' : 'This action is irreversible. Type the word below to confirm.',
+    deleteWord: language === 'fr' ? 'SUPPRIMER' : language === 'ar' ? 'حذف' : 'DELETE',
+    deleteInputPlaceholder: language === 'fr' ? 'Tapez SUPPRIMER ici' : language === 'ar' ? 'اكتب حذف هنا' : 'Type DELETE here',
+    deleteCancel: language === 'fr' ? 'Annuler' : language === 'ar' ? 'إلغاء' : 'Cancel',
     downloadPdf: language === 'fr' ? 'Télécharger le PDF' : language === 'ar' ? 'تنزيل PDF' : 'Download PDF',
   };
 
@@ -325,14 +334,52 @@ export default function ContractFormDialog({
 
         <DialogFooter className="flex-col gap-2 sm:flex-row sm:justify-between">
           {isEditing && onDelete ? (
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={() => { if (confirm(L.deleteConfirm)) onDelete(); }}
-              disabled={saving}
-            >
-              <Trash2 className="h-4 w-4 me-1" />{t('delete')}
-            </Button>
+            showDeleteConfirm ? (
+              <div className="w-full sm:w-auto rounded-xl border border-destructive/30 bg-destructive/5 p-3 space-y-3">
+                <p className="text-xs text-destructive font-medium">{L.deletePrompt}</p>
+                <div className="flex items-center justify-center rounded-lg bg-background border border-border px-3 py-2 font-mono text-sm tracking-widest text-foreground">
+                  {L.deleteWord}
+                </div>
+                <Input
+                  value={deleteInput}
+                  onChange={(e) => setDeleteInput(e.target.value)}
+                  placeholder={L.deleteInputPlaceholder}
+                  className="uppercase"
+                  autoComplete="off"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => onDelete()}
+                    disabled={deleteInput.trim().toUpperCase() !== L.deleteWord.toUpperCase() || saving}
+                  >
+                    <Trash2 className="h-4 w-4 me-1" />{t('delete')}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => { setShowDeleteConfirm(false); setDeleteInput(''); }}
+                    disabled={saving}
+                  >
+                    {L.deleteCancel}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => setShowDeleteConfirm(true)}
+                disabled={saving}
+              >
+                <Trash2 className="h-4 w-4 me-1" />{t('delete')}
+              </Button>
+            )
           ) : <span />}
           <div className="flex gap-2 flex-wrap">
             <Button
