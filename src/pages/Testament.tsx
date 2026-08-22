@@ -698,7 +698,60 @@ export default function Testament() {
                       className="flex-1 h-8 text-sm bg-background/60 border-border/50"
                     />
                   </div>
+
+                  {/* Category */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-medium text-muted-foreground">
+                      {tx('Statut du bénéficiaire', 'Beneficiary status', 'صفة المستفيد')}
+                    </label>
+                    <select
+                      value={b.category}
+                      onChange={(e) => updateBeneficiary(b.id, 'category', e.target.value)}
+                      className="h-8 w-full rounded-md border border-border/50 bg-background/60 px-2 text-xs text-foreground"
+                    >
+                      <option value="non_heir">
+                        {tx('Non-héritier (ami, cousin non ayant droit, association…)', 'Non-heir (friend, non-entitled cousin, charity…)', 'غير وارث (صديق، قريب غير وارث، جمعية…)')}
+                      </option>
+                      <option value="legal_heir">
+                        {tx('Héritier légal (conjoint, enfant, parent, frère/soeur)', 'Legal heir (spouse, child, parent, sibling)', 'وارث شرعي (زوج، ولد، والد، أخ/أخت)')}
+                      </option>
+                    </select>
+                  </div>
+
+                  {b.category === 'legal_heir' && (
+                    <div className="space-y-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-[11.5px] leading-relaxed text-amber-300">
+                      <div className="flex gap-2">
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-arabic text-sm text-amber-200" dir="rtl">لا وصية لوارث</p>
+                          <p className="mt-1">
+                            {tx(
+                              "« Il n'y a pas de legs (wasiyya) en faveur d'un héritier » — hadith rapporté par Abu Dawud et At-Tirmidhi. Un tel legs n'est valide qu'avec le consentement unanime des autres héritiers après le décès.",
+                              '"There is no bequest (wasiyya) for an heir" — hadith reported by Abu Dawud and At-Tirmidhi. Such a bequest is only valid with the unanimous consent of the other heirs after death.',
+                              '«لا وصية لوارث» — رواه أبو داود والترمذي. لا تصح هذه الوصية إلا بموافقة باقي الورثة بالإجماع بعد الوفاة.'
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <label className="flex items-start gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={b.requires_heir_consent}
+                          onChange={(e) => updateBeneficiary(b.id, 'requires_heir_consent', e.target.checked)}
+                          className="mt-0.5 accent-primary"
+                        />
+                        <span>
+                          {tx(
+                            'Je comprends que ce legs nécessite le consentement unanime de tous mes héritiers après mon décès pour être valide, conformément au fiqh.',
+                            'I understand that this bequest requires the unanimous consent of all my heirs after my death to be valid, in accordance with fiqh.',
+                            'أفهم أن هذه الوصية تتطلب موافقة جميع ورثتي بالإجماع بعد وفاتي لتكون صحيحة، وفقاً للفقه.'
+                          )}
+                        </span>
+                      </label>
+                    </div>
+                  )}
                 </div>
+
               ))}
             </div>
 
