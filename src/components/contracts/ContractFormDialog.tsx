@@ -143,6 +143,10 @@ export default function ContractFormDialog({
     edit: language === 'fr' ? 'Modifier le contrat' : language === 'ar' ? 'تعديل العقد' : 'Edit contract',
     add: language === 'fr' ? 'Ajouter un contrat' : language === 'ar' ? 'إضافة عقد' : 'Add contract',
     deleteConfirm: language === 'fr' ? 'Supprimer ce contrat ?' : language === 'ar' ? 'حذف هذا العقد؟' : 'Delete this contract?',
+    deletePrompt: language === 'fr' ? 'Cette action est irréversible. Tapez le mot ci-dessous pour confirmer.' : language === 'ar' ? 'هذا الإجراء نهائي. اكتب الكلمة أدناه للتأكيد.' : 'This action is irreversible. Type the word below to confirm.',
+    deleteWord: language === 'fr' ? 'SUPPRIMER' : language === 'ar' ? 'حذف' : 'DELETE',
+    deleteInputPlaceholder: language === 'fr' ? 'Tapez SUPPRIMER ici' : language === 'ar' ? 'اكتب حذف هنا' : 'Type DELETE here',
+    deleteCancel: language === 'fr' ? 'Annuler' : language === 'ar' ? 'إلغاء' : 'Cancel',
     downloadPdf: language === 'fr' ? 'Télécharger le PDF' : language === 'ar' ? 'تنزيل PDF' : 'Download PDF',
   };
 
