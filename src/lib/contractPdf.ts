@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import type { Language } from '@/lib/i18n';
 import type { ContractFormData, ContractType } from '@/components/contracts/ContractFormDialog';
-import { TYPE_LABELS } from '@/components/contracts/ContractFormDialog';
+import { TYPE_LABELS, decodePenalties } from '@/components/contracts/ContractFormDialog';
 
 const L = (language: Language) => ({
   title: language === 'fr' ? 'CONTRAT' : language === 'ar' ? 'CONTRAT' : 'CONTRACT',
