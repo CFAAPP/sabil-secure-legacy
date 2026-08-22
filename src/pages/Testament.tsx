@@ -10,9 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import {
   Save, FileText, Loader2, ChevronDown, ChevronUp, Plus, Trash2,
-  MessageSquare, Users,
+  MessageSquare, Scale, ShieldCheck, Mail,
   ExternalLink, AlertCircle, Info, Lock, Calendar, FileDown
 } from 'lucide-react';
+
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import Layout from '@/components/Layout';
@@ -110,6 +111,8 @@ export default function Testament() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [notifying, setNotifying] = useState<string | null>(null);
+
   const [existingId, setExistingId] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
