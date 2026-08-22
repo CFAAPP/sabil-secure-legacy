@@ -19,7 +19,6 @@ interface ContractItem {
   parties: { name: string; role: string }[];
   execution_delay: string;
   clauses: string;
-  penalties: string;
   witnesses: { name: string; contact: string }[];
   notes: string;
 }
@@ -48,20 +47,19 @@ export default function Contracts() {
     const { data } = await supabase.from('contracts').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
     if (data) {
       const decrypted = await Promise.all(data.map(async (c: any) => {
-        const [title, date, partiesStr, delay, clauses, penalties, witnessesStr, notes] = await Promise.all([
+        const [title, date, partiesStr, delay, clauses, witnessesStr, notes] = await Promise.all([
           safeDecrypt(c.title_encrypted, c.iv),
           safeDecrypt(c.contract_date_encrypted, c.iv),
           safeDecrypt(c.parties_encrypted, c.iv),
           safeDecrypt(c.execution_delay_encrypted, c.iv),
           safeDecrypt(c.clauses_encrypted, c.iv),
-          safeDecrypt(c.penalties_encrypted, c.iv),
           safeDecrypt(c.witnesses_encrypted, c.iv),
           safeDecrypt(c.notes_encrypted, c.iv),
         ]);
         let parties: any[] = []; let witnesses: any[] = [];
         try { parties = partiesStr ? JSON.parse(partiesStr) : []; } catch {}
         try { witnesses = witnessesStr ? JSON.parse(witnessesStr) : []; } catch {}
-        return { id: c.id, contract_type: c.contract_type, iv: c.iv, title, contract_date: date, parties, execution_delay: delay, clauses, penalties, witnesses, notes } as ContractItem;
+        return { id: c.id, contract_type: c.contract_type, iv: c.iv, title, contract_date: date, parties, execution_delay: delay, clauses, witnesses, notes } as ContractItem;
       }));
       setContracts(decrypted);
     }
@@ -104,7 +102,6 @@ export default function Contracts() {
         parties_encrypted: form.parties.length ? await enc(JSON.stringify(form.parties)) : null,
         execution_delay_encrypted: form.execution_delay ? await enc(form.execution_delay) : null,
         clauses_encrypted: form.clauses ? await enc(form.clauses) : null,
-        penalties_encrypted: form.penalties ? await enc(form.penalties) : null,
         witnesses_encrypted: form.witnesses.length ? await enc(JSON.stringify(form.witnesses)) : null,
         notes_encrypted: form.notes ? await enc(form.notes) : null,
       };
@@ -143,7 +140,6 @@ export default function Contracts() {
           parties: form.parties,
           execution_delay: form.execution_delay,
           clauses: form.clauses,
-          penalties: form.penalties,
           witnesses: form.witnesses,
           notes: form.notes,
         };
@@ -260,7 +256,6 @@ export default function Contracts() {
           parties: editing.parties,
           execution_delay: editing.execution_delay,
           clauses: editing.clauses,
-          penalties: editing.penalties,
           witnesses: editing.witnesses,
           notes: editing.notes,
           mentions: editingMentions,

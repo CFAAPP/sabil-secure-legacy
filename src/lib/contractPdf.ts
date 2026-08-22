@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import type { Language } from '@/lib/i18n';
 import type { ContractFormData, ContractType } from '@/components/contracts/ContractFormDialog';
-import { TYPE_LABELS, decodePenalties } from '@/components/contracts/ContractFormDialog';
+import { TYPE_LABELS } from '@/components/contracts/ContractFormDialog';
 
 const L = (language: Language) => ({
   title: language === 'fr' ? 'CONTRAT' : language === 'ar' ? 'CONTRAT' : 'CONTRACT',
@@ -11,7 +11,6 @@ const L = (language: Language) => ({
   parties: language === 'fr' ? 'Parties' : language === 'ar' ? 'Parties' : 'Parties',
   delay: language === 'fr' ? "Délais d'exécution" : 'Execution delay',
   clauses: language === 'fr' ? 'Clauses' : 'Clauses',
-  penalties: language === 'fr' ? 'Pénalités' : 'Penalties',
   witnesses: language === 'fr' ? 'Témoins' : 'Witnesses',
   notes: language === 'fr' ? 'Notes' : 'Notes',
   signatures: language === 'fr' ? 'Signatures' : 'Signatures',
@@ -117,25 +116,6 @@ export function generateContractPdf(form: ContractFormData, language: Language) 
 
   writeSection(labels.delay, form.execution_delay);
   writeSection(labels.clauses, form.clauses);
-  {
-    const decoded = decodePenalties(form.penalties || '');
-    const dest = form.penalty_destination && form.penalty_destination !== 'none' ? form.penalty_destination : decoded.dest;
-    const beneficiary = form.penalty_beneficiary || decoded.beneficiary;
-    let body = decoded.text;
-    if (body.trim() && dest !== 'none') {
-      const destLabel =
-        dest === 'charity'
-          ? (language === 'fr'
-              ? `Destination : versee a une oeuvre caritative${beneficiary ? ` (${beneficiary})` : ''} - non percue par le creancier, afin d'eviter le riba.`
-              : `Destination: paid to charity${beneficiary ? ` (${beneficiary})` : ''} - not collected by the creditor, to avoid riba.`)
-          : (language === 'fr'
-              ? `Destination : compensation d'un prejudice reel documente${beneficiary ? ` (${beneficiary})` : ''}.`
-              : `Destination: compensation for a documented actual loss${beneficiary ? ` (${beneficiary})` : ''}.`);
-      body = `${body}\n${destLabel}`;
-    }
-    writeSection(labels.penalties, body);
-  }
-
 
   // Witnesses
   if (form.witnesses?.length) {
