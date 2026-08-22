@@ -642,7 +642,8 @@ export default function Testament() {
         {/* ④ Wasiyya */}
         <Section
           title={tx('④ Wasiyya (max. 1/3)', '④ Wasiyya (max. 1/3)', '④ الوصية (الحد الأقصى ١/٣)')}
-          icon={<Users className="h-3.5 w-3.5 text-primary" />}
+          icon={<Scale className="h-3.5 w-3.5 text-primary" />}
+
         >
           <div className="p-5 space-y-4">
             {/* Counter */}
