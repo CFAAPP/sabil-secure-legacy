@@ -119,16 +119,62 @@
     overflow-wrap: anywhere;
   }
 
+  /* ── Arabe : Cairo pour l'UI, jamais de majuscules forcées ── */
+  :lang(ar), [lang="ar"], [dir="rtl"] {
+    font-family: 'Cairo', 'Outfit', sans-serif;
+  }
+
+  :lang(ar) h1, :lang(ar) h2, :lang(ar) h3,
+  [lang="ar"] h1, [lang="ar"] h2, [lang="ar"] h3,
+  [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 {
+    font-family: 'Cairo', 'Cocogoose', sans-serif;
+    text-transform: none;
+    letter-spacing: 0;
+    line-height: 1.5;
+  }
+
+  /* Le texte arabe ne doit jamais recevoir de casse ni d'interlettrage latin */
+  .font-arabic,
+  :lang(ar), [lang="ar"], [dir="rtl"] {
+    text-transform: none;
+  }
+
+  .font-arabic {
+    letter-spacing: 0;
+    line-height: 1.8;
+  }
+
+  /* Citations religieuses (Coran / hadith) : Amiri */
+  .font-quran, .quote-religious {
+    font-family: 'Amiri', serif;
+    text-transform: none;
+    letter-spacing: 0;
+    line-height: 2;
+  }
+
+  /* Neutralise tracking latin sur les éléments arabes */
+  [dir="rtl"] [class*="tracking-"] {
+    letter-spacing: 0 !important;
+  }
+
   /* Avoid mobile horizontal overflow from long words / ids / emails */
   p, span, a, li, code, label, h1, h2, h3, h4 {
     overflow-wrap: break-word;
     word-break: break-word;
   }
 
+  /* Le texte arabe ne doit pas être coupé au milieu d'un mot */
+  [dir="rtl"] p, [dir="rtl"] span, [dir="rtl"] li, [dir="rtl"] label,
+  .font-arabic {
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
   input, textarea, select, button {
     max-width: 100%;
   }
 }
+
 
 /* ── Decorative background ── */
 @layer utilities {
