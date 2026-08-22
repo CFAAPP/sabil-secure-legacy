@@ -139,7 +139,21 @@ export default function ZakatSettingsPanel({ settings, language, onSettingsChang
                 {z('lunarYear')}
               </button>
             </div>
+            <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+              {isHijri
+                ? (language === 'fr'
+                    ? "Calendrier lunaire (recommandé) : le hawl islamique dure 354 jours. Taux appliqué : 2,5 %."
+                    : language === 'ar'
+                    ? 'التقويم القمري (موصى به): الحول الشرعي ٣٥٤ يوماً. النسبة المطبقة: ٢٫٥٪.'
+                    : 'Lunar calendar (recommended): the Islamic hawl lasts 354 days. Applied rate: 2.5%.')
+                : (language === 'fr'
+                    ? "Année solaire : elle compte 11 jours de plus que le hawl lunaire. Le taux est ajusté à 2,577 % (2,5 % × 365/354) pour ne pas sous-évaluer la zakât."
+                    : language === 'ar'
+                    ? 'السنة الشمسية أطول من الحول القمري بـ ١١ يوماً، لذا تُعدَّل النسبة إلى ٢٫٥٧٧٪ (٢٫٥٪ × ٣٦٥/٣٥٤).'
+                    : 'Solar year: it is 11 days longer than the lunar hawl. The rate is adjusted to 2.577% (2.5% × 365/354) so zakat is not underpaid.')}
+            </p>
           </div>
+
 
           {/* Date picker */}
           <div>

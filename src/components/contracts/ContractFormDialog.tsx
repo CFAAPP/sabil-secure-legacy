@@ -15,6 +15,30 @@ export type ContractType = 'commercial' | 'marriage' | 'engagement' | 'rental' |
 export interface Party { name: string; role: string }
 export interface Witness { name: string; contact: string }
 
+export type PenaltyDestination = 'none' | 'charity' | 'compensation';
+
+const PENALTY_TAG = '@@PENALTY_DEST@@';
+
+/** Encode la destination des pénalités dans le champ chiffré existant (pas de migration). */
+export function encodePenalties(text: string, dest: PenaltyDestination, beneficiary: string) {
+  const base = (text || '').trim();
+  if (dest === 'none') return base;
+  return `${base}\n${PENALTY_TAG}${dest}|${(beneficiary || '').replace(/[\n|]/g, ' ').trim()}`;
+}
+
+export function decodePenalties(raw: string): { text: string; dest: PenaltyDestination; beneficiary: string } {
+  const value = raw || '';
+  const idx = value.indexOf(PENALTY_TAG);
+  if (idx === -1) return { text: value, dest: 'none', beneficiary: '' };
+  const meta = value.slice(idx + PENALTY_TAG.length).split('\n')[0];
+  const [dest, beneficiary = ''] = meta.split('|');
+  return {
+    text: value.slice(0, idx).trim(),
+    dest: (dest === 'charity' || dest === 'compensation' ? dest : 'none') as PenaltyDestination,
+    beneficiary,
+  };
+}
+
 export interface ContractFormData {
   contract_type: ContractType;
   title: string;
@@ -23,10 +47,13 @@ export interface ContractFormData {
   execution_delay: string;
   clauses: string;
   penalties: string;
+  penalty_destination: PenaltyDestination;
+  penalty_beneficiary: string;
   witnesses: Witness[];
   notes: string;
   mentions: string;
 }
+
 
 export interface Attachment {
   id: string;
@@ -96,6 +123,8 @@ export default function ContractFormDialog({
     execution_delay: '',
     clauses: '',
     penalties: '',
+    penalty_destination: 'none',
+    penalty_beneficiary: '',
     witnesses: [],
     notes: '',
     mentions: '',
@@ -104,6 +133,7 @@ export default function ContractFormDialog({
 
   useEffect(() => {
     if (open) {
+      const decoded = decodePenalties(initial?.penalties || '');
       setForm({
         contract_type: (initial?.contract_type as ContractType) || 'commercial',
         title: initial?.title || '',
@@ -111,7 +141,9 @@ export default function ContractFormDialog({
         parties: initial?.parties?.length ? initial.parties : [{ name: '', role: '' }],
         execution_delay: initial?.execution_delay || '',
         clauses: initial?.clauses || '',
-        penalties: initial?.penalties || '',
+        penalties: decoded.text,
+        penalty_destination: initial?.penalty_destination ?? decoded.dest,
+        penalty_beneficiary: initial?.penalty_beneficiary ?? decoded.beneficiary,
         witnesses: initial?.witnesses || [],
         notes: initial?.notes || '',
         mentions: initial?.mentions || '',
@@ -119,6 +151,7 @@ export default function ContractFormDialog({
       setNewFiles([]);
     }
   }, [open, initial]);
+
 
   const L = {
     title: language === 'fr' ? 'Objet du contrat' : language === 'ar' ? 'موضوع العقد' : 'Contract subject',
@@ -145,8 +178,20 @@ export default function ContractFormDialog({
 
   const handleSubmit = async () => {
     if (!form.title.trim()) return;
-    await onSave(form, newFiles);
+    const hasPenalty = form.penalties.trim().length > 0;
+    await onSave(
+      {
+        ...form,
+        penalty_destination: hasPenalty ? form.penalty_destination : 'none',
+        penalty_beneficiary: hasPenalty ? form.penalty_beneficiary : '',
+        penalties: hasPenalty
+          ? encodePenalties(form.penalties, form.penalty_destination, form.penalty_beneficiary)
+          : '',
+      },
+      newFiles
+    );
   };
+
 
   const fileIcon = (type: string) => {
     if (type.startsWith('image/')) return <ImageIcon className="h-4 w-4" />;
@@ -233,7 +278,48 @@ export default function ContractFormDialog({
           <div className="space-y-2">
             <Label>{L.penalties}</Label>
             <Textarea rows={3} value={form.penalties} onChange={(e) => setForm({ ...form, penalties: e.target.value })} />
+
+            {form.penalties.trim().length > 0 && (
+              <div className="space-y-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
+                <p className="text-[11.5px] leading-relaxed text-amber-300">
+                  {language === 'fr'
+                    ? "Une pénalité de retard perçue par le créancier s'apparente au ribâ (intérêt sur une dette). Pour rester conforme, elle doit être versée à une œuvre caritative, ou correspondre à un préjudice réel et documenté."
+                    : language === 'ar'
+                    ? 'غرامة التأخير التي يقبضها الدائن تشبه الربا. لتبقى موافقة للشرع، يجب أن تُصرف في وجوه الخير، أو أن تقابل ضرراً حقيقياً موثقاً.'
+                    : 'A late-payment penalty collected by the creditor resembles riba (interest on a debt). To remain compliant, it must be paid to charity, or match a real, documented loss.'}
+                </p>
+
+                <Label className="text-xs">
+                  {language === 'fr' ? 'Destination de la pénalité' : language === 'ar' ? 'وجهة الغرامة' : 'Penalty destination'}
+                </Label>
+                <Select
+                  value={form.penalty_destination === 'none' ? 'charity' : form.penalty_destination}
+                  onValueChange={(v) => setForm({ ...form, penalty_destination: v as PenaltyDestination })}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-popover z-[60]">
+                    <SelectItem value="charity">
+                      {language === 'fr' ? 'Versée à une œuvre caritative (recommandé)' : language === 'ar' ? 'تُصرف لجهة خيرية (موصى به)' : 'Paid to a charity (recommended)'}
+                    </SelectItem>
+                    <SelectItem value="compensation">
+                      {language === 'fr' ? 'Compensation d’un préjudice réel documenté' : language === 'ar' ? 'تعويض عن ضرر حقيقي موثق' : 'Compensation for a documented actual loss'}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Input
+                  value={form.penalty_beneficiary}
+                  onChange={(e) => setForm({ ...form, penalty_beneficiary: e.target.value })}
+                  placeholder={
+                    form.penalty_destination === 'compensation'
+                      ? (language === 'fr' ? 'Nature du préjudice' : language === 'ar' ? 'طبيعة الضرر' : 'Nature of the loss')
+                      : (language === 'fr' ? 'Nom de l’œuvre caritative' : language === 'ar' ? 'اسم الجهة الخيرية' : 'Charity name')
+                  }
+                />
+              </div>
+            )}
           </div>
+
 
           {/* Witnesses */}
           <div className="space-y-2">

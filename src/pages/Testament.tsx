@@ -10,9 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import {
   Save, FileText, Loader2, ChevronDown, ChevronUp, Plus, Trash2,
-  MessageSquare, Users,
+  MessageSquare, Scale, ShieldCheck, Mail,
   ExternalLink, AlertCircle, Info, Lock, Calendar, FileDown
 } from 'lucide-react';
+
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import Layout from '@/components/Layout';
@@ -22,12 +23,24 @@ const uuidv4 = () => crypto.randomUUID();
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+type BeneficiaryCategory = 'non_heir' | 'legal_heir';
+
 interface WasiyyaBeneficiary {
   id: string;
   beneficiary: string;
+  category: BeneficiaryCategory;
+  requires_heir_consent: boolean;
   type: 'percentage' | 'amount';
   value: number;
   notes: string;
+}
+
+interface TestamentWitness {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  notified_at?: string | null;
 }
 
 interface PersonalMessage {
@@ -42,6 +55,7 @@ interface TestamentData {
   funeral_wishes: string;
   additional_debts: string;
   wasiyya: WasiyyaBeneficiary[];
+  witnesses: TestamentWitness[];
   personal_messages: PersonalMessage[];
 }
 
@@ -49,8 +63,10 @@ const DEFAULT_DATA: TestamentData = {
   funeral_wishes: '',
   additional_debts: '',
   wasiyya: [],
+  witnesses: [],
   personal_messages: [],
 };
+
 
 // ─── Section collapse helper ──────────────────────────────────────────────────
 
@@ -95,6 +111,8 @@ export default function Testament() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [notifying, setNotifying] = useState<string | null>(null);
+
   const [existingId, setExistingId] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
@@ -162,6 +180,22 @@ export default function Testament() {
       return;
     }
 
+    // Legal heirs require an explicit consent acknowledgement
+    if (data.wasiyya.some(b => b.category === 'legal_heir' && !b.requires_heir_consent)) {
+      toast({
+        title: t('error'),
+        description: tx(
+          "Un bénéficiaire est un héritier légal : cochez la case de consentement conditionnel pour pouvoir enregistrer.",
+          'A beneficiary is a legal heir: tick the conditional consent box to save.',
+          'أحد المستفيدين وارث شرعي: يجب تأكيد شرط موافقة الورثة قبل الحفظ.'
+        ),
+        variant: 'destructive',
+      });
+      return;
+    }
+
+
+
     setSaving(true);
     try {
       const jsonStr = JSON.stringify(data);
@@ -210,17 +244,72 @@ export default function Testament() {
   const addBeneficiary = () => {
     setData(d => ({
       ...d,
-      wasiyya: [...d.wasiyya, { id: uuidv4(), beneficiary: '', type: 'percentage', value: 0, notes: '' }]
+      wasiyya: [...d.wasiyya, { id: uuidv4(), beneficiary: '', category: 'non_heir', requires_heir_consent: false, type: 'percentage', value: 0, notes: '' }]
     }));
   };
 
   const updateBeneficiary = (id: string, field: keyof WasiyyaBeneficiary, value: any) => {
-    setData(d => ({ ...d, wasiyya: d.wasiyya.map(b => b.id === id ? { ...b, [field]: value } : b) }));
+    setData(d => ({
+      ...d,
+      wasiyya: d.wasiyya.map(b => {
+        if (b.id !== id) return b;
+        const next = { ...b, [field]: value } as WasiyyaBeneficiary;
+        if (field === 'category' && value === 'non_heir') next.requires_heir_consent = false;
+        return next;
+      }),
+    }));
   };
 
   const removeBeneficiary = (id: string) => {
     setData(d => ({ ...d, wasiyya: d.wasiyya.filter(b => b.id !== id) }));
   };
+
+  // ─── Witness helpers ──────────────────────────────────────────────────────
+
+  const addWitness = () => {
+    setData(d => d.witnesses.length >= 2 ? d : ({
+      ...d,
+      witnesses: [...d.witnesses, { id: uuidv4(), name: '', email: '', phone: '', notified_at: null }],
+    }));
+  };
+
+  const updateWitness = (id: string, field: keyof TestamentWitness, value: any) => {
+    setData(d => ({ ...d, witnesses: d.witnesses.map(w => w.id === id ? { ...w, [field]: value } : w) }));
+  };
+
+  const removeWitness = (id: string) => {
+    setData(d => ({ ...d, witnesses: d.witnesses.filter(w => w.id !== id) }));
+  };
+
+  const isWitnessAlsoBeneficiary = (name: string) => {
+    const n = name.trim().toLowerCase();
+    if (!n) return false;
+    return data.wasiyya.some(b => b.beneficiary.trim().toLowerCase() === n);
+  };
+
+  const notifyWitness = async (w: TestamentWitness) => {
+    if (!w.email.trim() || !user) return;
+    setNotifying(w.id);
+    try {
+      const testatorName = `${identity.first_name} ${identity.last_name}`.trim() || profile?.display_name || '';
+      const { error } = await supabase.functions.invoke('send-testament-witness-notice', {
+        body: {
+          witnessName: w.name,
+          witnessEmail: w.email,
+          testatorName,
+          depositDate: (updatedAt || createdAt || new Date().toISOString()).slice(0, 10),
+          language,
+        },
+      });
+      if (error) throw error;
+      updateWitness(w.id, 'notified_at', new Date().toISOString());
+      toast({ title: t('success'), description: tx('Témoin notifié par email.', 'Witness notified by email.', 'تم إشعار الشاهد بالبريد الإلكتروني.') });
+    } catch {
+      toast({ title: t('error'), description: tx("Échec de l'envoi de la notification.", 'Notification failed.', 'فشل إرسال الإشعار.'), variant: 'destructive' });
+    }
+    setNotifying(null);
+  };
+
 
   // ─── Personal messages helpers ────────────────────────────────────────────
 
@@ -277,13 +366,31 @@ export default function Testament() {
       const fullName = `${identity.first_name} ${identity.last_name}`.trim() || profile?.display_name || '—';
       const declaration = buildDeclaration();
 
+      const heirTag = tx('Héritier légal — sous condition de consentement unanime des autres héritiers', 'Legal heir — subject to unanimous consent of the other heirs', 'وارث شرعي — مشروط بموافقة باقي الورثة بالإجماع');
       const wasiyyaRows = data.wasiyya.length
         ? data.wasiyya.map(b => `<tr>
-            <td style="padding:8px;border:1px solid #e5e5e5">${esc(b.beneficiary) || '—'}</td>
-            <td style="padding:8px;border:1px solid #e5e5e5;text-align:center">${b.type === 'percentage' ? `${b.value}%` : b.value}</td>
+            <td style="padding:8px;border:1px solid #e5e5e5">${esc(b.beneficiary) || '—'}${b.category === 'legal_heir' ? `<div style="font-size:10px;color:#a06a1b;margin-top:3px">⚠ ${heirTag}</div>` : ''}</td>
+            <td style="padding:8px;border:1px solid #e5e5e5;text-align:center" dir="ltr">${b.type === 'percentage' ? `${b.value}%` : b.value}</td>
             <td style="padding:8px;border:1px solid #e5e5e5">${esc(b.notes)}</td>
           </tr>`).join('')
         : `<tr><td colspan="3" style="padding:12px;border:1px solid #e5e5e5;text-align:center;color:#888">${tx('Aucun bénéficiaire', 'No beneficiaries', 'لا يوجد مستفيدون')}</td></tr>`;
+
+      const witnessesHtml = data.witnesses.length
+        ? `<div>${tx('Témoins', 'Witnesses', 'الشهود')} : ${data.witnesses.map(w => esc(w.name) || '—').join(', ')}</div>
+           <table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:10px">
+            <thead><tr style="background:#f5f0e6">
+              <th style="padding:8px;border:1px solid #e5e5e5;text-align:${isAr ? 'right' : 'left'}">${tx('Nom', 'Name', 'الاسم')}</th>
+              <th style="padding:8px;border:1px solid #e5e5e5;text-align:${isAr ? 'right' : 'left'}">Email</th>
+              <th style="padding:8px;border:1px solid #e5e5e5;text-align:${isAr ? 'right' : 'left'}">${tx('Téléphone', 'Phone', 'الهاتف')}</th>
+            </tr></thead>
+            <tbody>${data.witnesses.map(w => `<tr>
+              <td style="padding:8px;border:1px solid #e5e5e5">${esc(w.name) || '—'}</td>
+              <td style="padding:8px;border:1px solid #e5e5e5" dir="ltr">${esc(w.email) || '—'}</td>
+              <td style="padding:8px;border:1px solid #e5e5e5" dir="ltr">${esc(w.phone) || '—'}</td>
+            </tr>`).join('')}</tbody>
+           </table>`
+        : `<p style="color:#888;font-style:italic">${tx('Aucun témoin désigné', 'No witnesses appointed', 'لم يتم تعيين شهود')}</p>`;
+
 
       const messagesHtml = data.personal_messages.length
         ? data.personal_messages.map(m => `<div style="margin:12px 0;padding:12px;border:1px solid #e5e5e5;border-radius:6px;background:#fafafa">
@@ -329,7 +436,10 @@ export default function Testament() {
             <tbody>${wasiyyaRows}</tbody>
            </table>`)}
 
-        ${sec('⑤', tx('Messages personnalisés', 'Personal Messages', 'رسائل شخصية'), messagesHtml)}
+        ${sec('⑤', tx('Témoins', 'Witnesses', 'الشهود'), witnessesHtml)}
+
+        ${sec('⑥', tx('Messages personnalisés', 'Personal Messages', 'رسائل شخصية'), messagesHtml)}
+
 
         <div style="margin-top:40px;padding-top:16px;border-top:1px solid #ddd;font-size:10px;color:#999;text-align:center">
           Mirath — ${tx('Document généré pour usage personnel', 'Document generated for personal use', 'وثيقة تم إنشاؤها للاستخدام الشخصي')}
@@ -532,7 +642,8 @@ export default function Testament() {
         {/* ④ Wasiyya */}
         <Section
           title={tx('④ Wasiyya (max. 1/3)', '④ Wasiyya (max. 1/3)', '④ الوصية (الحد الأقصى ١/٣)')}
-          icon={<Users className="h-3.5 w-3.5 text-primary" />}
+          icon={<Scale className="h-3.5 w-3.5 text-primary" />}
+
         >
           <div className="p-5 space-y-4">
             {/* Counter */}
@@ -587,7 +698,60 @@ export default function Testament() {
                       className="flex-1 h-8 text-sm bg-background/60 border-border/50"
                     />
                   </div>
+
+                  {/* Category */}
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-medium text-muted-foreground">
+                      {tx('Statut du bénéficiaire', 'Beneficiary status', 'صفة المستفيد')}
+                    </label>
+                    <select
+                      value={b.category}
+                      onChange={(e) => updateBeneficiary(b.id, 'category', e.target.value)}
+                      className="h-8 w-full rounded-md border border-border/50 bg-background/60 px-2 text-xs text-foreground"
+                    >
+                      <option value="non_heir">
+                        {tx('Non-héritier (ami, cousin non ayant droit, association…)', 'Non-heir (friend, non-entitled cousin, charity…)', 'غير وارث (صديق، قريب غير وارث، جمعية…)')}
+                      </option>
+                      <option value="legal_heir">
+                        {tx('Héritier légal (conjoint, enfant, parent, frère/soeur)', 'Legal heir (spouse, child, parent, sibling)', 'وارث شرعي (زوج، ولد، والد، أخ/أخت)')}
+                      </option>
+                    </select>
+                  </div>
+
+                  {b.category === 'legal_heir' && (
+                    <div className="space-y-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-[11.5px] leading-relaxed text-amber-300">
+                      <div className="flex gap-2">
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-quran text-base text-amber-200" dir="rtl">لا وصية لوارث</p>
+                          <p className="mt-1">
+                            {tx(
+                              "« Il n'y a pas de legs (wasiyya) en faveur d'un héritier » — hadith rapporté par Abu Dawud et At-Tirmidhi. Un tel legs n'est valide qu'avec le consentement unanime des autres héritiers après le décès.",
+                              '"There is no bequest (wasiyya) for an heir" — hadith reported by Abu Dawud and At-Tirmidhi. Such a bequest is only valid with the unanimous consent of the other heirs after death.',
+                              '«لا وصية لوارث» — رواه أبو داود والترمذي. لا تصح هذه الوصية إلا بموافقة باقي الورثة بالإجماع بعد الوفاة.'
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <label className="flex items-start gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={b.requires_heir_consent}
+                          onChange={(e) => updateBeneficiary(b.id, 'requires_heir_consent', e.target.checked)}
+                          className="mt-0.5 accent-primary"
+                        />
+                        <span>
+                          {tx(
+                            'Je comprends que ce legs nécessite le consentement unanime de tous mes héritiers après mon décès pour être valide, conformément au fiqh.',
+                            'I understand that this bequest requires the unanimous consent of all my heirs after my death to be valid, in accordance with fiqh.',
+                            'أفهم أن هذه الوصية تتطلب موافقة جميع ورثتي بالإجماع بعد وفاتي لتكون صحيحة، وفقاً للفقه.'
+                          )}
+                        </span>
+                      </label>
+                    </div>
+                  )}
                 </div>
+
               ))}
             </div>
 
@@ -606,12 +770,106 @@ export default function Testament() {
           </div>
         </Section>
 
-        {/* ⑤ Messages personnalisés */}
+        {/* ⑤ Témoins */}
         <Section
-          title={tx('⑤ Messages personnalisés', '⑤ Personal Messages', '⑤ رسائل شخصية')}
+          title={tx('⑤ Témoins du testament', '⑤ Will Witnesses', '⑤ شهود الوصية')}
+          icon={<ShieldCheck className="h-3.5 w-3.5 text-primary" />}
+          defaultOpen={false}
+        >
+          <div className="p-5 space-y-4">
+            <InfoBox>
+              <p className="font-quran text-base text-primary/80 mb-1" dir="rtl">وَاسْتَشْهِدُوا شَهِيدَيْنِ مِن رِّجَالِكُمْ</p>
+              {tx(
+                "À l'image du verset 2:282 (Al-Baqara) qui impose l'écrit et les témoins pour les dettes, désignez jusqu'à 2 témoins de votre testament. Leurs coordonnées sont chiffrées ; l'email de notification ne révèle aucun contenu patrimonial.",
+                'Following verse 2:282 (Al-Baqara), which requires writing and witnesses for debts, appoint up to 2 witnesses for your will. Their details are encrypted; the notification email reveals no asset content.',
+                'اقتداءً بالآية ٢٨٢ من سورة البقرة التي توجب الكتابة والإشهاد في الديون، عيّن حتى شاهدين لوصيتك. بياناتهم مشفّرة، ولا يكشف بريد الإشعار أي تفاصيل مالية.'
+              )}
+            </InfoBox>
+
+            <div className="space-y-3">
+              {data.witnesses.map((w) => {
+                const conflict = isWitnessAlsoBeneficiary(w.name);
+                return (
+                  <div key={w.id} className="rounded-xl border border-border/50 bg-muted/20 p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={w.name}
+                        onChange={(e) => updateWitness(w.id, 'name', e.target.value)}
+                        placeholder={tx('Nom du témoin', 'Witness name', 'اسم الشاهد')}
+                        className="flex-1 h-8 text-sm bg-background/60 border-border/50"
+                      />
+                      <button onClick={() => removeWitness(w.id)} className="text-muted-foreground hover:text-destructive transition-colors" aria-label={tx('Supprimer', 'Delete', 'حذف')}>
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Input
+                        type="email"
+                        dir="ltr"
+                        value={w.email}
+                        onChange={(e) => updateWitness(w.id, 'email', e.target.value)}
+                        placeholder="email@exemple.com"
+                        className="flex-1 h-8 text-sm bg-background/60 border-border/50"
+                      />
+                      <Input
+                        type="tel"
+                        dir="ltr"
+                        value={w.phone}
+                        onChange={(e) => updateWitness(w.id, 'phone', e.target.value)}
+                        placeholder={tx('Téléphone', 'Phone', 'الهاتف')}
+                        className="flex-1 h-8 text-sm bg-background/60 border-border/50"
+                      />
+                    </div>
+
+                    {conflict && (
+                      <div className="flex gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-[11.5px] leading-relaxed text-amber-300">
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                        {tx(
+                          "Un témoin ne devrait pas être bénéficiaire du legs pour préserver la fiabilité du témoignage.",
+                          'A witness should not be a beneficiary of the bequest, to preserve the reliability of the testimony.',
+                          'لا ينبغي أن يكون الشاهد مستفيداً من الوصية حفاظاً على موثوقية الشهادة.'
+                        )}
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] text-muted-foreground">
+                        {w.notified_at
+                          ? `${tx('Notifié le', 'Notified on', 'أُشعر في')} ${new Date(w.notified_at).toLocaleDateString(dateFmt)}`
+                          : tx('Non notifié', 'Not notified', 'لم يُشعر')}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={!w.email.trim() || notifying === w.id}
+                        onClick={() => notifyWitness(w)}
+                        className="gap-2 border-primary/30 text-primary hover:bg-primary/5"
+                      >
+                        {notifying === w.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Mail className="h-3.5 w-3.5" />}
+                        {tx('Notifier', 'Notify', 'إشعار')}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {data.witnesses.length < 2 && (
+              <Button variant="outline" size="sm" onClick={addWitness} className="gap-2 border-dashed border-primary/40 text-primary hover:bg-primary/5">
+                <Plus className="h-3.5 w-3.5" />
+                {tx('Ajouter un témoin', 'Add witness', 'إضافة شاهد')}
+              </Button>
+            )}
+          </div>
+        </Section>
+
+        {/* ⑥ Messages personnalisés */}
+        <Section
+          title={tx('⑥ Messages personnalisés', '⑥ Personal Messages', '⑥ رسائل شخصية')}
           icon={<MessageSquare className="h-3.5 w-3.5 text-primary" />}
           defaultOpen={false}
         >
+
           <div className="p-5 space-y-4">
             <div className="space-y-3">
               {data.personal_messages.map((msg) => (
@@ -659,10 +917,11 @@ export default function Testament() {
           </div>
         </Section>
 
-        {/* ⑥ Récapitulatif héritage */}
+        {/* ⑦ Récapitulatif héritage */}
         <Section
-          title={tx('⑥ Récapitulatif héritage (lecture seule)', '⑥ Inheritance Summary (read only)', '⑥ ملخص الميراث (للقراءة فقط)')}
-          icon={<Users className="h-3.5 w-3.5 text-primary" />}
+          title={tx('⑦ Récapitulatif héritage (lecture seule)', '⑦ Inheritance Summary (read only)', '⑦ ملخص الميراث (للقراءة فقط)')}
+          icon={<Scale className="h-3.5 w-3.5 text-primary" />}
+
           defaultOpen={false}
         >
           <div className="p-5 space-y-4">

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation, isRTL } from '@/lib/i18n';
-import { FilePen, Wallet, Users, Lock, User, Calculator, ClipboardCheck, RotateCcw } from 'lucide-react';
+import { FilePen, Wallet, Lock, User, Calculator, ClipboardCheck, RotateCcw, Scale, ShieldCheck, ScrollText, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useIdentity } from '@/hooks/useIdentity';
@@ -54,8 +54,9 @@ export default function Dashboard() {
     { title: t('debts'), arabic: 'دُيُونِي', description: t('manageDebts'), icon: Wallet, path: '/debts' },
     { title: t('contracts'), arabic: 'عُقُودِي', description: t('manageContracts'), icon: ClipboardCheck, path: '/contracts' },
     { title: 'Zakât al-Mâl', arabic: 'زَكَاةُ المَال', description: t('zakatCalc'), icon: Calculator, path: '/zakat' },
-    { title: t('wakils'), arabic: 'وُكَلَائِي', description: t('designateTrusted'), icon: Users, path: '/wakils' },
-    { title: t('profileHeirs'), arabic: 'مَعْلُومَاتِي', description: t('prepareWill'), icon: User, path: '/profile' },
+    { title: t('wakils'), arabic: 'وُكَلَائِي', description: t('designateTrusted'), icon: ShieldCheck, path: '/wakils' },
+    { title: t('profileHeirs'), arabic: 'مَعْلُومَاتِي', description: t('prepareWill'), icon: Scale, path: '/profile' },
+
   ];
 
 
@@ -96,8 +97,31 @@ export default function Dashboard() {
           />
         </div>
 
+        {/* Rappel prophétique sur la promptitude du testament */}
+        <div className="relative overflow-hidden rounded-2xl border border-primary/25 bg-card/70 px-4 py-3.5">
+          <div className="pointer-events-none absolute inset-0 mihrab-mesh opacity-30" />
+          <div className="relative flex gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10">
+              <ScrollText className="h-4 w-4 text-primary" strokeWidth={1.5} />
+            </div>
+            <div>
+              <p className="font-quran text-[15px] leading-loose text-primary/90" dir="rtl">
+                مَا حَقُّ امْرِئٍ مُسْلِمٍ لَهُ شَيْءٌ يُوصِي فِيهِ يَبِيتُ لَيْلَتَيْنِ إِلَّا وَوَصِيَّتُهُ مَكْتُوبَةٌ عِنْدَهُ
+              </p>
+              <p className="mt-1.5 text-[11.5px] leading-relaxed text-muted-foreground">
+                {language === 'ar'
+                  ? 'رواه البخاري ومسلم.'
+                  : language === 'en'
+                  ? '"It is not right for a Muslim who has something to bequeath to spend two nights without having his will written with him." — Bukhari & Muslim.'
+                  : "« Il n'est pas convenable qu'un musulman ayant quelque chose à léguer passe deux nuits sans que son testament ne soit écrit auprès de lui. » — Boukhari et Muslim."}
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Feature grid */}
         <div className="grid grid-cols-2 gap-3">
+
           {cards.map((card, i) => {
             const highlight = i === 0;
             const isFlipped = flipped === card.path;
@@ -161,7 +185,23 @@ export default function Dashboard() {
                         {card.title}
                       </h3>
                     </div>
+
+                    {/* Affordance : indique que la carte se retourne */}
+                    <div
+                      className={`relative mb-3 flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[9.5px] uppercase tracking-[0.12em] ${
+                        highlight
+                          ? 'border-primary-foreground/30 text-primary-foreground/80'
+                          : 'border-primary/35 text-primary/80'
+                      }`}
+                    >
+                      <Info className="h-3 w-3" strokeWidth={1.8} />
+                      <span>
+                        {language === 'ar' ? 'اقلب' : language === 'en' ? 'Flip' : 'Retourner'}
+                      </span>
+                      <RotateCcw className="h-3 w-3 animate-pulse" strokeWidth={1.8} />
+                    </div>
                   </button>
+
 
                   {/* Back */}
                   <Link
@@ -187,7 +227,15 @@ export default function Dashboard() {
                         {hint}
                       </p>
                     </div>
-                    <div className="relative mt-3 flex items-center justify-end">
+                    <div className="relative mt-3 flex items-center justify-between gap-2">
+                      <span
+                        className={`text-[9.5px] uppercase tracking-[0.12em] ${
+                          highlight ? 'text-primary-foreground/80' : 'text-primary/80'
+                        }`}
+                      >
+                        {language === 'ar' ? 'افتح' : language === 'en' ? 'Open →' : 'Ouvrir →'}
+                      </span>
+
                       <button
                         type="button"
                         onClick={(e) => {

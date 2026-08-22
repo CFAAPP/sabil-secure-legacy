@@ -8,6 +8,7 @@ export interface ZakatCalcResult {
   nisabSilver: number;
   nisab: number;
   zakatDue: number;
+  zakatRate: number;
   nisabPercent: number;
   isAboveNisab: boolean;
   breakdown: {
@@ -19,12 +20,23 @@ export interface ZakatCalcResult {
   };
 }
 
+/** Taux de zakât : 2,5 % sur une année lunaire (hawl = 354 j).
+ *  Sur une année solaire (365 j), le taux équivalent est 2,5 % × 365/354 ≈ 2,577 %. */
+export const ZAKAT_RATE_LUNAR = 0.025;
+export const ZAKAT_RATE_SOLAR = 0.025 * (365 / 354);
+
+export function getZakatRate(calendarType: 'gregorian' | 'hijri'): number {
+  return calendarType === 'gregorian' ? ZAKAT_RATE_SOLAR : ZAKAT_RATE_LUNAR;
+}
+
 export function calculateZakat(
   inputs: ZakatInputs,
   goldPricePerGram: number,
   silverPricePerGram: number,
-  nisabMethod: 'gold' | 'silver'
+  nisabMethod: 'gold' | 'silver',
+  calendarType: 'gregorian' | 'hijri' = 'hijri'
 ): ZakatCalcResult {
+
   const goldValue = inputs.gold_grams * goldPricePerGram;
   const silverValue = inputs.silver_grams * silverPricePerGram;
 
@@ -43,7 +55,8 @@ export function calculateZakat(
   const nisab = nisabMethod === 'gold' ? nisabGold : nisabSilver;
 
   const isAboveNisab = nisab > 0 && netZakatable >= nisab;
-  const zakatDue = isAboveNisab ? netZakatable * 0.025 : 0;
+  const zakatRate = getZakatRate(calendarType);
+  const zakatDue = isAboveNisab ? netZakatable * zakatRate : 0;
   const nisabPercent = nisab > 0 ? Math.min((netZakatable / nisab) * 100, 200) : 0;
 
   return {
@@ -54,6 +67,7 @@ export function calculateZakat(
     nisabSilver,
     nisab,
     zakatDue,
+    zakatRate,
     nisabPercent,
     isAboveNisab,
     breakdown: { cashBank, goldSilver, business, investments, crypto },
