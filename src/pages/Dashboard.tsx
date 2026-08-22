@@ -227,7 +227,15 @@ export default function Dashboard() {
                         {hint}
                       </p>
                     </div>
-                    <div className="relative mt-3 flex items-center justify-end">
+                    <div className="relative mt-3 flex items-center justify-between gap-2">
+                      <span
+                        className={`text-[9.5px] uppercase tracking-[0.12em] ${
+                          highlight ? 'text-primary-foreground/80' : 'text-primary/80'
+                        }`}
+                      >
+                        {language === 'ar' ? 'افتح' : language === 'en' ? 'Open →' : 'Ouvrir →'}
+                      </span>
+
                       <button
                         type="button"
                         onClick={(e) => {
