@@ -320,7 +320,6 @@ export default function ContractFormDialog({
             )}
           </div>
 
-          </div>
 
           {/* Witnesses */}
           <div className="space-y-2">
