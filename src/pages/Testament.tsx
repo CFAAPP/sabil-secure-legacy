@@ -436,7 +436,10 @@ export default function Testament() {
             <tbody>${wasiyyaRows}</tbody>
            </table>`)}
 
-        ${sec('⑤', tx('Messages personnalisés', 'Personal Messages', 'رسائل شخصية'), messagesHtml)}
+        ${sec('⑤', tx('Témoins', 'Witnesses', 'الشهود'), witnessesHtml)}
+
+        ${sec('⑥', tx('Messages personnalisés', 'Personal Messages', 'رسائل شخصية'), messagesHtml)}
+
 
         <div style="margin-top:40px;padding-top:16px;border-top:1px solid #ddd;font-size:10px;color:#999;text-align:center">
           Mirath — ${tx('Document généré pour usage personnel', 'Document generated for personal use', 'وثيقة تم إنشاؤها للاستخدام الشخصي')}
