@@ -177,6 +177,22 @@ export default function Testament() {
       return;
     }
 
+    // Legal heirs require an explicit consent acknowledgement
+    if (data.wasiyya.some(b => b.category === 'legal_heir' && !b.requires_heir_consent)) {
+      toast({
+        title: t('error'),
+        description: tx(
+          "Un bénéficiaire est un héritier légal : cochez la case de consentement conditionnel pour pouvoir enregistrer.",
+          'A beneficiary is a legal heir: tick the conditional consent box to save.',
+          'أحد المستفيدين وارث شرعي: يجب تأكيد شرط موافقة الورثة قبل الحفظ.'
+        ),
+        variant: 'destructive',
+      });
+      return;
+    }
+
+
+
     setSaving(true);
     try {
       const jsonStr = JSON.stringify(data);
