@@ -14,7 +14,8 @@ export default {
       fontFamily: {
         sans: ['Outfit', 'Space Grotesk', 'sans-serif'],
         serif: ['Cocogoose', 'Outfit', 'sans-serif'],
-        arabic: ['Amiri', 'serif'],
+        arabic: ['Cairo', 'Amiri', 'serif'],
+        quran: ['Amiri', 'serif'],
         display: ['Cocogoose', 'Outfit', 'sans-serif'],
         milker: ['Milker', 'sans-serif'],
       },
