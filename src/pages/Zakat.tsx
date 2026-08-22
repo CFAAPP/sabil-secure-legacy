@@ -54,8 +54,10 @@ export default function Zakat() {
     data.inputs,
     data.rates.gold_price_per_gram,
     data.rates.silver_price_per_gram,
-    data.settings.nisab_method
-  ), [data.inputs, data.rates, data.settings.nisab_method]);
+    data.settings.nisab_method,
+    data.settings.calendar_type
+  ), [data.inputs, data.rates, data.settings.nisab_method, data.settings.calendar_type]);
+
 
   const handleInputsChange = (inputs: ZakatInputs) => {
     setData(prev => ({ ...prev, inputs }));
