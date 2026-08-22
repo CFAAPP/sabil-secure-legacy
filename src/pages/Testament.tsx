@@ -22,12 +22,24 @@ const uuidv4 = () => crypto.randomUUID();
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+type BeneficiaryCategory = 'non_heir' | 'legal_heir';
+
 interface WasiyyaBeneficiary {
   id: string;
   beneficiary: string;
+  category: BeneficiaryCategory;
+  requires_heir_consent: boolean;
   type: 'percentage' | 'amount';
   value: number;
   notes: string;
+}
+
+interface TestamentWitness {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  notified_at?: string | null;
 }
 
 interface PersonalMessage {
@@ -42,6 +54,7 @@ interface TestamentData {
   funeral_wishes: string;
   additional_debts: string;
   wasiyya: WasiyyaBeneficiary[];
+  witnesses: TestamentWitness[];
   personal_messages: PersonalMessage[];
 }
 
@@ -49,8 +62,10 @@ const DEFAULT_DATA: TestamentData = {
   funeral_wishes: '',
   additional_debts: '',
   wasiyya: [],
+  witnesses: [],
   personal_messages: [],
 };
+
 
 // ─── Section collapse helper ──────────────────────────────────────────────────
 
