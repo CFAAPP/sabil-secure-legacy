@@ -241,17 +241,72 @@ export default function Testament() {
   const addBeneficiary = () => {
     setData(d => ({
       ...d,
-      wasiyya: [...d.wasiyya, { id: uuidv4(), beneficiary: '', type: 'percentage', value: 0, notes: '' }]
+      wasiyya: [...d.wasiyya, { id: uuidv4(), beneficiary: '', category: 'non_heir', requires_heir_consent: false, type: 'percentage', value: 0, notes: '' }]
     }));
   };
 
   const updateBeneficiary = (id: string, field: keyof WasiyyaBeneficiary, value: any) => {
-    setData(d => ({ ...d, wasiyya: d.wasiyya.map(b => b.id === id ? { ...b, [field]: value } : b) }));
+    setData(d => ({
+      ...d,
+      wasiyya: d.wasiyya.map(b => {
+        if (b.id !== id) return b;
+        const next = { ...b, [field]: value } as WasiyyaBeneficiary;
+        if (field === 'category' && value === 'non_heir') next.requires_heir_consent = false;
+        return next;
+      }),
+    }));
   };
 
   const removeBeneficiary = (id: string) => {
     setData(d => ({ ...d, wasiyya: d.wasiyya.filter(b => b.id !== id) }));
   };
+
+  // ─── Witness helpers ──────────────────────────────────────────────────────
+
+  const addWitness = () => {
+    setData(d => d.witnesses.length >= 2 ? d : ({
+      ...d,
+      witnesses: [...d.witnesses, { id: uuidv4(), name: '', email: '', phone: '', notified_at: null }],
+    }));
+  };
+
+  const updateWitness = (id: string, field: keyof TestamentWitness, value: any) => {
+    setData(d => ({ ...d, witnesses: d.witnesses.map(w => w.id === id ? { ...w, [field]: value } : w) }));
+  };
+
+  const removeWitness = (id: string) => {
+    setData(d => ({ ...d, witnesses: d.witnesses.filter(w => w.id !== id) }));
+  };
+
+  const isWitnessAlsoBeneficiary = (name: string) => {
+    const n = name.trim().toLowerCase();
+    if (!n) return false;
+    return data.wasiyya.some(b => b.beneficiary.trim().toLowerCase() === n);
+  };
+
+  const notifyWitness = async (w: TestamentWitness) => {
+    if (!w.email.trim() || !user) return;
+    setNotifying(w.id);
+    try {
+      const testatorName = `${identity.first_name} ${identity.last_name}`.trim() || profile?.display_name || '';
+      const { error } = await supabase.functions.invoke('send-testament-witness-notice', {
+        body: {
+          witnessName: w.name,
+          witnessEmail: w.email,
+          testatorName,
+          depositDate: (updatedAt || createdAt || new Date().toISOString()).slice(0, 10),
+          language,
+        },
+      });
+      if (error) throw error;
+      updateWitness(w.id, 'notified_at', new Date().toISOString());
+      toast({ title: t('success'), description: tx('Témoin notifié par email.', 'Witness notified by email.', 'تم إشعار الشاهد بالبريد الإلكتروني.') });
+    } catch {
+      toast({ title: t('error'), description: tx("Échec de l'envoi de la notification.", 'Notification failed.', 'فشل إرسال الإشعار.'), variant: 'destructive' });
+    }
+    setNotifying(null);
+  };
+
 
   // ─── Personal messages helpers ────────────────────────────────────────────
 
