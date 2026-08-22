@@ -278,6 +278,48 @@ export default function ContractFormDialog({
           <div className="space-y-2">
             <Label>{L.penalties}</Label>
             <Textarea rows={3} value={form.penalties} onChange={(e) => setForm({ ...form, penalties: e.target.value })} />
+
+            {form.penalties.trim().length > 0 && (
+              <div className="space-y-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
+                <p className="text-[11.5px] leading-relaxed text-amber-300">
+                  {language === 'fr'
+                    ? "Une pénalité de retard perçue par le créancier s'apparente au ribâ (intérêt sur une dette). Pour rester conforme, elle doit être versée à une œuvre caritative, ou correspondre à un préjudice réel et documenté."
+                    : language === 'ar'
+                    ? 'غرامة التأخير التي يقبضها الدائن تشبه الربا. لتبقى موافقة للشرع، يجب أن تُصرف في وجوه الخير، أو أن تقابل ضرراً حقيقياً موثقاً.'
+                    : 'A late-payment penalty collected by the creditor resembles riba (interest on a debt). To remain compliant, it must be paid to charity, or match a real, documented loss.'}
+                </p>
+
+                <Label className="text-xs">
+                  {language === 'fr' ? 'Destination de la pénalité' : language === 'ar' ? 'وجهة الغرامة' : 'Penalty destination'}
+                </Label>
+                <Select
+                  value={form.penalty_destination === 'none' ? 'charity' : form.penalty_destination}
+                  onValueChange={(v) => setForm({ ...form, penalty_destination: v as PenaltyDestination })}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent className="bg-popover z-[60]">
+                    <SelectItem value="charity">
+                      {language === 'fr' ? 'Versée à une œuvre caritative (recommandé)' : language === 'ar' ? 'تُصرف لجهة خيرية (موصى به)' : 'Paid to a charity (recommended)'}
+                    </SelectItem>
+                    <SelectItem value="compensation">
+                      {language === 'fr' ? 'Compensation d’un préjudice réel documenté' : language === 'ar' ? 'تعويض عن ضرر حقيقي موثق' : 'Compensation for a documented actual loss'}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Input
+                  value={form.penalty_beneficiary}
+                  onChange={(e) => setForm({ ...form, penalty_beneficiary: e.target.value })}
+                  placeholder={
+                    form.penalty_destination === 'compensation'
+                      ? (language === 'fr' ? 'Nature du préjudice' : language === 'ar' ? 'طبيعة الضرر' : 'Nature of the loss')
+                      : (language === 'fr' ? 'Nom de l’œuvre caritative' : language === 'ar' ? 'اسم الجهة الخيرية' : 'Charity name')
+                  }
+                />
+              </div>
+            )}
+          </div>
+
           </div>
 
           {/* Witnesses */}
