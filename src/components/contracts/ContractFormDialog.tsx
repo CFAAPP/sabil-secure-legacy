@@ -178,8 +178,20 @@ export default function ContractFormDialog({
 
   const handleSubmit = async () => {
     if (!form.title.trim()) return;
-    await onSave(form, newFiles);
+    const hasPenalty = form.penalties.trim().length > 0;
+    await onSave(
+      {
+        ...form,
+        penalty_destination: hasPenalty ? form.penalty_destination : 'none',
+        penalty_beneficiary: hasPenalty ? form.penalty_beneficiary : '',
+        penalties: hasPenalty
+          ? encodePenalties(form.penalties, form.penalty_destination, form.penalty_beneficiary)
+          : '',
+      },
+      newFiles
+    );
   };
+
 
   const fileIcon = (type: string) => {
     if (type.startsWith('image/')) return <ImageIcon className="h-4 w-4" />;
