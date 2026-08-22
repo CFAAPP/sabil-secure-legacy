@@ -54,8 +54,9 @@ export default function Dashboard() {
     { title: t('debts'), arabic: 'دُيُونِي', description: t('manageDebts'), icon: Wallet, path: '/debts' },
     { title: t('contracts'), arabic: 'عُقُودِي', description: t('manageContracts'), icon: ClipboardCheck, path: '/contracts' },
     { title: 'Zakât al-Mâl', arabic: 'زَكَاةُ المَال', description: t('zakatCalc'), icon: Calculator, path: '/zakat' },
-    { title: t('wakils'), arabic: 'وُكَلَائِي', description: t('designateTrusted'), icon: Users, path: '/wakils' },
-    { title: t('profileHeirs'), arabic: 'مَعْلُومَاتِي', description: t('prepareWill'), icon: User, path: '/profile' },
+    { title: t('wakils'), arabic: 'وُكَلَائِي', description: t('designateTrusted'), icon: ShieldCheck, path: '/wakils' },
+    { title: t('profileHeirs'), arabic: 'مَعْلُومَاتِي', description: t('prepareWill'), icon: Scale, path: '/profile' },
+
   ];
 
 
