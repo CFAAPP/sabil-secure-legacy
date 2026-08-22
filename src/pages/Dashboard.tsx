@@ -185,7 +185,23 @@ export default function Dashboard() {
                         {card.title}
                       </h3>
                     </div>
+
+                    {/* Affordance : indique que la carte se retourne */}
+                    <div
+                      className={`relative mb-3 flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[9.5px] uppercase tracking-[0.12em] ${
+                        highlight
+                          ? 'border-primary-foreground/30 text-primary-foreground/80'
+                          : 'border-primary/35 text-primary/80'
+                      }`}
+                    >
+                      <Info className="h-3 w-3" strokeWidth={1.8} />
+                      <span>
+                        {language === 'ar' ? 'اقلب' : language === 'en' ? 'Flip' : 'Retourner'}
+                      </span>
+                      <RotateCcw className="h-3 w-3 animate-pulse" strokeWidth={1.8} />
+                    </div>
                   </button>
+
 
                   {/* Back */}
                   <Link
