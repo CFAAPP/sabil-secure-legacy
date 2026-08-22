@@ -62,7 +62,7 @@ const DEFAULT_SETTINGS: ZakatSettings = {
   currency: 'EUR',
   nisab_method: 'silver',
   annual_date: null,
-  calendar_type: 'gregorian',
+  calendar_type: 'hijri',
   reminders: { enabled: true, d30: true, d7: true },
 };
 

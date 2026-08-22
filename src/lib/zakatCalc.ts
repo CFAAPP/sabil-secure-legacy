@@ -8,6 +8,7 @@ export interface ZakatCalcResult {
   nisabSilver: number;
   nisab: number;
   zakatDue: number;
+  zakatRate: number;
   nisabPercent: number;
   isAboveNisab: boolean;
   breakdown: {
@@ -54,7 +55,8 @@ export function calculateZakat(
   const nisab = nisabMethod === 'gold' ? nisabGold : nisabSilver;
 
   const isAboveNisab = nisab > 0 && netZakatable >= nisab;
-  const zakatDue = isAboveNisab ? netZakatable * 0.025 : 0;
+  const zakatRate = getZakatRate(calendarType);
+  const zakatDue = isAboveNisab ? netZakatable * zakatRate : 0;
   const nisabPercent = nisab > 0 ? Math.min((netZakatable / nisab) * 100, 200) : 0;
 
   return {
@@ -65,6 +67,7 @@ export function calculateZakat(
     nisabSilver,
     nisab,
     zakatDue,
+    zakatRate,
     nisabPercent,
     isAboveNisab,
     breakdown: { cashBank, goldSilver, business, investments, crypto },
