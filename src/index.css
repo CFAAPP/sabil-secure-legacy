@@ -22,76 +22,77 @@
 
 @layer base {
   :root {
-    /* Charbon chaud + or beige luxe */
-    --background: 30 8% 7%;
-    --foreground: 40 25% 94%;
+    /* Noir profond + violet électrique */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
 
-    --card: 30 7% 11%;
-    --card-foreground: 40 25% 94%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 30 8% 10%;
-    --popover-foreground: 40 25% 94%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Or doré chaud */
-    --primary: 45 72% 58%;
-    --primary-foreground: 30 12% 8%;
+    /* Violet #8E60FF */
+    --primary: 259 100% 69%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 30 6% 16%;
-    --secondary-foreground: 40 22% 92%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 96%;
 
-    --muted: 30 6% 15%;
-    --muted-foreground: 38 12% 72%;
+    --muted: 0 0% 13%;
+    --muted-foreground: 0 0% 68%;
 
-    --accent: 45 72% 58%;
-    --accent-foreground: 30 12% 8%;
+    --accent: 259 100% 69%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 4 70% 54%;
-    --destructive-foreground: 40 25% 96%;
+    --destructive: 4 78% 58%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 36 10% 19%;
-    --input: 36 10% 19%;
-    --ring: 45 72% 58%;
+    --border: 0 0% 17%;
+    --input: 0 0% 17%;
+    --ring: 259 100% 69%;
 
-    --radius: 1.25rem;
+    --radius: 1.5rem;
 
-    /* Brand tokens */
-    --gold: 45 72% 58%;
-    --gold-light: 48 78% 76%;
-    --gold-dim: 42 50% 42%;
-    --navy: 30 7% 13%;
-    --navy-deep: 30 8% 7%;
-    --navy-light: 30 6% 21%;
-    --blue-glow: 45 72% 58%;
+    /* Brand tokens (alias violet) */
+    --gold: 259 100% 69%;
+    --gold-light: 262 100% 82%;
+    --gold-dim: 259 55% 52%;
+    --navy: 0 0% 10%;
+    --navy-deep: 0 0% 4%;
+    --navy-light: 0 0% 16%;
+    --blue-glow: 259 100% 69%;
 
     /* Gradient helpers */
-    --gradient-header: linear-gradient(140deg, hsl(32 8% 14%) 0%, hsl(30 8% 9%) 100%);
-    --gradient-card: linear-gradient(160deg, hsl(32 8% 13%) 0%, hsl(30 8% 10%) 100%);
-    --gradient-gold: linear-gradient(120deg, hsl(48 78% 76%) 0%, hsl(42 58% 52%) 100%);
-    --gradient-glow: radial-gradient(ellipse 80% 50% at 50% 0%, hsl(45 72% 58% / 0.12) 0%, transparent 70%);
+    --gradient-header: linear-gradient(140deg, hsl(0 0% 12%) 0%, hsl(0 0% 6%) 100%);
+    --gradient-card: linear-gradient(160deg, hsl(0 0% 12%) 0%, hsl(0 0% 8%) 100%);
+    --gradient-gold: linear-gradient(140deg, hsl(262 100% 76%) 0%, hsl(256 92% 62%) 100%);
+    --gradient-glow: radial-gradient(ellipse 80% 50% at 50% 0%, hsl(259 100% 69% / 0.18) 0%, transparent 70%);
 
-    --shadow-gold: 0 0 24px hsl(45 72% 58% / 0.22), 0 6px 20px hsl(30 12% 2% / 0.5);
-    --shadow-card: 0 8px 28px hsl(30 12% 2% / 0.45), 0 1px 2px hsl(30 12% 2% / 0.4);
+    --shadow-gold: 0 0 28px hsl(259 100% 69% / 0.28), 0 8px 24px hsl(0 0% 0% / 0.6);
+    --shadow-card: 0 8px 28px hsl(0 0% 0% / 0.5), 0 1px 2px hsl(0 0% 0% / 0.4);
 
-    --sabeel-gold: 45 72% 58%;
-    --sabeel-sage: 30 6% 15%;
-    --sabeel-cream: 40 30% 92%;
-    --sabeel-warm: 36 10% 20%;
-    --mirath-gold: 45 72% 58%;
-    --silver: 38 10% 64%;
-    --silver-light: 38 14% 80%;
-    --silver-dim: 38 8% 48%;
+    --sabeel-gold: 259 100% 69%;
+    --sabeel-sage: 0 0% 13%;
+    --sabeel-cream: 0 0% 96%;
+    --sabeel-warm: 0 0% 18%;
+    --mirath-gold: 259 100% 69%;
+    --silver: 0 0% 66%;
+    --silver-light: 0 0% 84%;
+    --silver-dim: 0 0% 48%;
 
-    --sidebar-background: 30 8% 10%;
-    --sidebar-foreground: 40 22% 92%;
-    --sidebar-primary: 42 62% 62%;
-    --sidebar-primary-foreground: 30 12% 8%;
-    --sidebar-accent: 30 6% 16%;
-    --sidebar-accent-foreground: 40 22% 92%;
-    --sidebar-border: 36 10% 18%;
-    --sidebar-ring: 42 62% 62%;
+    --sidebar-background: 0 0% 7%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 259 100% 69%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 14%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 16%;
+    --sidebar-ring: 259 100% 69%;
   }
 
 }
+
 
 @layer base {
   * {
