@@ -193,11 +193,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 key={item.path}
                 to={item.path}
                 aria-label={item.label}
-                className={`flex h-11 flex-1 items-center justify-center rounded-full transition-all duration-300 ${
-                  active ? 'bg-primary text-primary-foreground shadow-gold' : 'text-muted-foreground active:bg-secondary'
+                className={`group flex h-11 min-w-11 flex-1 items-center justify-center gap-1.5 overflow-hidden rounded-full px-2 transition-all duration-300 ${
+                  active
+                    ? 'flex-[2.2] bg-primary text-primary-foreground shadow-gold'
+                    : 'text-muted-foreground hover:flex-[2.2] hover:bg-secondary hover:text-foreground active:flex-[2.2] active:bg-secondary'
                 }`}
               >
-                <item.icon className="h-5 w-5" strokeWidth={1.9} />
+                <item.icon className="h-5 w-5 shrink-0" strokeWidth={1.9} />
+                <span
+                  className={`whitespace-nowrap text-[11px] font-semibold leading-none transition-all duration-300 ${
+                    active
+                      ? 'max-w-[80px] opacity-100'
+                      : 'max-w-0 opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-active:max-w-[80px] group-active:opacity-100'
+                  }`}
+                >
+                  {item.label}
+                </span>
               </Link>
             );
           })}
@@ -205,13 +216,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-label={language === 'ar' ? 'القوائم' : language === 'en' ? 'All menus' : 'Tous les menus'}
-            className={`flex h-11 flex-1 items-center justify-center rounded-full transition-all duration-300 ${
-              menuOpen ? 'bg-primary text-primary-foreground' : 'text-muted-foreground active:bg-secondary'
+            className={`group flex h-11 min-w-11 flex-1 items-center justify-center gap-1.5 overflow-hidden rounded-full px-2 transition-all duration-300 ${
+              menuOpen ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-secondary hover:text-foreground active:bg-secondary'
             }`}
           >
-            <LayoutGrid className="h-5 w-5" strokeWidth={1.9} />
+            <LayoutGrid className="h-5 w-5 shrink-0" strokeWidth={1.9} />
           </button>
         </div>
+
       </nav>
     </div>
   );
