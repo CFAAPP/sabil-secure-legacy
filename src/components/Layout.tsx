@@ -33,6 +33,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { path: '/contacts', label: t('contacts'), icon: ContactIcon },
     { path: '/identity', label: t('identity'), icon: UserCircle },
     { path: '/profile', label: t('profileHeirs'), icon: UserCircle },
+    { path: '/users', label: language === 'ar' ? 'حسابي' : language === 'en' ? 'My account' : 'Mon compte', icon: UserCog },
     { path: '/wakils', label: t('wakils'), icon: Users },
   ];
 
