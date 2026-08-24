@@ -1,73 +1,98 @@
-# Welcome to your Lovable project
+# Sabeel: Your Islamic Legacy
 
-## Project info
+Je veux créer une application web mobile-first appelée "Sabeel".
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Objectif :
 
-## How can I edit this code?
+Application destinée aux musulmans pour gérer un testament islamique, leurs dettes, désigner des personnes de confiance (wakils) et permettre un accès post-mortem sécurisé.
 
-There are several ways of editing your application.
+Exigences générales :
 
-**Use Lovable**
+- Design moderne, minimaliste, avec touches islamiques discrètes (vert doux, beige, doré).
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- Responsive mobile-first.
 
-Changes made via Lovable will be committed automatically to this repo.
+- Interface en français et anglais.
 
-**Use your preferred IDE**
+- UX simple et claire.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Architecture de sécurité (très important) :
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Toutes les données sensibles (testament, dettes, contrats) doivent être chiffrées côté client avant d’être envoyées en base.
 
-Follow these steps:
+- Le serveur ne doit stocker que des données chiffrées (ciphertext).
+
+- Utiliser un chiffrement moderne type AES-GCM ou équivalent.
+
+- La clé de chiffrement doit être dérivée d’une phrase secrète choisie par l’utilisateur (jamais stockée en base).
+
+- Implémenter une protection contre brute force (limite de tentatives).
+
+- Mettre en place Row Level Security stricte pour chaque utilisateur.
+
+Fonctionnalités V1 :
+
+1. Authentification email + code PIN.
+
+2. Coffre-fort chiffré.
+
+3. Section "Mon Testament" (texte libre + sauvegarde).
+
+4. Section "Mes Dettes" (je dois / on me doit).
+
+5. Section "Mes Wakils" :
+
+   - Ajouter wakil
+
+   - Générer code wakil unique
+
+   - Révocation possible
+
+6. Mode Wakil :
+
+   - Accès via ID utilisateur + code wakil
+
+   - Lecture seule
+
+   - Déchiffrement via phrase secrète
+
+Base de données :
+
+Propose une structure de tables sécurisée (users, vault_items, wakils, audit_logs).
+
+Commence par :
+
+- Générer l’architecture technique
+
+- Générer les pages principales
+
+- Proposer la structure base de données sécurisée
+
+- Mettre en place les règles RLS
+
+Ne simplifie pas la sécurité.
+
+Priorité absolue : protection des données.
+
+This project was built with [Lovable](https://lovable.dev).
+
+**Live app**: https://sabil-secure-legacy.lovable.app
+
+## Build with Lovable
+
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/e28ad1b7-f723-4d58-9cf0-03d9698a5bcb).
+
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+git clone <this-repository-url>
+cd <repository-name>
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
