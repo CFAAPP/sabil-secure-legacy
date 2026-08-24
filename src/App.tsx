@@ -51,6 +51,7 @@ const App = () => (
             <Route path="/identity" element={<Identity />} />
             <Route path="/shared" element={<SharedWithMe />} />
             <Route path="/contacts" element={<Contacts />} />
+            <Route path="/users" element={<Users />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
