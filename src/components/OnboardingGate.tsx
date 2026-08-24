@@ -15,7 +15,7 @@ import {
 
 const T = {
   fr: {
-    title: 'Bienvenue sur Mirath',
+    title: 'Bienvenue sur Hisab',
     subtitle: 'Renseignez vos informations d\'identité pour établir votre testament.',
     firstName: 'Prénom',
     lastName: 'Nom de famille',
@@ -32,7 +32,7 @@ const T = {
     locked: 'Coffre verrouillé — déverrouillez votre coffre pour continuer.',
   },
   en: {
-    title: 'Welcome to Mirath',
+    title: 'Welcome to Hisab',
     subtitle: 'Please fill in your identity to prepare your will.',
     firstName: 'First name',
     lastName: 'Last name',
@@ -49,7 +49,7 @@ const T = {
     locked: 'Vault locked — unlock it to continue.',
   },
   ar: {
-    title: 'مرحباً بك في ميراث',
+    title: 'مرحباً بك في حساب',
     subtitle: 'يرجى إدخال بياناتك الشخصية لإعداد وصيتك.',
     firstName: 'الاسم',
     lastName: 'اسم العائلة',

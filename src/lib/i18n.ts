@@ -3,7 +3,7 @@ export type Language = 'fr' | 'en' | 'ar';
 const translations = {
   fr: {
     // App
-    appName: 'Mirath',
+    appName: 'Hisab',
     appTagline: 'Votre héritage islamique sécurisé',
     
     // Auth
@@ -185,7 +185,7 @@ const translations = {
     updatedOn: 'Modifié le',
   },
   en: {
-    appName: 'Mirath',
+    appName: 'Hisab',
     appTagline: 'Your secure Islamic legacy',
     
     login: 'Log in',
@@ -352,7 +352,7 @@ const translations = {
     updatedOn: 'Updated',
   },
   ar: {
-    appName: 'ميراث',
+    appName: 'حساب',
     appTagline: 'إرثك الإسلامي المؤمّن',
     
     login: 'تسجيل الدخول',

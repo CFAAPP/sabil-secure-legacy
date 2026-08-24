@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import mirathLogo from '@/assets/mirath-logo.png';
+import hisabLogo from '@/assets/hisab-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -67,7 +67,7 @@ export default function ResetPassword() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background islamic-pattern px-4">
         <div className="w-full max-w-md animate-fade-in text-center">
-          <img src={mirathLogo} alt="Mirath" className="mx-auto h-20 w-20 rounded-2xl object-cover shadow-lg mb-6" />
+          <img src={hisabLogo} alt="Hisab" className="mx-auto h-20 w-20 rounded-2xl object-cover shadow-lg mb-6" />
           <p className="text-muted-foreground mb-4">{t('loading')}</p>
           <Link to="/" className="text-primary hover:underline inline-flex items-center gap-1">
             <ArrowLeft className="h-4 w-4" />
@@ -82,8 +82,8 @@ export default function ResetPassword() {
     <div className="flex min-h-screen items-center justify-center bg-background islamic-pattern px-4">
       <div className="w-full max-w-md animate-fade-in">
         <div className="mb-8 flex flex-col items-center gap-3">
-          <img src={mirathLogo} alt="Mirath" className="h-20 w-20 rounded-2xl object-cover shadow-lg" />
-          <h1 className="font-display text-3xl font-bold text-foreground">{language === 'ar' ? 'ميراث' : 'Mirath'}</h1>
+          <img src={hisabLogo} alt="Hisab" className="h-20 w-20 rounded-2xl object-cover shadow-lg" />
+          <h1 className="font-display text-3xl font-bold text-foreground">{language === 'ar' ? 'حساب' : 'Hisab'}</h1>
         </div>
 
         <Card className="border-border/50 shadow-xl">
