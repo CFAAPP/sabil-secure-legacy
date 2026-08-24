@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import mirathLogo from '@/assets/mirath-logo.png';
+import hisabLogo from '@/assets/hisab-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -83,8 +83,8 @@ export default function Auth() {
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center gap-3">
-          <img src={mirathLogo} alt="Mirath" className="h-20 w-20 rounded-2xl object-cover shadow-lg" />
-          <h1 className="font-display text-3xl font-bold text-foreground">{language === 'ar' ? 'ميراث' : 'Mirath'}</h1>
+          <img src={hisabLogo} alt="Hisab" className="h-20 w-20 rounded-2xl object-cover shadow-lg" />
+          <h1 className="font-display text-3xl font-bold text-foreground">{language === 'ar' ? 'حساب' : 'Hisab'}</h1>
           <p className="text-sm text-muted-foreground">{t('appTagline')}</p>
         </div>
 

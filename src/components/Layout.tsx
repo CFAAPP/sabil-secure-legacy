@@ -5,7 +5,7 @@ import { Shield, FileText, Wallet, Users, LogOut, Menu, X, UserCircle, UserCog, 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
-import mirathLogo from '@/assets/mirath-logo.png';
+import hisabLogo from '@/assets/hisab-logo.png';
 import OnboardingGate from '@/components/OnboardingGate';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -55,13 +55,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </button>
             <Link to="/dashboard" className="flex items-center gap-2.5 group">
               <div className="relative">
-                <img src={mirathLogo} alt="Mirath" className="h-8 w-8 rounded-lg object-cover" />
+                <img src={hisabLogo} alt="Hisab" className="h-8 w-8 rounded-lg object-cover" />
                 <div className="absolute inset-0 rounded-lg ring-1 ring-gold/30 group-hover:ring-gold/60 transition-all" />
               </div>
               <span
                 className="text-foreground font-display text-xl font-bold tracking-[0.12em] uppercase"
               >
-                {language === 'ar' ? 'ميراث' : 'MIRATH'}
+                {language === 'ar' ? 'حساب' : 'HISAB'}
               </span>
             </Link>
           </div>

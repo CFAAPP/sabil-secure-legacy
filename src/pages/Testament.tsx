@@ -442,7 +442,7 @@ export default function Testament() {
 
 
         <div style="margin-top:40px;padding-top:16px;border-top:1px solid #ddd;font-size:10px;color:#999;text-align:center">
-          Mirath — ${tx('Document généré pour usage personnel', 'Document generated for personal use', 'وثيقة تم إنشاؤها للاستخدام الشخصي')}
+          Hisab — ${tx('Document généré pour usage personnel', 'Document generated for personal use', 'وثيقة تم إنشاؤها للاستخدام الشخصي')}
         </div>
       `;
 
