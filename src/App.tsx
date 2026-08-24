@@ -21,6 +21,7 @@ import Contracts from "./pages/Contracts";
 import SharedWithMe from "./pages/SharedWithMe";
 import MentionResponse from "./pages/MentionResponse";
 import Contacts from "./pages/Contacts";
+import Users from "./pages/Users";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
             <Route path="/identity" element={<Identity />} />
             <Route path="/shared" element={<SharedWithMe />} />
             <Route path="/contacts" element={<Contacts />} />
+            <Route path="/users" element={<Users />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
