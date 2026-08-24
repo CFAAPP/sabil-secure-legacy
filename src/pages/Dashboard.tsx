@@ -62,50 +62,40 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="space-y-4 animate-fade-in">
-        {/* Welcome header */}
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-6">
-          <div
-            className="absolute -top-16 -right-12 w-52 h-52 rounded-full opacity-[0.18] blur-2xl"
-            style={{ background: 'radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)' }}
-          />
-          <p className="text-[11px] mb-3 font-arabic text-primary/70">بسم الله الرحمن الرحيم</p>
-          <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">{t('welcomeBack')}</p>
-          <h1 className="font-display text-2xl mt-1.5 text-foreground leading-tight">
+      <div className="space-y-3 animate-fade-in">
+        {/* Hero violet */}
+        <div className="relative overflow-hidden rounded-[32px] bg-gradient-gold p-6 shadow-gold">
+          <div className="absolute -bottom-16 -right-10 h-48 w-48 rounded-full bg-primary-foreground/10 blur-2xl" />
+          <p className="relative text-[11px] font-arabic text-primary-foreground/70">بسم الله الرحمن الرحيم</p>
+          <p className="relative mt-4 text-xs uppercase tracking-[0.2em] text-primary-foreground/70">{t('welcomeBack')}</p>
+          <h1 className="relative mt-1.5 font-display text-2xl leading-tight text-primary-foreground">
             {formalName || profile?.display_name || user?.email?.split('@')[0]}
           </h1>
-        </div>
 
-        {/* Security status */}
-        <div className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3.5">
-          <div className={`flex h-9 w-9 items-center justify-center rounded-full ${isSecure ? 'bg-emerald-500/15' : 'bg-red-500/15'}`}>
-            <Lock className={`h-4 w-4 ${isSecure ? 'text-emerald-500' : 'text-red-500'}`} />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-foreground">{t('securityStatus')}</p>
-            <p className="text-[11px] text-muted-foreground">
-              {isSecure ? t('securitySecure') : t('securityAtRisk')} · AES-256-GCM · {t('encrypted')} · E2E
+          <div className="relative mt-5 flex items-center gap-2 rounded-full bg-background/25 px-3 py-2 backdrop-blur-sm">
+            <span
+              className={`h-2.5 w-2.5 shrink-0 rounded-full animate-pulse ${
+                isSecure
+                  ? 'bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.9)]'
+                  : 'bg-red-400 shadow-[0_0_12px_rgba(248,113,113,0.9)]'
+              }`}
+              aria-label={isSecure ? t('securitySecure') : t('securityAtRisk')}
+            />
+            <p className="text-[11px] font-medium text-primary-foreground">
+              {isSecure ? t('securitySecure') : t('securityAtRisk')} · AES-256-GCM · E2E
             </p>
+            <Lock className="ms-auto h-3.5 w-3.5 text-primary-foreground/80" strokeWidth={2} />
           </div>
-          <div
-            className={`w-2.5 h-2.5 rounded-full animate-pulse ${
-              isSecure
-                ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.85)]'
-                : 'bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.85)]'
-            }`}
-            aria-label={isSecure ? t('securitySecure') : t('securityAtRisk')}
-          />
         </div>
 
-        {/* Rappel prophétique sur la promptitude du testament */}
-        <div className="relative overflow-hidden rounded-2xl border border-primary/25 bg-card/70 px-4 py-3.5">
-          <div className="pointer-events-none absolute inset-0 mihrab-mesh opacity-30" />
-          <div className="relative flex gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/10">
-              <ScrollText className="h-4 w-4 text-primary" strokeWidth={1.5} />
+        {/* Rappel prophétique */}
+        <div className="rounded-3xl bg-card px-4 py-4">
+          <div className="flex gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-primary/15">
+              <ScrollText className="h-4 w-4 text-primary" strokeWidth={1.8} />
             </div>
             <div>
-              <p className="font-quran text-[15px] leading-loose text-primary/90" dir="rtl">
+              <p className="font-quran text-[15px] leading-loose text-foreground" dir="rtl">
                 مَا حَقُّ امْرِئٍ مُسْلِمٍ لَهُ شَيْءٌ يُوصِي فِيهِ يَبِيتُ لَيْلَتَيْنِ إِلَّا وَوَصِيَّتُهُ مَكْتُوبَةٌ عِنْدَهُ
               </p>
               <p className="mt-1.5 text-[11.5px] leading-relaxed text-muted-foreground">
@@ -121,121 +111,91 @@ export default function Dashboard() {
 
         {/* Feature grid */}
         <div className="grid grid-cols-2 gap-3">
-
           {cards.map((card, i) => {
             const highlight = i === 0;
             const isFlipped = flipped === card.path;
             const hint = hints[card.path]?.[language as 'fr' | 'en' | 'ar'] ?? card.description;
             return (
-              <div key={card.path} className="flip-perspective h-[236px]">
+              <div key={card.path} className="flip-perspective h-[180px]">
                 <div className={`flip-inner relative h-full w-full ${isFlipped ? 'is-flipped' : ''}`}>
                   {/* Front */}
                   <button
                     type="button"
                     onClick={() => setFlipped(card.path)}
                     aria-label={card.title}
-                    className={`flip-face absolute inset-0 flex flex-col items-center justify-between overflow-hidden rounded-[26px] border text-center transition-colors duration-300 active:scale-[0.99] ${
-                      highlight
-                        ? 'border-primary bg-gradient-gold shadow-gold'
-                        : 'border-primary/25 bg-gradient-card hover:border-primary/60'
+                    className={`flip-face absolute inset-0 flex flex-col items-start justify-between overflow-hidden rounded-[28px] p-4 text-start transition-transform duration-300 active:scale-[0.98] ${
+                      highlight ? 'bg-gradient-gold shadow-gold' : 'bg-card'
                     }`}
                   >
-                    <div className={`pointer-events-none absolute inset-0 mihrab-mesh ${highlight ? 'opacity-30' : 'opacity-60'}`} />
-                    <div className={`pointer-events-none absolute inset-x-0 bottom-0 h-16 mihrab-skyline ${highlight ? 'opacity-40' : 'opacity-70'}`} />
                     <div
-                      className={`pointer-events-none absolute inset-x-2.5 top-2.5 bottom-2.5 mihrab-arch border ${
-                        highlight ? 'border-primary-foreground/25' : 'border-primary/35'
+                      className={`flex h-11 w-11 items-center justify-center rounded-2xl ${
+                        highlight ? 'bg-background/25' : 'bg-primary/15'
                       }`}
-                    />
+                    >
+                      <card.icon
+                        className={`h-5 w-5 ${highlight ? 'text-primary-foreground' : 'text-primary'}`}
+                        strokeWidth={1.8}
+                      />
+                    </div>
 
-                    <div className="relative flex w-full flex-1 flex-col items-center justify-center gap-3 px-5 py-5">
-                      <div
-                        className={`flex h-10 w-10 items-center justify-center rounded-[13px] border ${
-                          highlight
-                            ? 'border-primary-foreground/25 bg-primary-foreground/10'
-                            : 'border-primary/35 bg-primary/10'
-                        }`}
-                      >
-                        <card.icon
-                          className={`h-5 w-5 ${highlight ? 'text-primary-foreground' : 'text-primary'}`}
-                          strokeWidth={1.5}
-                        />
-                      </div>
-
+                    <div className="w-full">
                       <p
-                        className={`font-arabic text-xl leading-none ${
-                          highlight ? 'text-primary-foreground' : 'text-gold-gradient'
+                        className={`font-arabic text-base leading-none ${
+                          highlight ? 'text-primary-foreground/80' : 'text-primary'
                         }`}
                         dir="rtl"
                       >
                         {card.arabic}
                       </p>
-
-                      <div className="flex items-center gap-2">
-                        <span className={`h-px w-5 ${highlight ? 'bg-primary-foreground/30' : 'bg-primary/30'}`} />
-                        <span className={`text-[9px] ${highlight ? 'text-primary-foreground/50' : 'text-primary/50'}`}>✦</span>
-                        <span className={`h-px w-5 ${highlight ? 'bg-primary-foreground/30' : 'bg-primary/30'}`} />
-                      </div>
-
                       <h3
-                        className={`font-display px-0.5 text-[15px] leading-[1.15] tracking-[0.04em] ${
+                        className={`mt-2 font-display text-[15px] leading-[1.15] ${
                           highlight ? 'text-primary-foreground' : 'text-foreground'
                         }`}
                       >
                         {card.title}
                       </h3>
-                    </div>
-
-                    {/* Affordance : indique que la carte se retourne */}
-                    <div
-                      className={`relative mb-3 flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[9.5px] uppercase tracking-[0.12em] ${
-                        highlight
-                          ? 'border-primary-foreground/30 text-primary-foreground/80'
-                          : 'border-primary/35 text-primary/80'
-                      }`}
-                    >
-                      <Info className="h-3 w-3" strokeWidth={1.8} />
-                      <span>
+                      <span
+                        className={`mt-2 inline-flex items-center gap-1 text-[9.5px] uppercase tracking-[0.12em] ${
+                          highlight ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                        }`}
+                      >
+                        <Info className="h-3 w-3" strokeWidth={1.8} />
                         {language === 'ar' ? 'اقلب' : language === 'en' ? 'Flip' : 'Retourner'}
                       </span>
-                      <RotateCcw className="h-3 w-3 animate-pulse" strokeWidth={1.8} />
                     </div>
                   </button>
-
 
                   {/* Back */}
                   <Link
                     to={card.path}
-                    className={`flip-face flip-back absolute inset-0 flex flex-col justify-between overflow-hidden rounded-[26px] border px-4 py-4 no-underline ${
-                      highlight ? 'border-primary bg-gradient-gold' : 'border-primary/40 bg-gradient-card'
+                    className={`flip-face flip-back absolute inset-0 flex flex-col justify-between overflow-hidden rounded-[28px] p-4 no-underline ${
+                      highlight ? 'bg-gradient-gold' : 'bg-secondary'
                     }`}
                   >
-                    <div className="pointer-events-none absolute inset-0 mihrab-mesh opacity-25" />
-                    <div className="relative">
+                    <div>
                       <p
-                        className={`font-display text-[15px] leading-[1.15] uppercase tracking-[0.04em] ${
+                        className={`font-display text-[13px] uppercase tracking-[0.06em] ${
                           highlight ? 'text-primary-foreground/80' : 'text-primary'
                         }`}
                       >
                         {card.title}
                       </p>
                       <p
-                        className={`mt-2.5 text-[11.5px] leading-relaxed ${
+                        className={`mt-2 text-[11.5px] leading-relaxed ${
                           highlight ? 'text-primary-foreground/85' : 'text-muted-foreground'
                         }`}
                       >
                         {hint}
                       </p>
                     </div>
-                    <div className="relative mt-3 flex items-center justify-between gap-2">
+                    <div className="flex items-center justify-between gap-2">
                       <span
                         className={`text-[9.5px] uppercase tracking-[0.12em] ${
-                          highlight ? 'text-primary-foreground/80' : 'text-primary/80'
+                          highlight ? 'text-primary-foreground/85' : 'text-foreground'
                         }`}
                       >
                         {language === 'ar' ? 'افتح' : language === 'en' ? 'Open →' : 'Ouvrir →'}
                       </span>
-
                       <button
                         type="button"
                         onClick={(e) => {
@@ -244,10 +204,8 @@ export default function Dashboard() {
                           setFlipped(null);
                         }}
                         aria-label="retour"
-                        className={`flex h-8 w-8 items-center justify-center rounded-xl border ${
-                          highlight
-                            ? 'border-primary-foreground/30 text-primary-foreground'
-                            : 'border-primary/40 text-primary hover:bg-primary/10'
+                        className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                          highlight ? 'bg-background/25 text-primary-foreground' : 'bg-card text-primary'
                         }`}
                       >
                         <RotateCcw className="h-3.5 w-3.5" />
@@ -260,12 +218,11 @@ export default function Dashboard() {
           })}
         </div>
 
-
         {/* User ID */}
-        <div className="rounded-2xl border border-border bg-card/60 p-4">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-2">{t('yourId')}</p>
+        <div className="rounded-3xl bg-card p-4">
+          <p className="mb-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{t('yourId')}</p>
           <code
-            className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-lg font-mono select-all break-all"
+            className="select-all break-all rounded-xl bg-secondary px-2 py-1 font-mono text-xs text-muted-foreground"
             dir={rtl ? 'rtl' : 'ltr'}
           >
             {user?.id}
@@ -275,3 +232,4 @@ export default function Dashboard() {
     </Layout>
   );
 }
+
